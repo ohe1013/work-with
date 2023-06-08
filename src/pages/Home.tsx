@@ -16,6 +16,7 @@ export default function Home(): JSX.Element {
                 attributions: '<p>Developed by <a href="https://itcode.dev" target="_blank">RWB</a></p>',
                 cacheSize: 0,
             }),
+            zIndex: 1,
         });
 
         new Map({
