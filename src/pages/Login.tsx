@@ -1,12 +1,14 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import * as auth from "../hooks/auth/useLogin";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/common/\bInput";
 import Label from "../components/common/Label";
+import Button from "../components/common/Button";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const disabledButton = !email || !password;
+    const isDisabled = !email || !password;
+    const inputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
     const submitHandler = (event: FormEvent) => {
@@ -16,6 +18,11 @@ export default function Login() {
             navigate("/");
         });
     };
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -30,10 +37,11 @@ export default function Login() {
                         <Input
                             value={email}
                             setValue={setEmail}
+                            ref={inputRef}
                             id="email"
                             name="email"
                             type="email"
-                            autoComplete="email"
+                            autoComplete="off"
                             required
                         />
                     </div>
@@ -53,24 +61,15 @@ export default function Login() {
                             id="password"
                             name="password"
                             type="password"
-                            autoComplete="current-password"
+                            autoComplete="off"
                             required
                         />
                     </div>
 
                     <div>
-                        <button
-                            disabled={disabledButton}
-                            type="submit"
-                            className={
-                                "flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" +
-                                (disabledButton
-                                    ? " text-black hover:bg-gray-600 hover:text-white"
-                                    : " bg-indigo-600 text-white hover:bg-indigo-800")
-                            }
-                        >
-                            Log in
-                        </button>
+                        <Button isDisabled={isDisabled} type="submit">
+                            Login
+                        </Button>
                     </div>
                 </form>
             </div>
