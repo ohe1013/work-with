@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import * as auth from "../hooks/auth/useLogin";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/common/\bInput";
+import Input from "../components/common/Input";
 import Label from "../components/common/Label";
 import Button from "../components/common/Button";
 export default function Login() {
