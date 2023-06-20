@@ -9,6 +9,7 @@ import { worker } from "./mocks/worker";
 // if (import.meta.env.DEV) {
 //     worker.start();
 // }
+
 const router = createBrowserRouter(routes);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>

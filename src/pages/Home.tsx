@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import BaseMap from "../components/map/baseMap";
 
 export default function Home(): JSX.Element {
     const submitHandler = (event: FormEvent) => {
@@ -10,11 +11,7 @@ export default function Home(): JSX.Element {
     const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
     };
-    useEffect(() => {
-        document.querySelector("#map > .ol-viewport")?.remove();
-
-        const seoulPosition = [126.97836930289438, 37.56664507000858];
-    }, []);
+    useEffect(() => {}, []);
 
     return (
         <section className="pt-10" id="osm">
@@ -60,7 +57,7 @@ export default function Home(): JSX.Element {
             </form>
 
             <article className="relative w-full h-[calc(100vh_-_10px)]">
-                <div className="w-full h-full" id="map" />
+                <BaseMap></BaseMap>
             </article>
         </section>
     );

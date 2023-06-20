@@ -53,6 +53,7 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "jest-svg-transformer": "^1.0.0",
+    "kakao.maps.d.ts": "^0.1.38",
     "msw": "^1.2.1",
     "typescript": "^5.0.2",
     "vite": "^4.3.8",
