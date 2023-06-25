@@ -1,70 +1,17 @@
-import { Map, View } from "ol";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { XYZ } from "ol/source";
-import TileLayer from "ol/layer/Tile";
-import proj4 from "proj4";
-import { searchVworld } from "../hooks/map/useSearch";
+import BaseMap from "../components/map/baseMap";
 
 export default function Home(): JSX.Element {
-    const params = (query?: string) => {
-        return {
-            service: "search",
-            request: "search",
-            version: "2.0",
-            crs: "EPSG:3857",
-            // bbox: "14140071.146077,4494339.6527027,14160071.146077,4496339.6527027",
-            size: 10,
-            page: 1,
-            query,
-            type: "place",
-            format: "json",
-            errorformat: "json",
-            key: "CEDF8D34-6205-3828-A7E6-9086687AD304",
-        };
-    };
     const submitHandler = (event: FormEvent) => {
         event.preventDefault();
-        searchVworld(params(keyword)).then((res) => {
-            console.log(res.response.result.items);
-            setSearhcedList(res.response.result.items);
-        });
     };
-    const [map, setMap] = useState<Map>();
     const [keyword, setKeyword] = useState("");
     const [searchedList, setSearhcedList] = useState([]);
-    const fly = (point) => {
-        map?.getView().setCenter([point.x, point.y]);
-    };
+
     const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
     };
-    useEffect(() => {
-        document.querySelector("#map > .ol-viewport")?.remove();
-
-        const seoulPosition = [126.97836930289438, 37.56664507000858];
-        const vworldBaseLayer = new TileLayer({
-            maxZoom: 19,
-            minZoom: 5,
-            preload: Infinity,
-            properties: { name: "base-vworld-base" },
-            source: new XYZ({
-                url: "https://api.vworld.kr/req/wmts/1.0.0/CEDF8D34-6205-3828-A7E6-9086687AD304/Base/{z}/{y}/{x}.png",
-            }),
-            zIndex: 2,
-        });
-
-        setMap(
-            new Map({
-                layers: [vworldBaseLayer],
-                target: "map",
-                view: new View({
-                    center: proj4("EPSG:4326", "EPSG:3857", seoulPosition),
-                    projection: "EPSG:3857",
-                    zoom: 17,
-                }),
-            })
-        );
-    }, []);
+    useEffect(() => {}, []);
 
     return (
         <section className="pt-10" id="osm">
@@ -108,17 +55,9 @@ export default function Home(): JSX.Element {
                     </button>
                 </div>
             </form>
-            <ul>
-                {searchedList.map((item) => (
-                    <li key={item.id}>
-                        {item.address.parcel}
-                        <button onClick={() => fly(item.point)}>이동</button>
-                    </li>
-                ))}
-            </ul>
 
             <article className="relative w-full h-[calc(100vh_-_10px)]">
-                <div className="w-full h-full" id="map" />
+                <BaseMap></BaseMap>
             </article>
         </section>
     );
