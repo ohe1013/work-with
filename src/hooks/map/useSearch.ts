@@ -1,5 +1,5 @@
-const searchVworld = async (params: any) => {
+const searchKakao = async (params: any) => {
     return null;
 };
 
-export { searchVworld };
+export { searchKakao };
