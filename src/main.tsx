@@ -9,10 +9,13 @@ import { worker } from "./mocks/worker";
 // if (import.meta.env.DEV) {
 //     worker.start();
 // }
+import { RecoilRoot } from "recoil";
 
 const router = createBrowserRouter(routes);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
+  <React.StrictMode>
+    <RecoilRoot>
+      <RouterProvider router={router} />
+    </RecoilRoot>
+  </React.StrictMode>
 );
