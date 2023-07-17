@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import BaseMap from "../components/map/baseMap";
+import BaseMap from "../components/map/BaseMap";
 
 export default function Home(): JSX.Element {
     const submitHandler = (event: FormEvent) => {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Map, useInjectKakaoMapApi } from "react-kakao-maps-sdk";
+import Loader from "../common/Loader";
 
 export default function BaseMap() {
     const { loading, error } = useInjectKakaoMapApi({
@@ -13,7 +14,7 @@ export default function BaseMap() {
     });
 
     return loading ? (
-        "Loading"
+        <Loader />
     ) : (
         <Map // 지도를 표시할 Container
             center={state.center}
@@ -24,34 +25,6 @@ export default function BaseMap() {
                 height: "450px",
             }}
             level={3} // 지도의 확대 레벨
-        >
-            <div
-                style={{
-                    display: "flex",
-                    gap: "10px",
-                }}
-            >
-                <button
-                    onClick={() =>
-                        setState({
-                            center: { lat: 33.452613, lng: 126.570888 },
-                            isPanto: false,
-                        })
-                    }
-                >
-                    지도 중심좌표 이동시키기
-                </button>
-                <button
-                    onClick={() =>
-                        setState({
-                            center: { lat: 33.45058, lng: 126.574942 },
-                            isPanto: true,
-                        })
-                    }
-                >
-                    지도 중심좌표 부드럽게 이동시키기
-                </button>
-            </div>
-        </Map>
+        ></Map>
     );
 }
