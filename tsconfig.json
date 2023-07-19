@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "lib": ["DOM", "ESNext"],
         "module": "ESNext",
         "skipLibCheck": true,
 
@@ -20,8 +20,9 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
 
-        "types": ["kakao.map.d.ts"]
+        "types": ["vite/client", "kakao.maps.d.ts"],
+        "typeRoots": ["./node_modules/@types", "./src/types"]
     },
-    "include": ["src", "jest-setup.ts"],
+    "include": ["src", "jest-setup.ts", "vite.config.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
