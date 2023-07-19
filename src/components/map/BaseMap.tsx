@@ -35,8 +35,8 @@ export default function BaseMap() {
         <Map // 로드뷰를 표시할 Container
             center={mapInfo.center}
             style={{
-                width: "100%",
-                height: "350px",
+                width: "80%",
+                height: "80%",
             }}
             level={zoomLevel}
             onCreate={setMap}
@@ -48,7 +48,7 @@ export default function BaseMap() {
                     onClick={() => setInfo(marker)}
                 >
                     {info && info.content === marker.content && (
-                        <div style={{ color: "#000" }}>{marker.content}</div>
+                        <div style={{ color: "#000" }}>스포애니</div>
                     )}
                 </MapMarker>
             ))}
