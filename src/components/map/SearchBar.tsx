@@ -1,6 +1,7 @@
 import { useRecoilState } from "recoil";
 import { MapAtom, MapMarkersAtom, Marker } from "../../recoil/MapStatus";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React from "react";
 
 const SearchBar = () => {
     const submitHandler = (event: FormEvent) => {
@@ -41,12 +42,13 @@ const SearchBar = () => {
     };
     return (
         <form onSubmit={submitHandler}>
-            <label
+            {React.createElement("label")}
+            {/* <label
                 htmlFor="default-search"
                 className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
                 Search
-            </label>
+            </label> */}
             <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg
