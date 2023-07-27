@@ -13,7 +13,6 @@ export default function Card({
     <div className="max-w-2xl  mx-auto">
       <div className="bg-white  shadow-md border border-gray-200 rounded-lg max-w-sm dark:bg-gray-800 dark:border-gray-700">
         <Roadview
-          panoId={+id}
           style={{ width: "100%", height: "200px" }}
           position={{ lat: position.lat, lng: position.lng, radius: 50 }}
         ></Roadview>

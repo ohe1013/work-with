@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { MapMarkersAtom, Marker } from "../../recoil/MapStatus";
 import Card from "../common/Card";
 import { MarkerWithId } from "./SearchBar";
+import Button from "../common/Button";
 
 export default function BaseMap() {
   const [info, setInfo] = useState<MarkerWithId>();
@@ -40,6 +41,7 @@ export default function BaseMap() {
         }}
         level={zoomLevel}
       >
+        <Button isDisabled={false}>등록하기 </Button>
         <CustomOverlayMap
           position={{
             lat: mapInfo.center.lat,
