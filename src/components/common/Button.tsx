@@ -2,6 +2,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isDisabled: boolean;
 }
 
+//확장성 쓰레기
 const Button: React.FC<ButtonProps> = ({ isDisabled, children, ...rest }) => {
     return (
         <button
@@ -18,4 +19,5 @@ const Button: React.FC<ButtonProps> = ({ isDisabled, children, ...rest }) => {
         </button>
     );
 };
+
 export default Button;

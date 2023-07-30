@@ -36,8 +36,8 @@ export default function BaseMap() {
       <Map // 로드뷰를 표시할 Container
         center={mapInfo.center}
         style={{
-          width: "80%",
-          height: "80%",
+          width: "100%",
+          height: "100%",
         }}
         level={zoomLevel}
       >
