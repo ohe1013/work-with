@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import HomeTab from "../components/side-tab/HomeTab";
 import DynamicSvg from "../components/common/DynamicSvg";
 import { useState } from "react";
+import SideTab from "../components/side-tab/SideTab";
+import Aside from "../components/side-tab/CommunityTab";
 
 function Layout() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -34,7 +36,7 @@ function Layout() {
 
             <div className={"absolute bottom-0"}>hi</div>
         </div>
-        <HomeTab></HomeTab>
+        <Aside></Aside>
         <Outlet />
       </aside>
     </>
