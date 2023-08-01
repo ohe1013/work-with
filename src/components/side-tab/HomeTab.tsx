@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 export default function HomeTab() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,8 @@ export default function HomeTab() {
   return (
     <div
       className={`h-screen py-8 overflow-y-auto bg-white border-l border-r sm:w-64 w-60 dark:bg-gray-900 dark:border-gray-700`}
-    ></div>
+    >
+      <Outlet></Outlet>
+    </div>
   );
 }

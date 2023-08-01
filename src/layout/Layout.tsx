@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import {Link, Outlet, useLocation} from "react-router-dom";
 import HomeTab from "../components/side-tab/HomeTab";
 import DynamicSvg from "../components/common/DynamicSvg";
 import { useState } from "react";
@@ -13,6 +13,8 @@ function Layout() {
   };
 
   const menuList = [ "home",  "community"];
+  const locaiton  = useLocation()
+  const path = locaiton.pathname
 
   return (
     <>
@@ -21,8 +23,8 @@ function Layout() {
 
           <a href="#"></a>
           {menuList.map((menu, idx) => (
-            <a
-              href=  {menu}
+            <Link
+              to =  {menu}
               onClick={() => handleClick(idx)}
               className={
                 activeIndex === idx
@@ -31,12 +33,12 @@ function Layout() {
               }
             >
               <DynamicSvg iconName={menu} />
-            </a>
+            </Link>
           ))}
 
             <div className={"absolute bottom-0"}>hi</div>
         </div>
-        <Aside></Aside>
+        <SideTab path={path}></SideTab>
         <Outlet />
       </aside>
     </>

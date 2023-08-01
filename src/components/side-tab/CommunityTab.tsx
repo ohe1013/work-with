@@ -1,9 +1,7 @@
-export default function Aside() {
+export default function CommunityTab() {
   return (
-    <div className="h-screen py-8 overflow-y-auto bg-white border-l border-r sm:w-64 w-60 dark:bg-gray-900 dark:border-gray-700">
-      <h2 className="px-5 text-lg font-medium text-gray-800 dark:text-white">
-        Accounts
-      </h2>
+    <>
+      <h2 className="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2>
 
       <div className="mt-8 space-y-4">
         <button className="flex items-center w-full px-5 py-2 transition-colors duration-200 dark:hover:bg-gray-800 gap-x-2 hover:bg-gray-100 focus:outline-none">
@@ -14,13 +12,9 @@ export default function Aside() {
           />
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Mia John
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Mia John</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              11.2 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">11.2 Followers</p>
           </div>
         </button>
 
@@ -32,13 +26,9 @@ export default function Aside() {
           />
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              arthur melo
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">arthur melo</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              1.2 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">1.2 Followers</p>
           </div>
         </button>
 
@@ -53,13 +43,9 @@ export default function Aside() {
           </div>
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Jane Doe
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Jane Doe</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              15.6 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">15.6 Followers</p>
           </div>
         </button>
 
@@ -71,13 +57,9 @@ export default function Aside() {
           />
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Amelia. Anderson
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Amelia. Anderson</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              32.9 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">32.9 Followers</p>
           </div>
         </button>
 
@@ -89,13 +71,9 @@ export default function Aside() {
           />
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Joseph Gonzalez
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Joseph Gonzalez</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              100.2 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">100.2 Followers</p>
           </div>
         </button>
 
@@ -110,13 +88,9 @@ export default function Aside() {
           </div>
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Olivia Wathan
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Olivia Wathan</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              8.6 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">8.6 Followers</p>
           </div>
         </button>
 
@@ -131,16 +105,12 @@ export default function Aside() {
           </div>
 
           <div className="text-left rtl:text-right">
-            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">
-              Junior REIS
-            </h1>
+            <h1 className="text-sm font-medium text-gray-700 capitalize dark:text-white">Junior REIS</h1>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              56.6 Followers
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">56.6 Followers</p>
           </div>
         </button>
       </div>
-    </div>
+    </>
   );
 }

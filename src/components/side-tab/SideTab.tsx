@@ -2,6 +2,9 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { CachedLayoutAtom } from "../../recoil/LayoutStatus";
+import {Router} from "react-router-dom";
+import CommunityTab from "./CommunityTab";
+import SearchTab from "./SearchTab";
 
 const SideTab = ({ path }: { path: string }) => {
   const [cachedLayout, setCachedLayout] = useRecoilState(CachedLayoutAtom);
@@ -12,13 +15,14 @@ const SideTab = ({ path }: { path: string }) => {
       // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
       setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
     }
+    console.log(path)
   }, [path]);
 
   return (
     <div
       className={`h-screen py-8 overflow-y-auto bg-white border-l border-r sm:w-64 w-60 dark:bg-gray-900 dark:border-gray-700`}
-    >
-      {/* 여기에 SideTab 컴포넌트의 내용을 작성합니다. */}
+    >{path ==='/home' && <SearchTab key={"sideTab"+path}></SearchTab>}
+
     </div>
   );
 };
