@@ -13,14 +13,14 @@ const SideTab = ({ path }: { path: string }) => {
       // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
       setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
     }
-    console.log(path)
+    console.log(path);
   }, [path]);
 
   return (
     <div
-      className={`h-screen flex py-8 overflow-y-auto bg-white border-l border-r sm:w-80 w-80 dark:bg-gray-900 dark:border-gray-700`}
-    >{path ==='/' && <SearchTab key={"sideTab"+path}></SearchTab>}
-
+      className={`h-screen flex flex-col py-8 overflow-y-auto bg-white border-l border-r sm:w-80 w-80 dark:bg-gray-900 dark:border-gray-700`}
+    >
+      {path === "/" && <SearchTab key={"sideTab" + path}></SearchTab>}
     </div>
   );
 };

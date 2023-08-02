@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import { useRecoilState } from "recoil";
-import { MapMarkersAtom, Marker } from "../../recoil/MapStatus";
+import {
+  MapInfoAtom,
+  MapMarkersAtom,
+  MapUserAtom,
+  Marker,
+} from "../../recoil/MapStatus";
 import Card from "../common/Card";
-import { MarkerWithId } from "./SearchBar";
-import Button from "../common/Button";
+import { MarkerWithId } from "../../types/map";
 
 export default function BaseMap() {
-  const [info, setInfo] = useState<MarkerWithId>();
+  const [info, setInfo] = useRecoilState<MarkerWithId>(MapInfoAtom);
   const [markers] = useRecoilState(MapMarkersAtom);
-  const [zoomLevel, setZoomLevel] = useState(3);
-  const [mapInfo, setMapInfo] = useState({
-    center: {
-      lat: 37.566826,
-      lng: 126.9786567,
-    },
-  });
+  const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
 
   useEffect(() => {
     let lat = mapInfo.center.lat;
@@ -27,9 +25,8 @@ export default function BaseMap() {
     });
     lat = lat / (markers.length + 1);
     lng = lng / (markers.length + 1);
-    setMapInfo({ center: { lat, lng } });
-    setZoomLevel(10);
-  }, [mapInfo.center.lat, mapInfo.center.lng, markers]);
+    setMapInfo({ zoom: 3, center: { lat, lng } });
+  }, [mapInfo.center.lat, mapInfo.center.lng, markers, setMapInfo]);
 
   return (
     <>
@@ -39,9 +36,8 @@ export default function BaseMap() {
           width: "100%",
           height: "100%",
         }}
-        level={zoomLevel}
+        level={mapInfo.zoom}
       >
-        <Button isDisabled={false}>등록하기 </Button>
         <CustomOverlayMap
           position={{
             lat: mapInfo.center.lat,
