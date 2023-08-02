@@ -2,8 +2,9 @@ import {Link, Outlet, useLocation} from "react-router-dom";
 import HomeTab from "../components/side-tab/HomeTab";
 import DynamicSvg from "../components/common/DynamicSvg";
 import { useState } from "react";
-import SideTab from "../components/side-tab/SideTab";
+import SideTab from "../pages/SideTab";
 import Aside from "../components/side-tab/CommunityTab";
+import useId from "../hooks/util/useId";
 
 function Layout() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -16,6 +17,7 @@ function Layout() {
   const locaiton  = useLocation()
   const path = locaiton.pathname
 
+
   return (
     <>
       <aside className="flex">
@@ -24,6 +26,7 @@ function Layout() {
           <a href="#"></a>
           {menuList.map((menu, idx) => (
             <Link
+                key={menu+idx}
               to =  {menu}
               onClick={() => handleClick(idx)}
               className={

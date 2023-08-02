@@ -2,7 +2,7 @@ import { useState } from "react";
 
 let idCounter = 0;
 
-export function generateID(prefix = "toss-id-") {
+export function generateID(prefix = "work-with-") {
   idCounter = idCounter + 1;
   return `${prefix}${idCounter}`;
 }

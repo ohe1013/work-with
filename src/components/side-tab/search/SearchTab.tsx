@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { MapAtom, MapMarkersAtom, Marker } from "../../recoil/MapStatus";
+import { MapAtom, MapMarkersAtom, Marker } from "../../../recoil/MapStatus";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 export interface MarkerWithId extends Marker {
@@ -12,7 +12,6 @@ const SearchBar = () => {
     };
     const [keyword, setKeyword] = useState("");
     const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
-    const ps = new kakao.maps.services.Places();
     const search = () => {
         const ps = new kakao.maps.services.Places();
         console.log(ps, keyword);
@@ -35,17 +34,17 @@ const SearchBar = () => {
                     bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
                 }
                 setMarkers(markers);
-
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
             }
         });
     };
     const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
-        console.log(keyword);
     };
     return (
-        <form onSubmit={submitHandler}>
+        <>
+
+        <form className={"w-full"} onSubmit={submitHandler}>
             <label
                 htmlFor="default-search"
                 className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -53,7 +52,7 @@ const SearchBar = () => {
                 Search
             </label>
             <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <button type="submit" className="absolute inset-y-0 left-0 flex items-center pl-3 ">
                     <svg
                         aria-hidden="true"
                         className="w-5 h-5 text-gray-500 dark:text-gray-400"
@@ -69,7 +68,7 @@ const SearchBar = () => {
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         ></path>
                     </svg>
-                </div>
+                </button>
                 <input
                     type="search"
                     id="default-search"
@@ -77,14 +76,17 @@ const SearchBar = () => {
                     value={keyword}
                     onChange={inputHandler}
                 />
-                <button
-                    type="submit"
-                    className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                    Search
-                </button>
             </div>
+
         </form>
+
+            <div className={"block"}>
+
+    <ul>
+        {markers.map((marker,idx)=> <li key={marker.id + idx}>{marker.content}</li>)}
+    </ul>
+            </div>
+        </>
     );
 };
 export default SearchBar;

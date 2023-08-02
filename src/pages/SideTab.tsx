@@ -1,10 +1,8 @@
 // SideTab.js
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { CachedLayoutAtom } from "../../recoil/LayoutStatus";
-import {Router} from "react-router-dom";
-import CommunityTab from "./CommunityTab";
-import SearchTab from "./SearchTab";
+import { CachedLayoutAtom } from "../recoil/LayoutStatus";
+import SearchTab from "../components/side-tab/search/SearchTab";
 
 const SideTab = ({ path }: { path: string }) => {
   const [cachedLayout, setCachedLayout] = useRecoilState(CachedLayoutAtom);
@@ -20,8 +18,8 @@ const SideTab = ({ path }: { path: string }) => {
 
   return (
     <div
-      className={`h-screen py-8 overflow-y-auto bg-white border-l border-r sm:w-64 w-60 dark:bg-gray-900 dark:border-gray-700`}
-    >{path ==='/home' && <SearchTab key={"sideTab"+path}></SearchTab>}
+      className={`h-screen flex py-8 overflow-y-auto bg-white border-l border-r sm:w-80 w-80 dark:bg-gray-900 dark:border-gray-700`}
+    >{path ==='/' && <SearchTab key={"sideTab"+path}></SearchTab>}
 
     </div>
   );
