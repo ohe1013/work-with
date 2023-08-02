@@ -13,7 +13,7 @@ function Layout() {
     setActiveIndex((prevIndex) => (prevIndex === index ? 0 : index));
   };
 
-  const menuList = [ "home",  "community"];
+  const menuList = [ { path:'/',label:"home"},  {path:"community",label:'community'}];
   const locaiton  = useLocation()
   const path = locaiton.pathname
 
@@ -26,8 +26,8 @@ function Layout() {
           <a href="#"></a>
           {menuList.map((menu, idx) => (
             <Link
-                key={menu+idx}
-              to =  {menu}
+                key={menu.label+idx}
+              to =  {menu.path}
               onClick={() => handleClick(idx)}
               className={
                 activeIndex === idx
@@ -35,7 +35,7 @@ function Layout() {
                   : "p-1.5 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100"
               }
             >
-              <DynamicSvg iconName={menu} />
+              <DynamicSvg iconName={menu.label} />
             </Link>
           ))}
 
