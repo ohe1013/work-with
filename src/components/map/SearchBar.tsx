@@ -1,10 +1,9 @@
 import { useRecoilState } from "recoil";
 import { MapAtom, MapMarkersAtom, Marker } from "../../recoil/MapStatus";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { MarkerWithId } from "../../types/map";
 
-export interface MarkerWithId extends Marker {
-  id: string;
-}
+
 const SearchBar = () => {
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
