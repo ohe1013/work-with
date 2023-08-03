@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { MapAtom, MapMarkersAtom, Marker } from "../../../recoil/MapStatus";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import SearchList from "./SearchList";
 import { MarkerWithId } from "../../../types/map";
 
@@ -11,9 +11,15 @@ const SearchBar = () => {
   };
   const [keyword, setKeyword] = useState("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
+  const [nextPageHandler, setNextPageHandler] = useState<
+    Function | undefined
+  >();
+
+  useEffect(() => {
+    console.log(nextPageHandler);
+  }, [nextPageHandler]);
   const search = () => {
     const ps = new kakao.maps.services.Places();
-    console.log(ps, keyword);
     ps.keywordSearch(keyword, (data, status, _pagination) => {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -32,10 +38,20 @@ const SearchBar = () => {
           });
           bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
         }
+        if (_pagination && typeof _pagination.nextPage === "function") {
+          console.log(_pagination.nextPage);
+          const nextPageBound = _pagination.nextPage.bind(_pagination);
+          setNextPageHandler(() => nextPageBound);
+        }
         setMarkers(markers);
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
       }
     });
+  };
+  const nextPageClickHandler = () => {
+    if (nextPageHandler) {
+      nextPageHandler();
+    }
   };
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -80,6 +96,7 @@ const SearchBar = () => {
         </div>
       </form>
       <SearchList markers={markers}></SearchList>
+      <button onClick={nextPageClickHandler}> 다음페이지 </button>
     </>
   );
 };

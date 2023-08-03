@@ -26,7 +26,9 @@ export default function BaseMap() {
     lat = lat / (markers.length + 1);
     lng = lng / (markers.length + 1);
     setMapInfo({ zoom: 3, center: { lat, lng } });
-  }, [mapInfo.center.lat, mapInfo.center.lng, markers, setMapInfo]);
+  }, [markers]);
+
+  useEffect(() => {}, [setMapInfo, mapInfo.center.lat, mapInfo.center.lng]);
 
   return (
     <>
