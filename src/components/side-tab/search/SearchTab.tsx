@@ -3,6 +3,8 @@ import { MapAtom, MapMarkersAtom, Marker } from "../../../recoil/MapStatus";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import SearchList from "./SearchList";
 import { MarkerWithId } from "../../../types/map";
+import Button from "../../common/Button";
+import Pagination from "../../common/Pagination";
 
 const SearchBar = () => {
   const submitHandler = (event: FormEvent) => {
@@ -11,13 +13,15 @@ const SearchBar = () => {
   };
   const [keyword, setKeyword] = useState("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
-  const [nextPageHandler, setNextPageHandler] = useState<
-    Function | undefined
-  >();
-
-  useEffect(() => {
-    console.log(nextPageHandler);
-  }, [nextPageHandler]);
+  const [nextPageHandler, setNextPageHandler] =
+    useState<() => void | undefined>();
+  const [prevPageHandler, setPrevPageHandler] =
+    useState<() => void | undefined>();
+  const [pagInfo, setPageInfo] = useState<{
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+  }>({ hasPrevPage: false, hasNextPage: false });
+  useEffect(() => {}, [nextPageHandler]);
   const search = () => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(keyword, (data, status, _pagination) => {
@@ -40,16 +44,24 @@ const SearchBar = () => {
         }
         if (_pagination && typeof _pagination.nextPage === "function") {
           console.log(_pagination.nextPage);
+          const prevPageBound = _pagination.prevPage.bind(_pagination);
           const nextPageBound = _pagination.nextPage.bind(_pagination);
+          setPrevPageHandler(() => prevPageBound);
           setNextPageHandler(() => nextPageBound);
+          setPageInfo({
+            hasNextPage: _pagination.hasNextPage,
+            hasPrevPage: _pagination.hasPrevPage,
+          });
         }
         setMarkers(markers);
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
       }
     });
   };
-  const nextPageClickHandler = () => {
-    if (nextPageHandler) {
+  const pageClickHandler = (type: "prev" | "next") => {
+    if (type === "prev" && prevPageHandler) {
+      prevPageHandler();
+    } else if (type === "next" && nextPageHandler) {
       nextPageHandler();
     }
   };
@@ -96,7 +108,19 @@ const SearchBar = () => {
         </div>
       </form>
       <SearchList markers={markers}></SearchList>
-      <button onClick={nextPageClickHandler}> 다음페이지 </button>
+      <Pagination />
+      <div className={"flex"}>
+        {pagInfo.hasPrevPage && (
+          <Button isDisabled={false} onClick={() => pageClickHandler("prev")}>
+            ←
+          </Button>
+        )}
+        {pagInfo.hasNextPage && (
+          <Button isDisabled={false} onClick={() => pageClickHandler("next")}>
+            →
+          </Button>
+        )}
+      </div>
     </>
   );
 };
