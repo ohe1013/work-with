@@ -7,7 +7,7 @@ export default function SearchList({ markers }: { markers: MarkerWithId[] }) {
   const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
   const clickHandler = (marker: MarkerWithId) => {
     setInfo(marker);
-    setMapInfo({ zoom: 10, center: { ...marker.position } });
+    setMapInfo({ zoom: 3, center: { ...marker.position } });
   };
 
   return (
