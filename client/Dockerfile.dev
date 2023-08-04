@@ -1,0 +1,7 @@
+FROM node:alpine
+WORKDIR /client
+ENV PATH /node_modules/.bin/$PATH
+COPY package.json .
+RUN yarn install
+COPY . .
+CMD ["yarn","dev"]

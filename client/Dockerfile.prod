@@ -1,0 +1,17 @@
+FROM node:alpine AS build
+WORKDIR /client
+
+#copy package.json
+COPY package.json .
+
+#install all our packages
+RUN yarn install
+
+#copy all remaining files
+COPY . .
+
+#Finally build our projects
+RUN yarn build
+
+FROM nginx
+COPY --from=build /client/build /usr/share/nginx/html
