@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { CachedLayoutAtom } from "../recoil/LayoutStatus";
 import SearchTab from "../components/side-tab/search/SearchTab";
+import CachedComponent from "../components/CachedComponent";
 
 const SideTab = ({ path }: { path: string }) => {
     const [, setCachedLayout] = useRecoilState(CachedLayoutAtom);
@@ -21,6 +22,7 @@ const SideTab = ({ path }: { path: string }) => {
             className={`h-screen flex flex-col py-8 overflow-y-auto bg-white border-l border-r sm:w-80 w-80 dark:bg-gray-900 dark:border-gray-700`}
         >
             {path === "/" && <SearchTab key={"sideTab" + path}></SearchTab>}
+            <CachedComponent path={path}></CachedComponent>
         </div>
     );
 };
