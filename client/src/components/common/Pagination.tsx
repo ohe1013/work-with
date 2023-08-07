@@ -1,23 +1,23 @@
-<<<<<<< HEAD
-import Button from "./Button";
+import React from "react";
 
-export default function Pagination({
-  isPrev,
-  isNext,
+const Pagination = React.memo(function Pagination({
+  pagination,
   pageClickHandler,
 }: {
-  isPrev: boolean;
-  isNext: boolean;
-  pageClickHandler: (type: "prev" | "next") => void;
+  pagination?: kakao.maps.Pagination;
+  pageClickHandler: (
+    type: "prev" | "next" | "current",
+    page?: number,
+    currentPagination?: kakao.maps.Pagination
+  ) => void;
 }) {
-=======
-import {IPagination} from "../../types/util";
+  if (!pagination) {
+    return <div></div>;
+  }
+  const pageList = new Array(pagination.last || 1)
+    .fill(0)
+    .map((item, idx) => item + idx + 1);
 
-export default function Pagination({pageInfo,pageClickHandler}:{pageInfo:IPagination,pageClickHandler:(type:'prev' | 'next'  |'current', page?:number)=>void}) {
-
-  const pageList = new Array(+pageInfo.lastPage).fill(0).map((item,idx) => item+idx+1)
-  
->>>>>>> 15548024807baebe12b891066b3b9a8344327f4a
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -40,40 +40,41 @@ export default function Pagination({pageInfo,pageClickHandler}:{pageInfo:IPagina
             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
             aria-label="Pagination"
           >
-              <button
-                  disabled={!pageInfo.hasPrevPage}
-                  onClick={() => pageClickHandler("prev")}
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-              >
-                prev
-              </button>
-
-            {/* Current:  */}
-            {
-              pageList.map((page:number) => {
-                return (
-                    <button
-                        onClick={() => pageClickHandler("current",page)}
-                        className={"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                          +(page === pageInfo.currentPage ? " bg-yellow-300":" ")
-                        }
-                    >
-                      {page}
-                    </button>
-                )
-              })
-            }
-
             <button
-                disabled={!pageInfo.hasNextPage}
-                onClick={() => pageClickHandler("next")}
+              disabled={!pagination.hasPrevPage}
+              onClick={() => pageClickHandler("prev")}
               className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
-              next
+              ←
+            </button>
+
+            {/* Current:  */}
+            {pageList.map((page: number) => {
+              return (
+                <button
+                  key={"pageList" + page}
+                  onClick={() => pageClickHandler("current", page)}
+                  className={
+                    "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0" +
+                    (page === pagination.current ? " bg-yellow-300" : " ")
+                  }
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            <button
+              disabled={!pagination.hasNextPage}
+              onClick={() => pageClickHandler("next")}
+              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            >
+              →
             </button>
           </nav>
         </div>
       </div>
     </div>
   );
-}
+});
+export default Pagination;

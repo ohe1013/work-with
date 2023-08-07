@@ -1,12 +1,11 @@
 import { useRecoilState } from "recoil";
 import { MapMarkersAtom, MapUserAtom } from "../../../recoil/MapStatus";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useRef } from "react";
 import SearchList from "./SearchList";
 import { MarkerWithId } from "../../../types/map";
 import Pagination from "../../common/Pagination";
 import SortBy = kakao.maps.services.SortBy;
 import LatLng = kakao.maps.LatLng;
-import { IPagination } from "../../../types/util";
 import DynamicSvg from "../../common/DynamicSvg";
 
 const SearchBar = () => {
@@ -14,27 +13,15 @@ const SearchBar = () => {
     event.preventDefault();
     search();
   };
-  const [keyword, setKeyword] = useState("");
+  const keyword = useRef("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
   const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
-  const [nextPageHandler, setNextPageHandler] =
-    useState<() => void | undefined>();
-  const [prevPageHandler, setPrevPageHandler] =
-    useState<() => void | undefined>();
-  const [goPageHandler, setGoPageHandler] =
-    useState<(val: number) => void | undefined>();
-  const [pageInfo, setPageInfo] = useState<IPagination>({
-    firstPage: 1,
-    lastPage: 1,
-    currentPage: 1,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-  useEffect(() => {}, [nextPageHandler]);
+  const [pagination, setPagination] = useState<kakao.maps.Pagination>();
+
   const search = () => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(
-      keyword,
+      keyword.current,
       (data, status, _pagination) => {
         if (status === kakao.maps.services.Status.OK) {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -54,20 +41,7 @@ const SearchBar = () => {
             bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
           }
           if (_pagination && typeof _pagination.nextPage === "function") {
-            const prevPageBound = _pagination.prevPage.bind(_pagination);
-            const nextPageBound = _pagination.nextPage.bind(_pagination);
-
-            setPrevPageHandler(() => prevPageBound);
-            setNextPageHandler(() => nextPageBound);
-            setGoPageHandler((page: number) => _pagination.gotoPage(page));
-            console.log(_pagination.gotoPage);
-            setPageInfo({
-              firstPage: 1,
-              lastPage: _pagination.last,
-              currentPage: _pagination.current,
-              hasNextPage: _pagination.hasNextPage,
-              hasPrevPage: _pagination.hasPrevPage,
-            });
+            setPagination(_pagination);
           }
           setMarkers(markers);
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
@@ -83,20 +57,20 @@ const SearchBar = () => {
   };
   const pageClickHandler = (
     type: "prev" | "next" | "current",
-    page?: number
+    page?: number,
+    currentPagination?: kakao.maps.Pagination
   ) => {
-    if (type === "prev" && prevPageHandler) {
-      prevPageHandler();
-    } else if (type === "next" && nextPageHandler) {
-      nextPageHandler();
+    if (type === "prev" && currentPagination?.hasPrevPage) {
+      currentPagination?.prevPage();
+    } else if (type === "next" && currentPagination?.hasNextPage) {
+      currentPagination?.nextPage();
     }
-    console.log(goPageHandler);
-    if (type === "current" && goPageHandler && page) {
-      goPageHandler(page);
+    if (type === "current" && page) {
+      currentPagination?.gotoPage(page);
     }
   };
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
+    keyword.current = e.target.value;
   };
   return (
     <>
@@ -118,13 +92,17 @@ const SearchBar = () => {
             type="search"
             id="default-search"
             className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={keyword}
             onChange={inputHandler}
           />
         </div>
       </form>
       <SearchList markers={markers}></SearchList>
-      <Pagination pageInfo={pageInfo} pageClickHandler={pageClickHandler} />
+      <Pagination
+        pagination={pagination}
+        pageClickHandler={(type, page) =>
+          pageClickHandler(type, page, pagination)
+        }
+      />
     </>
   );
 };
