@@ -1,10 +1,13 @@
 import { useRecoilState } from "recoil";
-import { MapMarkersAtom } from "../../../recoil/MapStatus";
+import { MapMarkersAtom, MapUserAtom } from "../../../recoil/MapStatus";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import SearchList from "./SearchList";
 import { MarkerWithId } from "../../../types/map";
-import Button from "../../common/Button";
 import Pagination from "../../common/Pagination";
+import SortBy = kakao.maps.services.SortBy;
+import LatLng = kakao.maps.LatLng;
+import { IPagination } from "../../../types/util";
+import DynamicSvg from "../../common/DynamicSvg";
 
 const SearchBar = () => {
   const submitHandler = (event: FormEvent) => {
@@ -13,56 +16,83 @@ const SearchBar = () => {
   };
   const [keyword, setKeyword] = useState("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
+  const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
   const [nextPageHandler, setNextPageHandler] =
     useState<() => void | undefined>();
   const [prevPageHandler, setPrevPageHandler] =
     useState<() => void | undefined>();
-  const [pagInfo, setPageInfo] = useState<{
-    hasPrevPage: boolean;
-    hasNextPage: boolean;
-  }>({ hasPrevPage: false, hasNextPage: false });
+  const [goPageHandler, setGoPageHandler] =
+    useState<(val: number) => void | undefined>();
+  const [pageInfo, setPageInfo] = useState<IPagination>({
+    firstPage: 1,
+    lastPage: 1,
+    currentPage: 1,
+    hasPrevPage: false,
+    hasNextPage: false,
+  });
   useEffect(() => {}, [nextPageHandler]);
   const search = () => {
     const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(keyword, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds();
-        const markers: MarkerWithId[] = [];
+    ps.keywordSearch(
+      keyword,
+      (data, status, _pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          const bounds = new kakao.maps.LatLngBounds();
+          const markers: MarkerWithId[] = [];
 
-        for (let i = 0; i < data.length; i++) {
-          markers.push({
-            id: data[i].id,
-            position: {
-              lat: +data[i].y,
-              lng: +data[i].x,
-            },
-            content: data[i].place_name,
-          });
-          bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
+          for (let i = 0; i < data.length; i++) {
+            markers.push({
+              id: data[i].id,
+              position: {
+                lat: +data[i].y,
+                lng: +data[i].x,
+              },
+              content: data[i].place_name,
+            });
+            bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
+          }
+          if (_pagination && typeof _pagination.nextPage === "function") {
+            const prevPageBound = _pagination.prevPage.bind(_pagination);
+            const nextPageBound = _pagination.nextPage.bind(_pagination);
+
+            setPrevPageHandler(() => prevPageBound);
+            setNextPageHandler(() => nextPageBound);
+            setGoPageHandler((page: number) => _pagination.gotoPage(page));
+            console.log(_pagination.gotoPage);
+            setPageInfo({
+              firstPage: 1,
+              lastPage: _pagination.last,
+              currentPage: _pagination.current,
+              hasNextPage: _pagination.hasNextPage,
+              hasPrevPage: _pagination.hasPrevPage,
+            });
+          }
+          setMarkers(markers);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         }
-        if (_pagination && typeof _pagination.nextPage === "function") {
-          console.log(_pagination.nextPage);
-          const prevPageBound = _pagination.prevPage.bind(_pagination);
-          const nextPageBound = _pagination.nextPage.bind(_pagination);
-          setPrevPageHandler(() => prevPageBound);
-          setNextPageHandler(() => nextPageBound);
-          setPageInfo({
-            hasNextPage: _pagination.hasNextPage,
-            hasPrevPage: _pagination.hasPrevPage,
-          });
-        }
-        setMarkers(markers);
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+      },
+      {
+        location: new LatLng(mapInfo.center.lat, mapInfo.center.lng),
+        useMapCenter: true,
+        size: 10,
+        sort: SortBy.DISTANCE,
       }
-    });
+    );
   };
-  const pageClickHandler = (type: "prev" | "next") => {
+  const pageClickHandler = (
+    type: "prev" | "next" | "current",
+    page?: number
+  ) => {
     if (type === "prev" && prevPageHandler) {
       prevPageHandler();
     } else if (type === "next" && nextPageHandler) {
       nextPageHandler();
+    }
+    console.log(goPageHandler);
+    if (type === "current" && goPageHandler && page) {
+      goPageHandler(page);
     }
   };
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,21 +112,7 @@ const SearchBar = () => {
             type="submit"
             className="absolute inset-y-0 left-0 flex items-center pl-3 "
           >
-            <svg
-              aria-hidden="true"
-              className="w-5 h-5 text-gray-500 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
+            <DynamicSvg iconName={"search"}></DynamicSvg>
           </button>
           <input
             type="search"
@@ -108,11 +124,7 @@ const SearchBar = () => {
         </div>
       </form>
       <SearchList markers={markers}></SearchList>
-      <Pagination
-        isPrev={pagInfo.hasPrevPage}
-        pageClickHandler={pageClickHandler}
-        isNext={pagInfo.hasNextPage}
-      />
+      <Pagination pageInfo={pageInfo} pageClickHandler={pageClickHandler} />
     </>
   );
 };

@@ -1,19 +1,20 @@
 // SideTab.js
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { CachedLayoutAtom } from "../recoil/LayoutStatus";
-import SearchTab from "../components/side-tab/search/SearchTab";
+import { CachedLayoutAtom } from "../../recoil/LayoutStatus";
+import SearchTab from "./search/SearchTab";
+import CachedComponent from "../CachedComponent";
 
 const SideTab = ({ path }: { path: string }) => {
-    const [, setCachedLayout] = useRecoilState(CachedLayoutAtom);
+    const [cachedLayout, setCachedLayout] = useRecoilState(CachedLayoutAtom);
     useEffect(() => {
         // localStorage에서 해당 컴포넌트의 캐시된 데이터를 불러옵니다.
         const cachedData = localStorage.getItem(`cachedData:${path}`);
-        if (cachedData !== null) {
+        if (!cachedData) {
             // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
             setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
         }
-        console.log(path);
+        console.log(cachedLayout);
     }, [path]);
 
     return (

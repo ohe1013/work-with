@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Button from "./Button";
 
 export default function Pagination({
@@ -9,6 +10,14 @@ export default function Pagination({
   isNext: boolean;
   pageClickHandler: (type: "prev" | "next") => void;
 }) {
+=======
+import {IPagination} from "../../types/util";
+
+export default function Pagination({pageInfo,pageClickHandler}:{pageInfo:IPagination,pageClickHandler:(type:'prev' | 'next'  |'current', page?:number)=>void}) {
+
+  const pageList = new Array(+pageInfo.lastPage).fill(0).map((item,idx) => item+idx+1)
+  
+>>>>>>> 15548024807baebe12b891066b3b9a8344327f4a
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -31,38 +40,37 @@ export default function Pagination({
             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
             aria-label="Pagination"
           >
-            {isPrev && (
-              <Button
-                isDisabled={!isPrev}
-                className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                onClick={() => pageClickHandler("prev")}
+              <button
+                  disabled={!pageInfo.hasPrevPage}
+                  onClick={() => pageClickHandler("prev")}
+                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
-                ←
-              </Button>
-            )}
-            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-            <a
-              href="#"
-              aria-current="page"
-              className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              1
-            </a>
-            <a
-              href="#"
+                prev
+              </button>
+
+            {/* Current:  */}
+            {
+              pageList.map((page:number) => {
+                return (
+                    <button
+                        onClick={() => pageClickHandler("current",page)}
+                        className={"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                          +(page === pageInfo.currentPage ? " bg-yellow-300":" ")
+                        }
+                    >
+                      {page}
+                    </button>
+                )
+              })
+            }
+
+            <button
+                disabled={!pageInfo.hasNextPage}
+                onClick={() => pageClickHandler("next")}
               className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
-              10
-            </a>
-            {isNext && (
-              <Button
-                isDisabled={!isNext}
-                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                onClick={() => pageClickHandler("next")}
-              >
-                →
-              </Button>
-            )}
+              next
+            </button>
           </nav>
         </div>
       </div>

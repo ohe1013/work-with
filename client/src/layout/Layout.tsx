@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import DynamicSvg from "../components/common/DynamicSvg";
 import { useState } from "react";
-import SideTab from "../pages/SideTab";
+import SideTab from "../components/side-tab/SideTab";
 
 function Layout() {
     const [activeIndex, setActiveIndex] = useState<number>(0);
