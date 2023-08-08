@@ -30,6 +30,8 @@ const SearchBar = () => {
           const markers: MarkerWithId[] = [];
 
           for (let i = 0; i < data.length; i++) {
+            let _category_name = data[i].category_name.split('>')
+            let category_name = _category_name[_category_name.length-1].trim()
             markers.push({
               id: data[i].id,
               position: {
@@ -37,6 +39,10 @@ const SearchBar = () => {
                 lng: +data[i].x,
               },
               content: data[i].place_name,
+              place_url:data[i].place_url,
+              category_name: category_name,
+              phone:data[i].phone,
+              address_name:data[i].address_name
             });
             bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
           }
@@ -74,6 +80,7 @@ const SearchBar = () => {
   };
   return (
     <>
+
       <form className={"w-full"} onSubmit={submitHandler}>
         <label
           htmlFor="default-search"

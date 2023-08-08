@@ -6,24 +6,28 @@ import SearchTab from "./search/SearchTab";
 import CachedComponent from "../CachedComponent";
 
 const SideTab = ({ path }: { path: string }) => {
-    const [cachedLayout, setCachedLayout] = useRecoilState(CachedLayoutAtom);
-    useEffect(() => {
-        // localStorage에서 해당 컴포넌트의 캐시된 데이터를 불러옵니다.
-        const cachedData = localStorage.getItem(`cachedData:${path}`);
-        if (!cachedData) {
-            // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
-            setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
-        }
-        console.log(cachedLayout);
-    }, [path]);
+  const [cachedLayout, setCachedLayout] = useRecoilState(CachedLayoutAtom);
+  useEffect(() => {
+    // localStorage에서 해당 컴포넌트의 캐시된 데이터를 불러옵니다.
+    const cachedData = localStorage.getItem(`cachedData:${path}`);
+    if (!cachedData) {
+      // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
+      setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
+    }
+    console.log(cachedLayout);
+  }, [path]);
 
-    return (
-        <div
-            className={`h-screen flex flex-col py-8 overflow-y-auto bg-white border-l border-r sm:w-80 w-80 dark:bg-gray-900 dark:border-gray-700`}
-        >
-            {path === "/" && <SearchTab key={"sideTab" + path}></SearchTab>}
-        </div>
-    );
+  return (
+    <div
+      className={`h-screen flex flex-col py-8 overflow-y-auto bg-white border-l border-r sm:w-96 w-96 dark:bg-gray-900 dark:border-gray-700`}
+    >
+      <div className={"absolute left-full top-1/2 -translate-y-1/2"}>
+        <button className={"w-10"}>펼치기</button>
+      </div>
+
+      {path === "/" && <SearchTab key={"sideTab" + path}></SearchTab>}
+    </div>
+  );
 };
 
 export default SideTab;

@@ -6,6 +6,11 @@ export interface Marker {
     lat: number;
     lng: number;
   };
+  place_url :string;
+  category_name:string
+  phone:string
+  address_name:string
+
 }
 
 interface MapUserInfo {
