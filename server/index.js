@@ -1,5 +1,8 @@
 import express from "express";
+import cors from "cors";
 const app = express();
+app.use(cors());
+
 import postgres from "postgres";
 import dbConfig from "./config/db.config.js";
 const sql = postgres({
@@ -16,6 +19,10 @@ app.get("/", async (req, res) => {
   `;
   res.send(xs);
   console.log(xs);
+});
+
+app.post("/api/login", async (req, res) => {
+  res.send({ token: "hi" });
 });
 
 app.listen(3000, () => console.log("is open"));
