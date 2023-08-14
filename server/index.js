@@ -1,27 +1,14 @@
 import express from "express";
 import cors from "cors";
+import { verifyToken } from "./middleware/tokenMiddleware.js";
 const app = express();
 app.use(cors());
 
-import postgres from "postgres";
-import dbConfig from "./config/db.config.js";
-const sql = postgres({
-  user: dbConfig.USER,
-  host: dbConfig.HOST,
-  database: dbConfig.DB,
-  password: dbConfig.PASSWORD,
-  port: dbConfig.PORT,
-});
-
-app.get("/", async (req, res) => {
-  const xs = await sql`
-    select * from user_table
-  `;
-  res.send(xs);
+app.get("/", verifyToken, async (req, res) => {
   console.log(xs);
+  res.send(xs);
 });
-
-app.post("/api/login", async (req, res) => {
+app.post("/api/login", verifyToken, async (req, res) => {
   res.send({ token: "hi" });
 });
 

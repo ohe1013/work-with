@@ -1,21 +1,36 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import DynamicSvg from "../components/common/DynamicSvg";
-import { useState } from "react";
 import SideTab from "../components/side-tab/SideTab";
+import { PageEnum } from "../enum/page";
+import { useRecoilState } from "recoil";
+import { pageAtom } from "../recoil/PageStatus";
+import { routes } from "../routes";
+import { useEffect } from "react";
 
 function Layout() {
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeTabState, setActiveTabState] =
+    useRecoilState<PageEnum>(pageAtom);
 
-  const handleClick = (index: number) => {
-    setActiveIndex((prevIndex) => (prevIndex === index ? 0 : index));
+  const handleClick = (page: PageEnum) => {
+    setActiveTabState(page === PageEnum.HOME ? PageEnum.HOME : page);
   };
 
   const menuList = [
-    { path: "/", label: "home" },
-    { path: "login", label: "community" },
+    { path: "/", label: PageEnum.HOME },
+    { path: "login", label: PageEnum.AUTH },
   ];
-  const locaiton = useLocation();
-  const path = locaiton.pathname;
+  const location = useLocation();
+  const findRouteByPath = (path) => {
+    return routes[0].children.find((route) => route.path === path);
+  };
+  useEffect(() => {
+    const currentRoutes = findRouteByPath(location.pathname);
+    if (currentRoutes) {
+      setActiveTabState(currentRoutes.label);
+    } else {
+      setActiveTabState(PageEnum.HOME);
+    }
+  }, [location.pathname]);
 
   return (
     <>
@@ -26,20 +41,20 @@ function Layout() {
             <Link
               key={menu.label + idx}
               to={menu.path}
-              onClick={() => handleClick(idx)}
+              onClick={() => handleClick(menu.label)}
               className={
-                activeIndex === idx
+                activeTabState === menu.label
                   ? "p-1.5 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
                   : "p-1.5 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100"
               }
             >
-              <DynamicSvg iconName={menu.label} />
+              <DynamicSvg iconName={menu.label.toLowerCase()} />
             </Link>
           ))}
 
           <div className={"absolute bottom-0"}>hi</div>
         </div>
-        <SideTab path={path}></SideTab>
+        <SideTab path={location.pathname}></SideTab>
         <Outlet />
       </aside>
     </>

@@ -1,5 +1,11 @@
 {
+  "scripts": {
+
+  "server": "cd server && nodemon server",
+  "client": "cd client && yarn dev",
+  "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" ",
   "dependencies": {
-    "cors": "^2.8.5"
+    "concurrently": "^8.2.0"
+  }
   }
 }

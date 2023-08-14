@@ -16,11 +16,12 @@ const login = async ({ email, password }: loginForm): Promise<string> => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-
+  console.log(response);
   if (!response.ok) {
     throw new Error("Authentication failed");
   }
   const data = await response.json();
+  console.log(data);
   return data.token;
 };
 

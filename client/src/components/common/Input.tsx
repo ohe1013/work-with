@@ -51,7 +51,7 @@ interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   error?: boolean;
 }
-Input.TextFiled = forwardRef(
+Input.TextFiledWithRef = forwardRef(
   (
     { error, ...props }: TextFieldProps,
     ref: ForwardedRef<HTMLInputElement>,

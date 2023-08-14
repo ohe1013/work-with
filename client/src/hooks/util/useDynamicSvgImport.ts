@@ -18,6 +18,16 @@ export function useDynamicSvgImport(iconName: string) {
       } catch (err) {
         setError(err);
         console.error(err);
+        // Assuming you have an error.svg file in your assets directory
+        try {
+          importedIconRef.current = (
+            await import(`../../assets/svg/error.svg`)
+          ).ReactComponent;
+        } catch (errorSvgError) {
+          // If error.svg is also missing or invalid, you can handle it here
+          setError(errorSvgError);
+          console.error(errorSvgError);
+        }
       } finally {
         setLoading(false);
       }

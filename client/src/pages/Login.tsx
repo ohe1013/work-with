@@ -3,21 +3,34 @@ import * as auth from "../hooks/auth/useLogin";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import useInputs from "../hooks/util/useInputs";
+import { useAuth } from "../hooks/auth/useAuth";
 export default function Login() {
-  const email = useRef<HTMLInputElement>(null);
-  const password = useRef<HTMLInputElement>(null);
-  const isDisabled = !email.current?.value || !password.current?.value;
+  // const [email, setEmail] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
+
+  const {
+    form: { email, password },
+    onChange: onChange,
+  } = useInputs<{
+    email: string;
+    password: string;
+  }>({
+    email: "",
+    password: "",
+  });
+  const isDisabled = !email || !password;
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     if (isDisabled) return false;
 
     auth
-      .login({ email: email.current.value, password: password.current.value })
-      .then((res) => {
-        auth.saveToken(res);
+      .login({ email: email, password: password })
+      .then(() => {
         navigate("/");
       })
       .catch((error) => {
@@ -43,13 +56,23 @@ export default function Login() {
           <form onSubmit={submitHandler} className="space-y-6" method="POST">
             <div>
               <Input label="Email">
-                <Input.TextFiled ref={email} />
+                <Input.TextFiledWithRef
+                  ref={inputRef}
+                  name={"email"}
+                  value={email}
+                  onChange={onChange}
+                />
               </Input>
             </div>
 
             <div>
               <Input label="Password">
-                <Input.TextFiled ref={password} type={"password"} />
+                <Input.TextFiledWithRef
+                  name={"password"}
+                  value={password}
+                  onChange={onChange}
+                  type={"password"}
+                />
               </Input>
               <div className="flex items-center justify-between">
                 <div className="text-sm">
@@ -64,7 +87,7 @@ export default function Login() {
             </div>
 
             <div>
-              <Button isDisabled={false} type="submit">
+              <Button isDisabled={isDisabled} type="submit">
                 Login
               </Button>
             </div>
