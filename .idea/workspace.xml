@@ -5,30 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ed24788-730b-4edb-a7b8-9bf1be08d9f5" name="Changes" comment="change layout">
-      <change afterPath="$PROJECT_DIR$/client/src/api/auth/authApi.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/assets/svg/error.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/enum/page.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/hooks/auth/useAuth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/hooks/util/useInputs.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/recoil/PageStatus.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/config/db.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controller/authController.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/middleware/tokenMiddleware.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/DynamicSvg.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/DynamicSvg.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/Input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/Input.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/hooks/auth/useLogin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/hooks/auth/useLogin.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/hooks/util/useDynamicSvgImport.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/hooks/util/useDynamicSvgImport.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/layout/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/layout/Layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/recoil/UserStatus.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/recoil/UserStatus.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/routes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/routes.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/config/db.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/config/db.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/config/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/config/db.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controller/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/controller/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controller/authController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/controller/authController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/middleware/tokenMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/middleware/tokenMiddleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/middleware/tokenMiddleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/middleware/tokenMiddleware.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/util/jwt.utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/util/jwt.utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/util/jwt.utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/util/jwt.utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/yarn-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/yarn-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/server/yarn.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,11 +75,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\jungdo\git\work-with\server\src" />
       <recent name="C:\Users\jungdo\git\work-with\client\public\assets" />
       <recent name="C:\Users\jungdo\git\work-with\client\src\components\side-tab" />
       <recent name="C:\Users\jungdo\git\work-with\client" />
       <recent name="C:\Users\jungdo\git\work-with" />
-      <recent name="C:\Users\jungdo\git\work-with\src\components\side-tab\search" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -110,7 +101,8 @@
       <workItem from="1691107758594" duration="72000" />
       <workItem from="1691365965782" duration="3386000" />
       <workItem from="1691392773660" duration="24485000" />
-      <workItem from="1691738877553" duration="18469000" />
+      <workItem from="1691738877553" duration="19428000" />
+      <workItem from="1692149197283" duration="8109000" />
     </task>
     <task id="LOCAL-00001" summary="change layout">
       <created>1690503169726</created>
@@ -151,14 +143,8 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/config/db.js</url>
-          <properties lambdaOrdinal="-1" />
+          <url>file://$PROJECT_DIR$/server/src/config/db.js</url>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/middleware/tokenMiddleware.ts</url>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,7 +1,7 @@
 {
   "scripts": {
 
-  "server": "cd server && nodemon server",
+  "server": "cd server && yarn dev",
   "client": "cd client && yarn dev",
   "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" ",
   "dependencies": {

@@ -29,7 +29,7 @@ Trace:
 npm manifest: 
   {
     "scripts": {
-      "start": "nodemon index.js"
+      "start": "nodemon index.ts"
     },
     "dependencies": {
       "cors": "^2.8.5",
