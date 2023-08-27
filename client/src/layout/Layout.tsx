@@ -20,7 +20,7 @@ function Layout() {
     { path: "login", label: PageEnum.AUTH },
   ];
   const location = useLocation();
-  const findRouteByPath = (path) => {
+  const findRouteByPath = (path: string) => {
     return routes[0].children.find((route) => route.path === path);
   };
   useEffect(() => {
@@ -35,7 +35,7 @@ function Layout() {
   return (
     <>
       <aside className="flex">
-        <div className="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <div className="flex shrink-0 flex-col items-center w-12 h-screen py-8 space-y-8 bg-white dark:bg-gray-900 dark:border-gray-700">
           <a href="#"></a>
           {menuList.map((menu, idx) => (
             <Link
@@ -43,16 +43,15 @@ function Layout() {
               to={menu.path}
               onClick={() => handleClick(menu.label)}
               className={
-                activeTabState === menu.label
-                  ? "p-1.5 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
-                  : "p-1.5 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100"
+                (activeTabState === menu.label
+                  ? "p-1.5 shrink-0 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
+                  : "p-1.5 shrink-0 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100") +
+                (menu.label === PageEnum.AUTH ? " bottom-0 absolute" : "")
               }
             >
               <DynamicSvg iconName={menu.label.toLowerCase()} />
             </Link>
           ))}
-
-          <div className={"absolute bottom-0"}>hi</div>
         </div>
         <SideTab path={location.pathname}></SideTab>
         <Outlet />
