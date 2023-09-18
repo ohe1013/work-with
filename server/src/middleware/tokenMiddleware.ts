@@ -5,7 +5,7 @@ const accessTokenSecret = "your-access-token-secret"; // Access Token의 시크�
 
 const verifyToken = (req: any, res: any, next: any) => {
   const token = getToken(req); // 토큰을 얻는 방식을 getToken 함수로 추상화
-  console.log("ssssssssssssstoken", token);
+  console.log("sssssssssst  soken", token);
   if (!token) {
     return res.status(401).json({ message: "Access token not found" });
   }
