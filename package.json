@@ -1,11 +1,13 @@
 {
   "scripts": {
-
-  "server": "cd server && yarn dev",
-  "client": "cd client && yarn dev",
-  "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" ",
-  "dependencies": {
+    "server": "cd server && yarn dev",
+    "client": "cd client && yarn dev",
+    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" ",
+    "dependencies": {
+      "concurrently": "^8.2.0"
+    }
+  },
+  "devDependencies": {
     "concurrently": "^8.2.0"
-  }
   }
 }

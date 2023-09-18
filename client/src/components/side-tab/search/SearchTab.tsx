@@ -17,6 +17,7 @@ const SearchBar = () => {
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
   const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
+  const [isfocused, setIsFocused] = useState(false);
 
   const search = () => {
     const ps = new kakao.maps.services.Places();
@@ -30,8 +31,9 @@ const SearchBar = () => {
           const markers: MarkerWithId[] = [];
 
           for (let i = 0; i < data.length; i++) {
-            let _category_name = data[i].category_name.split('>')
-            let category_name = _category_name[_category_name.length-1].trim()
+            let _category_name = data[i].category_name.split(">");
+            let category_name =
+              _category_name[_category_name.length - 1].trim();
             markers.push({
               id: data[i].id,
               position: {
@@ -39,10 +41,10 @@ const SearchBar = () => {
                 lng: +data[i].x,
               },
               content: data[i].place_name,
-              place_url:data[i].place_url,
+              place_url: data[i].place_url,
               category_name: category_name,
-              phone:data[i].phone,
-              address_name:data[i].address_name
+              phone: data[i].phone,
+              address_name: data[i].address_name,
             });
             bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
           }
@@ -80,15 +82,19 @@ const SearchBar = () => {
   };
   return (
     <>
-
-      <form className={"w-full"} onSubmit={submitHandler}>
+      <form className={"w-full flex justify-center"} onSubmit={submitHandler}>
         <label
           htmlFor="default-search"
           className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
         >
           Search
         </label>
-        <div className="relative">
+        <div
+          className={
+            "relative justify-center flex transition-all duration-200" +
+            (isfocused ? " w-full" : " w-4/5")
+          }
+        >
           <button
             type="submit"
             className="absolute inset-y-0 left-0 flex items-center pl-3 "
@@ -100,6 +106,14 @@ const SearchBar = () => {
             id="default-search"
             className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             onChange={inputHandler}
+            onFocus={() => {
+              setIsFocused(true);
+              console.log(isfocused);
+            }}
+            onBlur={() => {
+              setIsFocused(false);
+              console.log(isfocused);
+            }}
           />
         </div>
       </form>
