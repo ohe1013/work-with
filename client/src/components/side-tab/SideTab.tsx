@@ -10,7 +10,7 @@ const SideTab = ({ path }: { path: string }) => {
   useEffect(() => {
     // localStorage에서 해당 컴포넌트의 캐시된 데이터를 불러옵니다.
     const cachedData = localStorage.getItem(`cachedData:${path}`);
-    if (!cachedData) {
+    if (cachedData) {
       // localStorage에서 불러온 데이터를 파싱하여 캐시합니다.
       setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
     }

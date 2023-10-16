@@ -15,6 +15,16 @@ const routes = [
         element: <Login />,
         label: PageEnum.AUTH,
       },
+      {
+        path: "/regist",
+        element: <Home />,
+        label: PageEnum.REGIST,
+      },
+      {
+        path: "/find",
+        element: <Home />,
+        label: PageEnum.FIND,
+      },
     ],
   },
 ];

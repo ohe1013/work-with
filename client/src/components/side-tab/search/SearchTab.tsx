@@ -108,11 +108,9 @@ const SearchBar = () => {
             onChange={inputHandler}
             onFocus={() => {
               setIsFocused(true);
-              console.log(isfocused);
             }}
             onBlur={() => {
               setIsFocused(false);
-              console.log(isfocused);
             }}
           />
         </div>
