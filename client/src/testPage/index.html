@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="root">
+            <input type="file" id="file" name="file" multiple /><br />
+            <div id="result_block" class="hidden">
+                <h3>Content :</h3>
+                <div ref="uploadList" id="result"></div>
+            </div>
+            <div id="map"></div>
+            <div id="xy">
+                <span name="x"></span>
+                <span name="y"></span>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/ol@v8.1.0/dist/ol.js"></script>
+        <script src="https://unpkg.com/shapefile@0.6"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.1.0/ol.css" />
+        <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.min.js"></script>
+    </body>
+    <script>
+        const tileLayer = new ol.layer.Tile({
+            source: new ol.source.OSM(),
+        });
+        const map = new ol.Map({
+            target: "map",
+            layers: [tileLayer],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([127, 37.58]),
+                zoom: 5,
+                projection: "EPSG:3857",
+            }),
+            zIndex: 0,
+        });
+        map.on("pointermove", (e) => {
+            const xy = document.getElementById("xy");
+            const x = xy.querySelector("span[name=x]");
+            const y = xy.querySelector("span[name=y]");
+            const [posx, posy] = e.coordinate.map((coord) => coord.toFixed(6));
+            x.textContent = `x = ${posx} `;
+            y.textContent = ` y = ${posy}`;
+        });
+        function readUploadedFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        const source = new ol.source.Vector();
+        proj4.defs(
+            "EPSG:3857",
+            "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
+        );
+        proj4.defs(
+            "EPSG:5186",
+            "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs"
+        );
+        console.log(proj4("EPSG:5186", "EPSG:3857", [378247, 340124]));
+        ol.proj.proj4.register(proj4);
+        console.log(ol.proj.get("EPSG:3857"));
+        const handleChange = async (e) => {
+            const selectedFile = event.target.files[0];
+            if (!selectedFile) return;
+            const zip = new JSZip();
+            const zipData = await readUploadedFileAsArrayBuffer(selectedFile);
+
+            // ZIP 파일 해체
+            const unzipped = await zip.loadAsync(zipData);
+            let shpData = {};
+            unzipped.forEach((relativePath, file) => {
+                if (relativePath.endsWith(".shp")) {
+                    shpData.shp = file;
+                }
+                if (relativePath.endsWith(".dbf")) {
+                    shpData.dbf = file;
+                }
+            });
+            const keys = Object.keys(shpData);
+            if (keys.length > 0) {
+                const shpArrayBuffer = await shpData.shp.async("arraybuffer");
+                const dbfArrayBuffer = await shpData.dbf.async("arraybuffer");
+                shapefile
+                    .open(shpArrayBuffer, dbfArrayBuffer)
+                    .then((_source) =>
+                        _source.read().then(function log(result) {
+                            if (result.done) return;
+                            let temp = [];
+                            const type = result.value.geometry.type;
+                            let feature;
+                            switch (type) {
+                                case "MultiPolygon": {
+                                    result.value.geometry.coordinates.forEach((coordinates) => {
+                                        let innerTemp = [];
+                                        coordinates[0].forEach((coordinate) => {
+                                            innerTemp.push(
+                                                proj4("EPSG:5186", "EPSG:3857", coordinate)
+                                            );
+                                        });
+                                        temp.push(innerTemp);
+                                    });
+
+                                    feature = new ol.Feature({
+                                        geometry: new ol.geom.MultiPolygon([temp]),
+                                    });
+                                    break;
+                                }
+                                case "Polygon": {
+                                    result.value.geometry.coordinates[0].forEach((coord) => {
+                                        temp.push(proj4("EPSG:5186", "EPSG:3857", coord));
+                                    });
+                                    feature = new ol.Feature({
+                                        geometry: new ol.geom.Polygon([temp]),
+                                    });
+                                    break;
+                                }
+                            }
+
+                            console.log(feature);
+                            source.addFeature(feature);
+                            return _source.read().then(log);
+                        })
+                    )
+                    .catch((error) => console.error(error.stack));
+            } else {
+                fileList.value.innerHTML = "<strong>내부에 SHP 파일이 없습니다.</strong>";
+            }
+        };
+        const wfsVectorStyle = (feature) =>
+            new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: "rgba(0, 0, 255, 1.0)",
+                    width: 2,
+                }),
+            });
+        const layer = new ol.layer.Vector({ source: source, style: wfsVectorStyle });
+        document.getElementById("file").addEventListener("change", handleChange);
+        map.addLayer(layer);
+
+        var crsUtil = {
+            // coordinate 좌표 변환
+            transformCoordinate: function (coordinate, oldCrs, newCrs) {
+                return ol.proj.transform(coordinate, oldCrs, newCrs);
+            },
+
+            // bbox 좌표 변환
+            transformBbox: function (bbox, oldCrs, newCrs) {
+                return ol.proj.transformExtent(bbox, oldCrs, newCrs);
+            },
+
+            // 좌표계 초기화
+            initProj4: function () {
+                for (var int = 0; int < this.crsList.length; int++) {
+                    var code = this.crsList[int].code;
+                    var proj = this.crsList[int].proj;
+                    console.log(code, proj4);
+                    proj4.defs(code, proj);
+                    var olProj = ol.proj.get(code);
+                    var newProj = new ol.proj.Projection({
+                        code: olProj.getCode(),
+                        units: olProj.getUnits(),
+                        extent: olProj.getExtent(),
+                        axisOrientation: "enu",
+                    });
+                    ol.proj.addProjection(newProj);
+                }
+            },
+
+            // 좌표계 정보 가져오기
+            getProj4: function (code) {
+                var projCode = null;
+                for (var i = 0; i < this.crsList.length; i++) {
+                    if (this.crsList[i].code == code) {
+                        projCode = this.crsList[i].proj;
+                        break;
+                    }
+                }
+                return projCode;
+            },
+
+            // 좌표계 목록
+            crsList: [
+                {
+                    code: "EPSG:4326",
+                    proj: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+                },
+                {
+                    code: "EPSG:4004",
+                    proj: "+proj=longlat +ellps=bessel +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:4019",
+                    proj: "+proj=longlat +ellps=GRS80 +no_defs",
+                },
+                {
+                    code: "EPSG:3857",
+                    proj: "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
+                },
+                {
+                    code: "EPSG:32652",
+                    proj: "+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:32651",
+                    proj: "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:2096",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:2097",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:2098",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5173",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=125.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5174",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5175",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=550000 +ellps=bessel +units=m +no_defs  +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5176",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=129.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5177",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=131.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs  +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5178",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43",
+                },
+                {
+                    code: "EPSG:5179",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5180",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5181",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5182",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=550000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5183",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5184",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=131 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5185",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5186",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5187",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs",
+                },
+                {
+                    code: "EPSG:5188",
+                    proj: "+proj=tmerc +lat_0=38 +lon_0=131 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs",
+                },
+            ],
+        };
+    </script>
+    <style>
+        #map {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</html>
+<!-- new JSZip().loadAsync(e.target.files[0]).then((res) => {
+            const files = res.files
+            Object.keys(files).forEach(async(key) => {
+                const file =  files[key]
+                const zipData = await readUploadedFileAsArrayBuffer(file)
+                console.log(zipData)
+                if( file.name.endsWith('.shp')){
+
+ 
+                }
+            })
+        } ) -->
+
+<!-- shpData.forEach(async (data)=>{
+            if(data.name.endsWith('shp')){
+
+                const shpArrayBuffer = await data.async('arraybuffer')
+                console.log(shpArrayBuffer)
+                shapefile.open(shpArrayBuffer)
+                .then(_source => _source.read()
+                .then(function log(result) {
+                    if (result.done) return;
+                    const feature = new ol.Feature({geometry:new ol.geom.Polygon(result.value.geometry.coordinates)})
+                    console.log(feature)
+                    source.addFeature(feature)
+                    return _source.read().then(log);
+                  }))
+                .catch(error => console.error(error.stack));
+            } else {
+
+      const shpArrayBuffer = await data.async('arraybuffer')
+      console.log(shpArrayBuffer)
+      shapefile.openDbf(shpArrayBuffer)
+      .then(_source => _source.read()
+      .then(function log(result) {
+          if (result.done) return;
+          const feature = new ol.Feature({geometry:new ol.geom.Polygon(result.value.geometry.coordinates)})
+          console.log(feature)
+          source.addFeature(feature)
+          return _source.read().then(log);
+        }))
+      .catch(error => console.error(error.stack));
+    } -->
