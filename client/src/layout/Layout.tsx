@@ -17,6 +17,8 @@ function Layout() {
 
   const menuList = [
     { path: "/", label: PageEnum.HOME },
+    { path: "find", label: PageEnum.FIND },
+    { path: "regist", label: PageEnum.REGIST },
     { path: "login", label: PageEnum.AUTH },
   ];
   const location = useLocation();
@@ -30,7 +32,7 @@ function Layout() {
     } else {
       setActiveTabState(PageEnum.HOME);
     }
-  }, [location.pathname]);
+  }, [location.pathname, setActiveTabState]);
 
   return (
     <>
@@ -42,6 +44,7 @@ function Layout() {
               key={menu.label + idx}
               to={menu.path}
               onClick={() => handleClick(menu.label)}
+              title={menu.label}
               className={
                 (activeTabState === menu.label
                   ? "p-1.5 shrink-0 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
