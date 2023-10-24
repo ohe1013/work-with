@@ -15,7 +15,7 @@ const SearchBar = () => {
   };
   const keyword = useRef("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
-  const [mapInfo, setMapInfo] = useRecoilState(MapUserAtom);
+  const [mapInfo] = useRecoilState(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isfocused, setIsFocused] = useState(false);
 
@@ -31,8 +31,8 @@ const SearchBar = () => {
           const markers: MarkerWithId[] = [];
 
           for (let i = 0; i < data.length; i++) {
-            let _category_name = data[i].category_name.split(">");
-            let category_name =
+            const _category_name = data[i].category_name.split(">");
+            const category_name =
               _category_name[_category_name.length - 1].trim();
             markers.push({
               id: data[i].id,
