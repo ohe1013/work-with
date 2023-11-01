@@ -31,7 +31,7 @@ export default function BaseMap() {
             position={marker.position}
             onClick={() => setInfo(marker)}
           >
-            {info && info.content === marker.content && (
+            {info && info.id === marker.id && (
               <Card
                 id={marker.id}
                 title={marker.content}

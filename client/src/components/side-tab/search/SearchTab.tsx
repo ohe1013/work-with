@@ -1,71 +1,29 @@
 import { useRecoilState } from "recoil";
 import { MapMarkersAtom, MapUserAtom } from "../../../recoil/MapStatus";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useRef } from "react";
 import SearchList from "./SearchList";
-import { MarkerWithId } from "../../../types/map";
 import Pagination from "../../common/Pagination";
-import SortBy = kakao.maps.services.SortBy;
-import LatLng = kakao.maps.LatLng;
 import DynamicSvg from "../../common/DynamicSvg";
-import { getKakaoSuggest } from "../../../api/map/kakaoSearch";
 import SuggestList from "./SuggestList";
+import {
+  getSearchList,
+  getSuggestList,
+} from "../../../service/search/kakaoSearch";
 
 const SearchBar = () => {
-  const submitHandler = (event: FormEvent) => {
-    event.preventDefault();
-    search();
-  };
   const [keyword, setKeyword] = useState("");
   const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
   const [mapInfo] = useRecoilState(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isfocused, setIsFocused] = useState(false);
   const [suggestList, setSuggestList] = useState([]);
-
-  const search = () => {
-    const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(
-      keyword,
-      (data, status, _pagination) => {
-        if (status === kakao.maps.services.Status.OK) {
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가합니다
-          const bounds = new kakao.maps.LatLngBounds();
-          const markers: MarkerWithId[] = [];
-
-          for (let i = 0; i < data.length; i++) {
-            const _category_name = data[i].category_name.split(">");
-            const category_name =
-              _category_name[_category_name.length - 1].trim();
-            markers.push({
-              id: data[i].id,
-              position: {
-                lat: +data[i].y,
-                lng: +data[i].x,
-              },
-              content: data[i].place_name,
-              place_url: data[i].place_url,
-              category_name: category_name,
-              phone: data[i].phone,
-              address_name: data[i].address_name,
-            });
-            bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
-          }
-          if (_pagination && typeof _pagination.nextPage === "function") {
-            setPagination(_pagination);
-          }
-          setMarkers(markers);
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        }
-      },
-      {
-        location: new LatLng(mapInfo.center.lat, mapInfo.center.lng),
-        useMapCenter: true,
-        size: 10,
-        sort: SortBy.DISTANCE,
-      }
-    );
+  const inputRef = useRef<HTMLInputElement>(null);
+  const submitHandler = (event: FormEvent) => {
+    event.preventDefault();
+    getSearchList({ keyword, mapInfo, setPagination, setMarkers });
+    inputRef.current?.blur();
   };
+
   const pageClickHandler = (
     type: "prev" | "next" | "current",
     page?: number,
@@ -80,13 +38,15 @@ const SearchBar = () => {
       currentPagination?.gotoPage(page);
     }
   };
-  const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+
+  const inputHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
-    getKakaoSuggest(newKeyword).then((res) => {
-      setSuggestList(res.items.slice(0, 10));
-    });
+    const newSuggestList = await getSuggestList(newKeyword, 10);
+    setSuggestList(newSuggestList);
   };
+
+  const activeSuggestList = isfocused;
   return (
     <>
       <form className={"w-full flex justify-center"} onSubmit={submitHandler}>
@@ -114,6 +74,7 @@ const SearchBar = () => {
             className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             value={keyword}
             onChange={inputHandler}
+            ref={inputRef}
             onFocus={() => {
               setIsFocused(true);
             }}
@@ -126,6 +87,7 @@ const SearchBar = () => {
       <SuggestList
         suggestList={suggestList}
         setKeyword={setKeyword}
+        activeSuggestList={activeSuggestList}
       ></SuggestList>
       <SearchList markers={markers}></SearchList>
       <Pagination

@@ -1,13 +1,7 @@
+import axios from "axios";
 export async function getKakaoSuggest(keyword: string) {
-  const res = await fetch(
-    "http://localhost:3000/kakao/get/search?keyword=" + keyword,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
+  const res = await axios.get(
+    "/api/v1/kakao/search/?service=local-suggest&q=" + keyword
   );
-  const json = await res.json();
-  return json;
+  return res;
 }
