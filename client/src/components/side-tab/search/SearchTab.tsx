@@ -9,6 +9,8 @@ import {
   getSearchList,
   getSuggestList,
 } from "../../../service/search/kakaoSearch";
+import { pageClickType } from "../../../types/util";
+import KakaoSearch from "../../../api/map/kakaoSearch/model";
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState("");
@@ -16,16 +18,26 @@ const SearchBar = () => {
   const [mapInfo] = useRecoilState(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isfocused, setIsFocused] = useState(false);
-  const [suggestList, setSuggestList] = useState([]);
+  const [suggestList, setSuggestList] = useState<Array<KakaoSearch.Suggest>>(
+    []
+  );
   const inputRef = useRef<HTMLInputElement>(null);
+
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     getSearchList({ keyword, mapInfo, setPagination, setMarkers });
     inputRef.current?.blur();
+    setIsFocused(false);
+  };
+  const selectSuggest = (keyword: string) => {
+    setKeyword(keyword);
+    getSearchList({ keyword, mapInfo, setPagination, setMarkers });
+    inputRef.current?.blur();
+    setIsFocused(false);
   };
 
   const pageClickHandler = (
-    type: "prev" | "next" | "current",
+    type: pageClickType,
     page?: number,
     currentPagination?: kakao.maps.Pagination
   ) => {
@@ -42,7 +54,10 @@ const SearchBar = () => {
   const inputHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
-    const newSuggestList = await getSuggestList(newKeyword, 10);
+    const newSuggestList = await getSuggestList({
+      keyword: newKeyword,
+      itemSize: 10,
+    });
     setSuggestList(newSuggestList);
   };
 
@@ -78,15 +93,12 @@ const SearchBar = () => {
             onFocus={() => {
               setIsFocused(true);
             }}
-            onBlur={() => {
-              setIsFocused(false);
-            }}
           />
         </div>
       </form>
       <SuggestList
         suggestList={suggestList}
-        setKeyword={setKeyword}
+        selectSuggest={selectSuggest}
         activeSuggestList={activeSuggestList}
       ></SuggestList>
       <SearchList markers={markers}></SearchList>

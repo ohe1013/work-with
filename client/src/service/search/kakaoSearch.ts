@@ -1,13 +1,19 @@
 import { AxiosError } from "axios";
-import { getKakaoSuggest } from "../../api/map/kakaoSearch";
+import { fetchKakaoSuggest } from "../../api/map/kakaoSearch";
 import { MarkerWithId } from "../../types/map";
 import SortBy = kakao.maps.services.SortBy;
 import LatLng = kakao.maps.LatLng;
-import { MapUserInfo } from "../../recoil/MapStatus";
-import { SetterOrUpdater } from "recoil";
-const getSuggestList = async (keyword: string, itemSize: number) => {
+import { searchProps, suggestProps } from "../../types/search";
+import KakaoSearch from "../../api/map/kakaoSearch/model";
+
+const getSuggestList = async ({
+  keyword,
+  itemSize,
+}: suggestProps): Promise<Array<KakaoSearch.Suggest>> => {
+  const trimKeyword = keyword.trim();
   try {
-    const kakaoSuggestRes = await getKakaoSuggest(keyword);
+    if (!trimKeyword.length) return [];
+    const kakaoSuggestRes = await fetchKakaoSuggest(trimKeyword);
     const { items } = kakaoSuggestRes.data;
     return items.slice(0, itemSize);
   } catch (error) {
@@ -16,14 +22,7 @@ const getSuggestList = async (keyword: string, itemSize: number) => {
     return [];
   }
 };
-type searchProps = {
-  keyword: string;
-  mapInfo: MapUserInfo;
-  setPagination: React.Dispatch<
-    React.SetStateAction<kakao.maps.Pagination | undefined>
-  >;
-  setMarkers: SetterOrUpdater<MarkerWithId[]>;
-};
+
 const getSearchList = ({
   keyword,
   mapInfo,
@@ -35,8 +34,6 @@ const getSearchList = ({
     keyword,
     (data, status, _pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds();
         const markers: MarkerWithId[] = [];
 
@@ -62,7 +59,6 @@ const getSearchList = ({
           setPagination(_pagination);
         }
         setMarkers(markers);
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
       }
     },
     {

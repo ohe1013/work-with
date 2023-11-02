@@ -31,7 +31,7 @@ const SideTab = ({ path }: { path: string }) => {
           !on ? "left-16" : "left-96"
         } transition-width duration-300 ease-in-out`}
       >
-        펼치기
+        <span className="text-xl">{on ? "👈" : "👉"}</span>
       </button>
 
       {path === "/" && <SearchTab key={"sideTab" + path}></SearchTab>}

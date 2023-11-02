@@ -27,7 +27,7 @@ const allowLegacyRenegotiationforNodeJsOptions = {
     secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
   }),
 };
-const getKakaoSuggest = async (baseURL: string) =>
+const fetchKakaoSuggest = async (baseURL: string) =>
   axios({
     ...allowLegacyRenegotiationforNodeJsOptions,
     baseURL,
@@ -39,7 +39,7 @@ app.get("/kakao/get/search", async function (req, res) {
     "https://map.kakao.com/api/dapi/suggest/hub?service=local-suggest&q=" +
     keyword;
   try {
-    const response = await getKakaoSuggest(baseURL);
+    const response = await fetchKakaoSuggest(baseURL);
     res.json(response.data);
   } catch (err: any) {
     res.status(500);

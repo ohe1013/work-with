@@ -34,7 +34,7 @@ const Pagination = React.memo(function Pagination({
           Next
         </a>
       </div>
-      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+      <div className="hidden justify-center sm:flex sm:flex-1 sm:items-center sm:justify-center">
         <div>
           <nav
             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
@@ -47,8 +47,6 @@ const Pagination = React.memo(function Pagination({
             >
               ←
             </button>
-
-            {/* Current:  */}
             {pageList.map((page: number) => {
               return (
                 <button

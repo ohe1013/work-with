@@ -1,6 +1,6 @@
 namespace KakaoSearch {
   export interface Suggest {
-    items: {
+    item: {
       category: string;
       highlighted: Array<unknown>;
       items: string;
@@ -10,7 +10,7 @@ namespace KakaoSearch {
     success: {
       q: string;
       rq: string;
-      items: Array<KakaoSearch.Suggest.items>;
+      items: Array<KakaoSearch.Suggest.item>;
     };
     error: {
       request: string;

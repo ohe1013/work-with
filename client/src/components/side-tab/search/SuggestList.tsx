@@ -2,18 +2,22 @@ import KakaoSearch from "../../../api/map/kakaoSearch/model";
 
 export default function SuggestList({
   suggestList,
-  setKeyword,
+  selectSuggest,
   activeSuggestList,
 }: {
   suggestList: KakaoSearch.Suggest["success"]["items"];
-  setKeyword: (val: string) => void;
+  selectSuggest: (keyword: string) => void;
   activeSuggestList: boolean;
 }) {
   const handleClick = (keyword: string) => {
-    setKeyword(keyword);
+    selectSuggest(keyword);
   };
   return (
-    <div className={"block absolute top-21.5 bg-white w-full"}>
+    <div
+      className={
+        "block top-21.5 bg-white w-full z-10 shadow-md border-gray-800"
+      }
+    >
       {activeSuggestList && (
         <ul>
           {suggestList.map((suggestItem) => (
