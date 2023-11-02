@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/v1/vworld",
-      "destination": "http://api.vworld.kr/req/search"
-    },
-    {
       "source": "/api/v1/kakao/search",
       "destination": "https://map.kakao.com/api/dapi/suggest/hub"
     }
