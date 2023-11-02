@@ -6,7 +6,6 @@
 https://github.com/ohe1013/work-with/assets/84114149/87bd9171-5bc2-4640-8f8c-4fb78609b7a1
 
 
-https://work-with-lemon.vercel.app/
 [Vite + React + TS](https://work-with-lemon.vercel.app/)
 
 `vercel`을 이용해서 `client`만 간단하게 배포
