@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/v1/kakao/search",
-      "destination": "https://map.kakao.com/api/dapi/suggest/hub"
+      "destination": "https://map.kakao.com/api/dapi/suggest/hub?:query"
     }
   ]
 }
