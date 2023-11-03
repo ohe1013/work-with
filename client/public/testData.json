@@ -1,35 +1,35 @@
 {
-  "locId": 1,
-  "items": [
-    {
-      "id": 1,
-      "title": "어깨 운동 같이하실 분",
-      "level": "고급",
-      "createdAt": 0,
-      "dueTime": 60000,
-      "workTime": "7시-10시",
-      "currentCount": 1,
-      "maxCount": 3
-    },
-    {
-      "id": 2,
-      "title": "가슴 운동 같이하실 분",
-      "level": "중급",
-      "createdAt": 0,
-      "dueTime": 60000,
-      "workTime": "8시-10시",
-      "currentCount": 1,
-      "maxCount": 3
-    },
-    {
-      "id": 3,
-      "title": "하체 운동 같이하실 분",
-      "level": "초급",
-      "createdAt": 0,
-      "dueTime": 60000,
-      "workTime": "9시-10시",
-      "currentCount": 1,
-      "maxCount": 3
-    }
-  ]
+    "locId": 1,
+    "items": [
+        {
+            "id": 1,
+            "title": "어깨 운동 같이하실 분",
+            "level": "고급",
+            "createdAt": 0,
+            "dueTime": 5000,
+            "workTime": "7시-10시",
+            "currentCount": 1,
+            "maxCount": 3
+        },
+        {
+            "id": 2,
+            "title": "가슴 운동 같이하실 분",
+            "level": "중급",
+            "createdAt": 0,
+            "dueTime": 4000000,
+            "workTime": "8시-10시",
+            "currentCount": 1,
+            "maxCount": 3
+        },
+        {
+            "id": 3,
+            "title": "하체 운동 같이하실 분",
+            "level": "초급",
+            "createdAt": 0,
+            "dueTime": 6000000,
+            "workTime": "9시-10시",
+            "currentCount": 1,
+            "maxCount": 3
+        }
+    ]
 }
