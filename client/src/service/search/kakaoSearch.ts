@@ -7,12 +7,12 @@ import KakaoSearch from "../../api/map/kakaoSearch/model";
 import { SetterOrUpdater } from "recoil";
 import { MapUserInfo } from "../../recoil/MapStatus";
 
-export type suggestProps = {
+export type SuggestProps = {
     keyword: string;
     itemSize: number;
 };
 
-export type searchProps = {
+export type SearchProps = {
     keyword: string;
     mapInfo: MapUserInfo;
     setPagination: React.Dispatch<React.SetStateAction<kakao.maps.Pagination | undefined>>;
@@ -22,7 +22,7 @@ export type searchProps = {
 const getSuggestList = async ({
     keyword,
     itemSize,
-}: suggestProps): Promise<Array<KakaoSearch.Suggest>> => {
+}: SuggestProps): Promise<Array<KakaoSearch.Suggest>> => {
     const trimKeyword = keyword.trim();
     try {
         if (!trimKeyword.length) return [];
@@ -36,7 +36,7 @@ const getSuggestList = async ({
     }
 };
 
-const getSearchList = ({ keyword, mapInfo, setPagination, setMarkers }: searchProps) => {
+const getSearchList = ({ keyword, mapInfo, setPagination, setMarkers }: SearchProps) => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(
         keyword,
