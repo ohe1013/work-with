@@ -1,4 +1,4 @@
-import { Marker } from "../recoil/MapStatus";
+import { Marker } from "@/recoil/map";
 
 export interface MarkerWithId extends Marker {
   id: string;

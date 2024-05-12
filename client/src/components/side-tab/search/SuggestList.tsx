@@ -1,17 +1,30 @@
-import KakaoSearch from "../../../api/map/kakaoSearch/model";
+import { getSuggestList } from "@/service/search/kakaoSearch";
+import { use } from "@/hooks/use";
 
 export default function SuggestList({
-  suggestList,
+  keyword,
   selectSuggest,
   activeSuggestList,
 }: {
-  suggestList: KakaoSearch.Suggest["success"]["items"];
+  keyword: string;
   selectSuggest: (keyword: string) => void;
   activeSuggestList: boolean;
 }) {
+  console.log(keyword);
+  if (!keyword) return null;
+  const suggestList = use(
+    getSuggestList({
+      keyword: keyword,
+      itemSize: 10,
+    })
+  );
   const handleClick = (keyword: string) => {
     selectSuggest(keyword);
   };
+  console.log(suggestList);
+  if (suggestList.length === 0) {
+    return <div>hi</div>;
+  }
   return (
     <div
       className={

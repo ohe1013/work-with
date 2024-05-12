@@ -1,6 +1,6 @@
+import { MapMarkersAtom, MapUserAtom } from "@/recoil/map";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { MapMarkersAtom, MapUserAtom } from "../../recoil/MapStatus";
 
 export function useMapStatus() {
   const [markers] = useRecoilState(MapMarkersAtom);
@@ -17,7 +17,7 @@ export function useMapStatus() {
     lat = lat / (markers.length + 1);
     lng = lng / (markers.length + 1);
     setMapInfo({ zoom: 3, center: { lat, lng } });
-  }, [markers]);
+  }, [markers, mapInfo, setMapInfo]);
 
   return {
     markers,

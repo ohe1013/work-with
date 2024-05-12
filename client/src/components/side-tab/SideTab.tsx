@@ -1,7 +1,7 @@
 // SideTab.js
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { CachedLayoutAtom } from "../../recoil/LayoutStatus";
+import { CachedLayoutAtom } from "../../recoil/layout";
 import SearchTab from "./search/SearchTab";
 
 const SideTab = ({ path }: { path: string }) => {

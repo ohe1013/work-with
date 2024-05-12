@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { MarkerWithId } from "../types/map";
+import { MarkerWithId } from "../../types/map";
 export interface Marker {
   content: string;
   position: {

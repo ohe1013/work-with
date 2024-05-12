@@ -3,7 +3,7 @@ import DynamicSvg from "../components/common/DynamicSvg";
 import SideTab from "../components/side-tab/SideTab";
 import { PageEnum } from "../enum/page";
 import { useRecoilState } from "recoil";
-import { pageAtom } from "../recoil/PageStatus";
+import { pageAtom } from "../recoil/page";
 import { routes } from "../routes";
 import { useEffect } from "react";
 

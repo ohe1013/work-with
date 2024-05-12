@@ -1,9 +1,9 @@
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import { useRecoilState } from "recoil";
-import { MapInfoAtom } from "../../recoil/MapStatus";
 import Card from "../common/Card";
 import { MarkerWithId } from "../../types/map";
 import { useMapStatus } from "../../hooks/map/useMapStatus";
+import { MapInfoAtom } from "@/recoil/map";
 
 export default function BaseMap() {
   const [info, setInfo] = useRecoilState<MarkerWithId>(MapInfoAtom);

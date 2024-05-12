@@ -1,16 +1,21 @@
 import { useRecoilState } from "recoil";
-import { MapMarkersAtom, MapUserAtom } from "../../../recoil/MapStatus";
-import { ChangeEvent, FormEvent, useState, useRef } from "react";
+import {
+  ChangeEvent,
+  useState,
+  useRef,
+  FormEventHandler,
+  Suspense,
+  useDeferredValue,
+} from "react";
 import SearchList from "./SearchList";
 import Pagination from "../../common/Pagination";
 import DynamicSvg from "../../common/DynamicSvg";
 import SuggestList from "./SuggestList";
-import {
-  getSearchList,
-  getSuggestList,
-} from "../../../service/search/kakaoSearch";
+import { getSearchList } from "../../../service/search/kakaoSearch";
 import { pageClickType } from "../../../types/util";
-import KakaoSearch from "../../../api/map/kakaoSearch/model";
+import { MapMarkersAtom, MapUserAtom } from "@/recoil/map";
+import { MarkerWithId } from "@/types/map";
+import Loader from "@/components/common/Loader";
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState("");
@@ -18,20 +23,49 @@ const SearchBar = () => {
   const [mapInfo] = useRecoilState(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isfocused, setIsFocused] = useState(false);
-  const [suggestList, setSuggestList] = useState<Array<KakaoSearch.Suggest>>(
-    []
-  );
+  const queryKey = useDeferredValue(keyword);
   const inputRef = useRef<HTMLInputElement>(null);
+  const cb = (
+    data: kakao.maps.services.PlacesSearchResult,
+    status: kakao.maps.services.Status,
+    _pagination: kakao.maps.Pagination
+  ) => {
+    if (status === kakao.maps.services.Status.OK) {
+      const bounds = new kakao.maps.LatLngBounds();
+      const markers: MarkerWithId[] = [];
 
-  const submitHandler = (event: FormEvent) => {
+      for (let i = 0; i < data.length; i++) {
+        const _category_name = data[i].category_name.split(">");
+        const category_name = _category_name[_category_name.length - 1].trim();
+        markers.push({
+          id: data[i].id,
+          position: {
+            lat: +data[i].y,
+            lng: +data[i].x,
+          },
+          content: data[i].place_name,
+          place_url: data[i].place_url,
+          category_name: category_name,
+          phone: data[i].phone,
+          address_name: data[i].address_name,
+        });
+        bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
+      }
+      if (_pagination && typeof _pagination.nextPage === "function") {
+        setPagination(_pagination);
+      }
+      setMarkers(markers);
+    }
+  };
+  const submitHandler: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    getSearchList({ keyword, mapInfo, setPagination, setMarkers });
+    getSearchList({ keyword, mapInfo, cb });
     inputRef.current?.blur();
     setIsFocused(false);
   };
   const selectSuggest = (keyword: string) => {
     setKeyword(keyword);
-    getSearchList({ keyword, mapInfo, setPagination, setMarkers });
+    getSearchList({ keyword, mapInfo, cb });
     inputRef.current?.blur();
     setIsFocused(false);
   };
@@ -41,24 +75,26 @@ const SearchBar = () => {
     page?: number,
     currentPagination?: kakao.maps.Pagination
   ) => {
-    if (type === "prev" && currentPagination?.hasPrevPage) {
-      currentPagination?.prevPage();
-    } else if (type === "next" && currentPagination?.hasNextPage) {
-      currentPagination?.nextPage();
-    }
-    if (type === "current" && page) {
-      currentPagination?.gotoPage(page);
+    switch (type) {
+      case "prev": {
+        if (currentPagination.hasPrevPage) currentPagination.prevPage();
+        break;
+      }
+      case "next": {
+        if (currentPagination.hasNextPage) currentPagination.nextPage();
+        break;
+      }
+      case "current": {
+        if (page) {
+          currentPagination.gotoPage(page);
+        }
+      }
     }
   };
 
   const inputHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
-    const newSuggestList = await getSuggestList({
-      keyword: newKeyword,
-      itemSize: 10,
-    });
-    setSuggestList(newSuggestList);
   };
 
   const activeSuggestList = isfocused;
@@ -96,11 +132,13 @@ const SearchBar = () => {
           />
         </div>
       </form>
-      <SuggestList
-        suggestList={suggestList}
-        selectSuggest={selectSuggest}
-        activeSuggestList={activeSuggestList}
-      ></SuggestList>
+      <Suspense fallback={<div>loading</div>}>
+        <SuggestList
+          keyword={queryKey}
+          selectSuggest={selectSuggest}
+          activeSuggestList={activeSuggestList}
+        ></SuggestList>
+      </Suspense>
       <SearchList markers={markers}></SearchList>
       <Pagination
         pagination={pagination}
