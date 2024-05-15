@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   ChangeEvent,
   useState,
@@ -19,14 +19,14 @@ import Loader from "@/components/common/Loader";
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState("");
-  const [markers, setMarkers] = useRecoilState(MapMarkersAtom);
-  const [mapInfo] = useRecoilState(MapUserAtom);
+  const setMarkers = useSetRecoilState(MapMarkersAtom);
+  const mapInfo = useRecoilValue(MapUserAtom);
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isfocused, setIsFocused] = useState(false);
   const queryKey = useDeferredValue(keyword);
   const inputRef = useRef<HTMLInputElement>(null);
   const cb = (
-    data: kakao.maps.services.PlacesSearchResult,
+    resultArr: kakao.maps.services.PlacesSearchResult,
     status: kakao.maps.services.Status,
     _pagination: kakao.maps.Pagination
   ) => {
@@ -34,22 +34,22 @@ const SearchBar = () => {
       const bounds = new kakao.maps.LatLngBounds();
       const markers: MarkerWithId[] = [];
 
-      for (let i = 0; i < data.length; i++) {
-        const _category_name = data[i].category_name.split(">");
+      for (const result of resultArr) {
+        const _category_name = result.category_name.split(">");
         const category_name = _category_name[_category_name.length - 1].trim();
         markers.push({
-          id: data[i].id,
+          id: result.id,
           position: {
-            lat: +data[i].y,
-            lng: +data[i].x,
+            lat: +result.y,
+            lng: +result.x,
           },
-          content: data[i].place_name,
-          place_url: data[i].place_url,
+          content: result.place_name,
+          place_url: result.place_url,
           category_name: category_name,
-          phone: data[i].phone,
-          address_name: data[i].address_name,
+          phone: result.phone,
+          address_name: result.address_name,
         });
-        bounds.extend(new kakao.maps.LatLng(+data[i].y, +data[i].x));
+        bounds.extend(new kakao.maps.LatLng(+result.y, +result.x));
       }
       if (_pagination && typeof _pagination.nextPage === "function") {
         setPagination(_pagination);
@@ -96,7 +96,6 @@ const SearchBar = () => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
   };
-
   const activeSuggestList = isfocused;
   return (
     <>
@@ -132,14 +131,14 @@ const SearchBar = () => {
           />
         </div>
       </form>
-      <Suspense fallback={<div>loading</div>}>
+      <Suspense fallback={<Loader />}>
         <SuggestList
           keyword={queryKey}
           selectSuggest={selectSuggest}
           activeSuggestList={activeSuggestList}
         ></SuggestList>
       </Suspense>
-      <SearchList markers={markers}></SearchList>
+      <SearchList></SearchList>
       <Pagination
         pagination={pagination}
         pageClickHandler={(type, page) =>

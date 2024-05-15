@@ -1,5 +1,5 @@
 import { getSuggestList } from "@/service/search/kakaoSearch";
-import { use } from "@/hooks/use";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export default function SuggestList({
   keyword,
@@ -10,20 +10,16 @@ export default function SuggestList({
   selectSuggest: (keyword: string) => void;
   activeSuggestList: boolean;
 }) {
-  console.log(keyword);
-  if (!keyword) return null;
-  const suggestList = use(
-    getSuggestList({
-      keyword: keyword,
-      itemSize: 10,
-    })
-  );
+  const { data: suggestList } = useSuspenseQuery({
+    queryKey: ["suggestlist", keyword],
+    queryFn: () => getSuggestList({ keyword, itemSize: 10 }),
+  });
+
   const handleClick = (keyword: string) => {
     selectSuggest(keyword);
   };
-  console.log(suggestList);
   if (suggestList.length === 0) {
-    return <div>hi</div>;
+    return null;
   }
   return (
     <div

@@ -1,10 +1,11 @@
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MarkerWithId } from "../../../types/map";
-import { MapInfoAtom, MapUserAtom } from "@/recoil/map";
+import { MapInfoAtom, MapMarkersAtom, MapUserAtom } from "@/recoil/map";
 
-export default function SearchList({ markers }: { markers: MarkerWithId[] }) {
-  const [, setInfo] = useRecoilState<MarkerWithId>(MapInfoAtom);
-  const [, setMapInfo] = useRecoilState(MapUserAtom);
+export default function SearchList() {
+  const markers = useRecoilValue(MapMarkersAtom);
+  const setInfo = useSetRecoilState<MarkerWithId>(MapInfoAtom);
+  const setMapInfo = useSetRecoilState(MapUserAtom);
   const clickHandler = (marker: MarkerWithId) => {
     setInfo(marker);
     setMapInfo({ zoom: 3, center: { ...marker.position } });

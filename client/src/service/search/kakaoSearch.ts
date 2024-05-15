@@ -27,7 +27,7 @@ export type SearchProps = {
 const getSuggestList = async ({
   keyword,
   itemSize,
-}: SuggestProps): Promise<Array<KakaoSearch.Suggest>> => {
+}: SuggestProps): Promise<Array<KakaoSearch.Suggest["item"]>> => {
   const trimKeyword = keyword.trim();
   try {
     if (!trimKeyword.length) return [];
