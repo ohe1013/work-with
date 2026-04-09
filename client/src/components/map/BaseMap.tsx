@@ -1,11 +1,47 @@
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import { useRecoilValue } from "recoil";
 import { useMapStatus } from "../../hooks/map/useMapStatus";
 import { useMarkerSelection } from "../../hooks/map/useMarkerSelection";
+import { MapDiscoveryAtom } from "../../recoil/map";
 
 export default function BaseMap() {
   const { markers, mapInfo } = useMapStatus();
+  const discoveryState = useRecoilValue(MapDiscoveryAtom);
   const { selectedMarker, focusMarker, clearSelectedMarker } =
     useMarkerSelection();
+  const discoveryOverlay = selectedMarker
+    ? null
+    : discoveryState.phase === "loading"
+      ? {
+          eyebrow: "Searching",
+          title: `${discoveryState.keyword || "주변 장소"} 주변을 찾고 있어요`,
+          description:
+            "결과가 준비되면 지도 마커와 비교 패널이 함께 업데이트됩니다.",
+        }
+      : discoveryState.phase === "empty"
+        ? {
+            eyebrow: "No results",
+            title: "다른 장소로 다시 찾아보세요",
+            description: `${
+              discoveryState.keyword || "이번 검색"
+            } 주변에는 아직 비교할 장소가 없었어요.`,
+          }
+        : discoveryState.phase === "error"
+          ? {
+              eyebrow: "Search error",
+              title: "검색을 다시 시도해 주세요",
+              description:
+                discoveryState.errorMessage ??
+                "잠시 후 같은 장소 이름으로 다시 검색해 주세요.",
+            }
+          : markers.length === 0
+            ? {
+                eyebrow: "Start search",
+                title: "공원이나 체육관 이름으로 시작하세요",
+                description:
+                  "장소를 검색하면 마커와 결과 카드가 함께 열립니다.",
+              }
+            : null;
 
   return (
     <Map
@@ -17,6 +53,22 @@ export default function BaseMap() {
       level={mapInfo.zoom}
       onClick={clearSelectedMarker}
     >
+      {discoveryOverlay ? (
+        <CustomOverlayMap position={mapInfo.center} yAnchor={1.18} xAnchor={0.5}>
+          <div className="pointer-events-none w-[240px] rounded-[24px] border border-white/80 bg-white/92 px-4 py-3 text-left shadow-[0_24px_54px_rgba(15,23,42,0.18)] backdrop-blur-sm md:w-[280px]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              {discoveryOverlay.eyebrow}
+            </p>
+            <p className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {discoveryOverlay.title}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">
+              {discoveryOverlay.description}
+            </p>
+          </div>
+        </CustomOverlayMap>
+      ) : null}
+
       {selectedMarker ? (
         <CustomOverlayMap
           position={selectedMarker.position}

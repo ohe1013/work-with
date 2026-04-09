@@ -1,16 +1,48 @@
 import { useRecoilValue } from "recoil";
 import Panel from "../components/common/Panel";
 import BaseMap from "../components/map/BaseMap";
-import { MapInfoAtom, MapMarkersAtom } from "../recoil/map";
+import { MapDiscoveryAtom, MapInfoAtom, MapMarkersAtom } from "../recoil/map";
 
 export default function Home(): JSX.Element {
+  const discoveryState = useRecoilValue(MapDiscoveryAtom);
   const markers = useRecoilValue(MapMarkersAtom);
   const selectedMarker = useRecoilValue(MapInfoAtom);
   const markerSummary =
-    markers.length > 0 ? `${markers.length}곳 비교 가능` : "검색 전";
-  const selectedSummary = selectedMarker?.content ?? "미리보기 대기 중";
+    discoveryState.phase === "loading"
+      ? `${discoveryState.keyword || "주변 장소"} 검색 중`
+      : discoveryState.phase === "empty"
+        ? "조건을 다시 조정해보세요"
+        : discoveryState.phase === "error"
+          ? "검색 재시도 필요"
+          : markers.length > 0
+            ? `${markers.length}곳 비교 가능`
+            : "검색 전";
+  const homeDescription =
+    discoveryState.phase === "loading"
+      ? `${discoveryState.keyword || "주변 장소"} 주변 결과를 정리하고 있어요. 지도와 패널이 같은 타이밍에 갱신됩니다.`
+      : discoveryState.phase === "empty"
+        ? `${discoveryState.keyword || "이번 검색"} 주변에는 비교할 장소가 아직 없었어요. 다른 공원이나 체육관 이름으로 다시 찾아보세요.`
+        : discoveryState.phase === "error"
+          ? "검색 결과를 불러오지 못했어요. 같은 키워드로 다시 시도하거나 다른 장소를 입력해 주세요."
+          : "장소를 검색하고, 마커나 결과 카드를 눌러 주변 모집 흐름을 바로 확인할 수 있도록 홈 화면의 위계를 정리했습니다.";
+  const selectedSummary =
+    selectedMarker?.content ??
+    (discoveryState.phase === "loading"
+      ? `${discoveryState.keyword || "검색 결과"} 준비 중`
+      : discoveryState.phase === "empty"
+        ? "다른 장소를 찾아보세요"
+        : discoveryState.phase === "error"
+          ? "검색 다시 시도 필요"
+          : "미리보기 대기 중");
   const selectedDetail =
-    selectedMarker?.address_name ?? "마커나 결과 카드를 누르면 즉시 비교할 수 있어요.";
+    selectedMarker?.address_name ??
+    (discoveryState.phase === "loading"
+      ? "결과가 준비되면 마커와 카드가 같은 선택 흐름으로 이어집니다."
+      : discoveryState.phase === "empty"
+        ? "조건을 조금 넓혀서 다시 검색하면 바로 비교를 이어갈 수 있어요."
+        : discoveryState.phase === "error"
+          ? "검색 패널에서 다시 시도하면 홈 탐색 흐름을 그대로 이어갑니다."
+          : "마커나 결과 카드를 누르면 즉시 비교할 수 있어요.");
 
   return (
     <section className="relative h-full min-h-[calc(100vh-126px)] w-full overflow-hidden rounded-[32px] md:min-h-[calc(100vh-108px)]">
@@ -39,8 +71,7 @@ export default function Home(): JSX.Element {
                 운동 메이트를 지도 위에서 빠르게 비교하세요
               </h2>
               <p className="text-sm leading-6 text-slate-600 md:text-[15px]">
-                장소를 검색하고, 마커나 결과 카드를 눌러 주변 모집 흐름을 바로
-                확인할 수 있도록 홈 화면의 위계를 정리했습니다.
+                {homeDescription}
               </p>
             </div>
 

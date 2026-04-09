@@ -12,6 +12,8 @@ Object.defineProperty(globalThis, "kakao", {
         },
         Status: {
           OK: "OK",
+          ZERO_RESULT: "ZERO_RESULT",
+          ERROR: "ERROR",
         },
         Places: class {
           keywordSearch = jest.fn();

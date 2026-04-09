@@ -2,19 +2,53 @@ import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import Panel from "../common/Panel";
 import { CachedLayoutAtom } from "../../recoil/layout";
-import { MapInfoAtom, MapMarkersAtom } from "../../recoil/map";
+import {
+  MapDiscoveryAtom,
+  MapInfoAtom,
+  MapMarkersAtom,
+} from "../../recoil/map";
 import SearchTab from "./search/SearchTab";
 
 const SideTab = ({ path }: { path: string }) => {
   const setCachedLayout = useSetRecoilState(CachedLayoutAtom);
+  const discoveryState = useRecoilValue(MapDiscoveryAtom);
   const markers = useRecoilValue(MapMarkersAtom);
   const selectedMarker = useRecoilValue(MapInfoAtom);
   const [on, setOn] = useState(true);
   const resultSummary =
-    markers.length > 0 ? `${markers.length}곳이 지도에 준비됐어요` : "장소 검색이 아직 없어요";
+    discoveryState.phase === "loading"
+      ? `${discoveryState.keyword || "주변 장소"}를 지도에 정리하고 있어요`
+      : discoveryState.phase === "empty"
+        ? `${discoveryState.keyword || "선택한 조건"} 주변에는 비교할 장소가 아직 없어요`
+        : discoveryState.phase === "error"
+          ? "검색 결과를 다시 불러와 주세요"
+          : markers.length > 0
+            ? `${markers.length}곳이 지도에 준비됐어요`
+            : "장소를 입력하면 지도와 결과 목록이 함께 열립니다.";
   const helperCopy =
-    selectedMarker?.content ?? "검색 후 마커를 누르면 여기서 바로 비교할 수 있어요.";
-  const panelStateLabel = selectedMarker ? "Detail open" : "Browse";
+    selectedMarker?.content ??
+    (discoveryState.phase === "loading"
+      ? "결과가 준비되면 선택 흐름도 같은 패널에서 이어집니다."
+      : discoveryState.phase === "empty"
+        ? "다른 공원, 체육관 이름으로 범위를 조금 넓혀보세요."
+        : discoveryState.phase === "error"
+          ? "같은 검색 패널에서 다시 시도하면 흐름을 이어갈 수 있어요."
+          : "검색 후 마커를 누르면 여기서 바로 비교할 수 있어요.");
+  const resultBadgeLabel =
+    discoveryState.phase === "loading"
+      ? "Searching"
+      : discoveryState.phase === "empty"
+        ? "No results"
+        : discoveryState.phase === "error"
+          ? "Retry"
+          : markers.length > 0
+            ? `${markers.length} results`
+            : "Start search";
+  const panelStateLabel = selectedMarker
+    ? "Detail open"
+    : discoveryState.phase === "loading"
+      ? "Updating"
+      : "Browse";
 
   useEffect(() => {
     const cachedData = localStorage.getItem(`cachedData:${path}`);
@@ -53,7 +87,7 @@ const SideTab = ({ path }: { path: string }) => {
                   Discovery panel
                 </span>
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  {markers.length > 0 ? `${markers.length} results` : "Ready"}
+                  {resultBadgeLabel}
                 </span>
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                   {panelStateLabel}
@@ -95,10 +129,19 @@ const SideTab = ({ path }: { path: string }) => {
                 Current focus
               </p>
               <p className="mt-2 truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                {selectedMarker?.content ?? "아직 선택된 장소가 없어요"}
+                {selectedMarker?.content ??
+                  (discoveryState.phase === "loading"
+                    ? "검색 결과 준비 중"
+                    : discoveryState.phase === "empty"
+                      ? "다른 장소를 찾아보세요"
+                      : discoveryState.phase === "error"
+                        ? "검색 재시도 필요"
+                        : "아직 선택된 장소가 없어요")}
               </p>
               <p className="mt-1 text-xs leading-5 text-slate-500">
-                패널을 다시 열면 검색과 결과 목록을 바로 이어서 볼 수 있습니다.
+                {discoveryState.phase === "loading"
+                  ? "패널을 다시 열면 검색 진행 상태와 새 결과를 바로 이어서 볼 수 있습니다."
+                  : "패널을 다시 열면 검색과 결과 목록을 바로 이어서 볼 수 있습니다."}
               </p>
             </div>
           </div>

@@ -1,23 +1,90 @@
 import { useRecoilValue } from "recoil";
+import Button from "@/components/common/Button";
 import EmptyState from "@/components/common/EmptyState";
+import Loader from "@/components/common/Loader";
 import Panel from "@/components/common/Panel";
-import { MapMarkersAtom } from "@/recoil/map";
+import { MapDiscoveryAtom, MapMarkersAtom } from "@/recoil/map";
 import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
 
 export default function SearchList({
   showHeader = true,
+  onRetrySearch,
+  onRefineSearch,
 }: {
   showHeader?: boolean;
+  onRetrySearch?: () => void;
+  onRefineSearch?: () => void;
 }) {
   const markers = useRecoilValue(MapMarkersAtom);
+  const discoveryState = useRecoilValue(MapDiscoveryAtom);
   const { selectedMarker, focusMarker } = useMarkerSelection();
+
+  if (discoveryState.phase === "loading") {
+    return (
+      <Loader
+        surface="panel"
+        label={
+          discoveryState.keyword
+            ? `${discoveryState.keyword} 주변 장소를 찾고 있어요`
+            : "주변 장소를 찾고 있어요"
+        }
+        description="결과가 준비되면 지도 마커와 비교 카드가 함께 업데이트됩니다."
+      />
+    );
+  }
+
+  if (discoveryState.phase === "error") {
+    return (
+      <EmptyState
+        eyebrow="Search error"
+        title="검색 결과를 불러오지 못했어요"
+        description={
+          discoveryState.errorMessage ??
+          "잠시 후 다시 시도하거나 다른 장소 이름으로 다시 검색해 주세요."
+        }
+        action={
+          onRetrySearch ? (
+            <Button type="button" size="sm" onClick={onRetrySearch}>
+              다시 시도
+            </Button>
+          ) : undefined
+        }
+      />
+    );
+  }
+
+  if (discoveryState.phase === "empty") {
+    return (
+      <EmptyState
+        eyebrow="No nearby places"
+        title={
+          discoveryState.keyword
+            ? `${discoveryState.keyword} 주변 장소가 아직 없어요`
+            : "조건에 맞는 장소가 아직 없어요"
+        }
+        description="검색어를 조금 넓히거나 다른 공원, 체육관 이름으로 다시 찾아보세요."
+        action={
+          onRefineSearch ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={onRefineSearch}
+            >
+              검색어 수정하기
+            </Button>
+          ) : undefined
+        }
+      />
+    );
+  }
 
   if (markers.length === 0) {
     return (
       <EmptyState
-        eyebrow="Search ready"
-        title="검색 결과가 아직 없어요"
-        description="장소를 검색하면 주변 운동 메이트 모집과 비교할 수 있는 후보를 여기에 보여드릴게요."
+        eyebrow="Start search"
+        title="먼저 장소를 검색해보세요"
+        description="공원이나 체육관 이름을 입력하면 지도와 결과 목록이 함께 열립니다."
       />
     );
   }

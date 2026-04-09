@@ -19,13 +19,14 @@ Last updated: 2026-04-09
 - Active milestone: `M2`
 - Current phase: `M2 in progress`
 - Immediate next task:
-  Expand the map discovery flow from connected selection to full empty/loading/error handling so the home exploration experience no longer relies on placeholder-feeling states.
+  Remove the remaining discovery placeholders in the home exploration flow so M2 feels productized beyond state handling and connected selection.
 
 ## Recent implementation focus
 
 - M1 is complete.
 - M2 work has started by connecting map selection, list selection, and panel detail flow.
 - The mobile bottom-sheet and desktop side-panel now present the same connected discovery surface.
+- Home discovery now carries shared loading/empty/error state across the map, panel, and result list.
 - Home is still the active map-first entry point.
 
 ## Files most likely relevant next
@@ -34,8 +35,9 @@ Last updated: 2026-04-09
 - `client/src/components/side-tab/search/SearchTab.tsx`
 - `client/src/components/side-tab/search/SearchList.tsx`
 - `client/src/components/map/BaseMap.tsx`
+- `client/src/pages/Home.tsx`
 - `client/src/components/common/Card.tsx`
-- `client/src/hooks/map/useMarkerSelection.ts`
+- `client/src/recoil/map/index.ts`
 - `progress/current.md`
 
 ## Recent commits

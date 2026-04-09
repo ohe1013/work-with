@@ -20,6 +20,20 @@ export interface MapUserInfo {
   };
 }
 
+export type MapDiscoveryPhase =
+  | "idle"
+  | "loading"
+  | "results"
+  | "empty"
+  | "error";
+
+export interface MapDiscoveryState {
+  phase: MapDiscoveryPhase;
+  keyword: string;
+  resultCount: number;
+  errorMessage?: string;
+}
+
 export const MapUserAtom = atom<MapUserInfo>({
   key: "MapUserAtom",
   default: {
@@ -39,6 +53,15 @@ export const MapAtom = atom<unknown>({
 export const MapMarkersAtom = atom<MarkerWithId[]>({
   key: "MapMarkersAtom",
   default: [],
+});
+
+export const MapDiscoveryAtom = atom<MapDiscoveryState>({
+  key: "MapDiscoveryAtom",
+  default: {
+    phase: "idle",
+    keyword: "",
+    resultCount: 0,
+  },
 });
 
 export const MapInfoAtom = atom<MarkerWithId>({
