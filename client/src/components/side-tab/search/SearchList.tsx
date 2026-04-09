@@ -4,7 +4,11 @@ import Panel from "@/components/common/Panel";
 import { MapMarkersAtom } from "@/recoil/map";
 import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
 
-export default function SearchList() {
+export default function SearchList({
+  showHeader = true,
+}: {
+  showHeader?: boolean;
+}) {
   const markers = useRecoilValue(MapMarkersAtom);
   const { selectedMarker, focusMarker } = useMarkerSelection();
 
@@ -20,19 +24,21 @@ export default function SearchList() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-col gap-1.5 px-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            Map results
+      {showHeader ? (
+        <div className="flex flex-col gap-1.5 px-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              Map results
+            </p>
+            <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {markers.length}곳을 바로 비교할 수 있어요
+            </h3>
+          </div>
+          <p className="text-xs leading-5 text-slate-500">
+            카드나 마커를 누르면 같은 상세가 바로 열립니다.
           </p>
-          <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-            {markers.length}곳을 바로 비교할 수 있어요
-          </h3>
         </div>
-        <p className="text-xs leading-5 text-slate-500">
-          카드나 마커를 누르면 같은 상세가 바로 열립니다.
-        </p>
-      </div>
+      ) : null}
 
       {markers.map((marker, idx) => (
         <Panel

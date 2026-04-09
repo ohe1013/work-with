@@ -4,6 +4,7 @@ import {
   FormEventHandler,
   Suspense,
   useDeferredValue,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -31,9 +32,11 @@ const SearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
   const queryKey = useDeferredValue(keyword);
   const inputRef = useRef<HTMLInputElement>(null);
+  const detailSurfaceRef = useRef<HTMLDivElement>(null);
   const activeSuggestList = isFocused;
   const normalizedKeyword = keyword.trim();
   const isSearchDisabled = normalizedKeyword.length === 0;
+  const hasSelection = Boolean(selectedMarker);
   const resultSummary =
     markers.length > 0 ? `${markers.length}곳 표시 중` : "검색 전";
   const selectedSummary =
@@ -48,6 +51,17 @@ const SearchBar = () => {
     : markers.length > 0
       ? "리스트 카드나 맵 마커를 누르면 같은 상세 패널이 여기서 열립니다."
       : "먼저 장소를 검색하면 결과 목록과 상세 패널이 함께 활성화됩니다.";
+
+  useEffect(() => {
+    if (!hasSelection) {
+      return;
+    }
+
+    detailSurfaceRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [hasSelection, selectedMarker?.id]);
 
   const cb = (
     resultArr: kakao.maps.services.PlacesSearchResult,
@@ -132,7 +146,14 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex h-full max-h-[min(56vh,520px)] flex-col md:max-h-[calc(100vh-236px)]">
+    <div
+      className={[
+        "flex h-full flex-col md:max-h-[calc(100vh-236px)]",
+        hasSelection
+          ? "max-h-[calc(100vh-184px)]"
+          : "max-h-[min(56vh,520px)]",
+      ].join(" ")}
+    >
       <div className="space-y-4 px-4 pb-4 pt-4 md:px-5">
         <div className="space-y-1.5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
@@ -210,7 +231,15 @@ const SearchBar = () => {
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 md:px-5">
         <div className="space-y-4">
-          <section className="space-y-3">
+          <section
+            ref={detailSurfaceRef}
+            className={[
+              "space-y-3",
+              hasSelection
+                ? "sticky top-0 z-10 rounded-[28px] bg-[rgba(248,250,252,0.96)] pb-3 pt-1 backdrop-blur-sm"
+                : "",
+            ].join(" ")}
+          >
             <div className="flex items-end justify-between gap-3 px-1">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
@@ -251,7 +280,27 @@ const SearchBar = () => {
             )}
           </section>
 
-          <SearchList></SearchList>
+          <section className="space-y-3">
+            <div className="flex flex-col gap-1.5 px-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Nearby places
+                </p>
+                <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {hasSelection
+                    ? "다른 후보를 이어서 비교해보세요"
+                    : "먼저 한 곳을 골라 상세를 열어보세요"}
+                </h3>
+              </div>
+              <p className="text-xs leading-5 text-slate-500">
+                {hasSelection
+                  ? "현재 상세는 유지한 채 다른 후보로 빠르게 전환할 수 있어요."
+                  : "카드나 마커를 누르면 상세 패널이 시트 상단에 고정됩니다."}
+              </p>
+            </div>
+
+            <SearchList showHeader={false}></SearchList>
+          </section>
         </div>
       </div>
 

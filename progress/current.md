@@ -23,17 +23,18 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Refined the map-first home layout for mobile and desktop with a denser map surface, a clearer side panel, and stronger search/result hierarchy in `client`
 - [x] Completed the remaining M1 map discovery polish by aligning loading, empty, and detail states with the shared component language in `client`
 - [x] Started M2 by connecting map selection, list selection, and panel detail flow into one shared interaction model in `client`
+- [x] Expanded the connected selection flow into a more explicit mobile bottom-sheet and desktop side-panel discovery surface in `client`
 
 ## Next up
 
-1. [ ] Expand the connected selection flow into a more complete mobile bottom-sheet / desktop side-panel discovery experience
-2. [ ] Expand map discovery state handling from component-level polish to full-flow empty/loading/error behavior
+1. [ ] Expand map discovery state handling from component-level polish to full-flow empty/loading/error behavior
+2. [ ] Remove the remaining discovery placeholders so the home exploration flow feels fully productized
 3. [ ] Split `/find` and `/regist` into real pages in milestone order
 4. [ ] Continue auth/API contract cleanup after the UI milestone
 
 ## Immediate next task
 
-Turn the new connected selection flow into a more explicit discovery surface, especially the mobile bottom-sheet and desktop side-panel detail behavior.
+Expand the map discovery flow from connected selection to full empty/loading/error handling so the home exploration experience no longer relies on placeholder-feeling states.
 
 ## Known constraints
 
@@ -43,6 +44,9 @@ Turn the new connected selection flow into a more explicit discovery surface, es
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M2 bottom-sheet / side-panel detail update
+- `2026-04-09`: `yarn --cwd client build` passed after the M2 bottom-sheet / side-panel detail update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M2 bottom-sheet / side-panel detail update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M2 connected-selection flow update
 - `2026-04-09`: `yarn --cwd client build` passed after the M2 connected-selection flow update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M2 connected-selection flow update

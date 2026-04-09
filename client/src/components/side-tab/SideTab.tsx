@@ -14,6 +14,7 @@ const SideTab = ({ path }: { path: string }) => {
     markers.length > 0 ? `${markers.length}곳이 지도에 준비됐어요` : "장소 검색이 아직 없어요";
   const helperCopy =
     selectedMarker?.content ?? "검색 후 마커를 누르면 여기서 바로 비교할 수 있어요.";
+  const panelStateLabel = selectedMarker ? "Detail open" : "Browse";
 
   useEffect(() => {
     const cachedData = localStorage.getItem(`cachedData:${path}`);
@@ -21,6 +22,12 @@ const SideTab = ({ path }: { path: string }) => {
       setCachedLayout((prev) => ({ ...prev, [path]: JSON.parse(cachedData) }));
     }
   }, [path, setCachedLayout]);
+
+  useEffect(() => {
+    if (selectedMarker) {
+      setOn(true);
+    }
+  }, [selectedMarker]);
 
   if (path !== "/") {
     return null;
@@ -48,6 +55,9 @@ const SideTab = ({ path }: { path: string }) => {
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                   {markers.length > 0 ? `${markers.length} results` : "Ready"}
                 </span>
+                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {panelStateLabel}
+                </span>
               </div>
 
               <div className="space-y-1">
@@ -55,7 +65,11 @@ const SideTab = ({ path }: { path: string }) => {
                   지금 가능한 운동 메이트
                 </h2>
                 <p className="text-sm leading-6 text-slate-500">
-                  {on ? resultSummary : helperCopy}
+                  {selectedMarker
+                    ? "선택한 장소의 상세가 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
+                    : on
+                      ? resultSummary
+                      : helperCopy}
                 </p>
               </div>
             </div>
