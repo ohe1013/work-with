@@ -1,38 +1,34 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-const secret = "";
+const secret = process.env.JWT_SECRET || "work-with-dev-secret";
+const TOKEN_EXPIRES_IN_SECONDS = 60 * 60;
 
 type JwtUserPayload = {
   email: string;
+  role: "user" | "admin";
 };
 
-const sign = (email: string) => {
-  const payload: JwtUserPayload = { email };
-
-  return jwt.sign(payload, secret, { expiresIn: "1h" }, (err, token) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-
-    console.log(token);
-  });
-};
+const sign = (payload: JwtUserPayload) =>
+  jwt.sign(payload, secret, { expiresIn: TOKEN_EXPIRES_IN_SECONDS });
 
 const verify = (token: string) => {
   try {
     const decoded = jwt.verify(token, secret) as JwtPayload & JwtUserPayload;
 
     return {
-      type: true,
-      email: decoded.email,
+      ok: true as const,
+      payload: {
+        email: decoded.email,
+        role: decoded.role,
+      },
     };
   } catch (e) {
     return {
-      type: false,
+      ok: false as const,
       message: e instanceof Error ? e.message : "Token verification failed",
     };
   }
 };
 
-export { sign, verify };
+export { sign, verify, TOKEN_EXPIRES_IN_SECONDS };
+export type { JwtUserPayload };

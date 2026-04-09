@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
@@ -18,13 +18,18 @@ export default function Login() {
     password: "",
   });
   const isDisabled = !email || !password;
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const auth = useAuth();
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
-    if (isDisabled) return false;
+    if (isDisabled || isSubmitting) return false;
+
+    setErrorMessage(null);
+    setIsSubmitting(true);
 
     auth
       .login({ email, password })
@@ -32,7 +37,14 @@ export default function Login() {
         navigate("/");
       })
       .catch((error: unknown) => {
-        console.log(error);
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "로그인 중 문제가 생겼어요."
+        );
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
@@ -71,7 +83,9 @@ export default function Login() {
 
           <Input
             label="Password"
-            bottomText="로그인은 필요한 순간에만 사용됩니다."
+            bottomText={
+              errorMessage ?? "로그인은 필요한 순간에만 사용됩니다."
+            }
           >
             <Input.TextFiledWithRef
               name="password"
@@ -79,12 +93,19 @@ export default function Login() {
               onChange={onChange}
               type="password"
               placeholder="Enter your password"
+              error={Boolean(errorMessage)}
             />
           </Input>
 
+          {errorMessage ? (
+            <p role="alert" className="text-sm leading-5 text-rose-600">
+              {errorMessage}
+            </p>
+          ) : null}
+
           <div className="space-y-3 pt-2">
-            <Button isDisabled={isDisabled} type="submit">
-              Login
+            <Button isDisabled={isDisabled || isSubmitting} type="submit">
+              {isSubmitting ? "로그인 중..." : "Login"}
             </Button>
             <Button variant="ghost" type="button">
               Forgot password?

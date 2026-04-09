@@ -1,24 +1,22 @@
 import express from "express";
 import cors from "cors";
 import https from "https";
-import http from "http";
 import crypto from "crypto";
-import { verifyToken } from "./middleware/tokenMiddleware.ts";
 import axios from "axios";
+import { login } from "./controller/authController.ts";
+
 const app = express();
 const origin = "http://localhost:5173";
-app.all("/*", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
-app.use(cors());
-// app.get("/", verifyToken, async (req, res) => {
-//     res.send("xs ");
-// });
-// app.post("/api/login", verifyToken, async (req, res) => {
-//     res.send({ token: "hi" });
-// });
+app.use(
+  cors({
+    origin,
+    credentials: true,
+  })
+);
+app.use(express.json());
+
+app.post("/api/login", login);
+
 const allowLegacyRenegotiationforNodeJsOptions = {
   httpsAgent: new https.Agent({
     // for self signed you could also add
@@ -32,6 +30,7 @@ const fetchKakaoSuggest = async (baseURL: string) =>
     ...allowLegacyRenegotiationforNodeJsOptions,
     baseURL,
   });
+
 app.get("/kakao/get/search", async function (req, res) {
   const { query } = req;
   const { keyword } = query;
@@ -46,4 +45,5 @@ app.get("/kakao/get/search", async function (req, res) {
     res.json({ message: err.response.data.message });
   }
 });
+
 app.listen(3000, () => console.log("nodemon"));

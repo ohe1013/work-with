@@ -1,47 +1,54 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "../../api/auth/authApi";
+import type { AuthSession, LoginForm } from "../../types/auth";
+
+const AUTH_SESSION_STORAGE_KEY = "work-with.auth.session";
+
+const readStoredSession = (): AuthSession | null => {
+  const stored = localStorage.getItem(AUTH_SESSION_STORAGE_KEY);
+  if (!stored) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(stored) as AuthSession;
+  } catch (_error) {
+    localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
+    return null;
+  }
+};
 
 export function useAuth() {
-  const [token, setToken] = useState<string | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    const storedToken = token;
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    setSession(readStoredSession());
   }, []);
 
-  const saveToken = (token: string) => {
-    localStorage.setItem("token", JSON.stringify(token));
+  const saveSession = (nextSession: AuthSession) => {
+    localStorage.setItem(
+      AUTH_SESSION_STORAGE_KEY,
+      JSON.stringify(nextSession)
+    );
   };
 
-  const login = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
-    try {
-      const response = await signIn({ email, password });
-      if (!response.ok) throw new Error("로그인 실패");
-      const data = await response.json();
-      const newToken = data.token;
-      if (!newToken) throw new Error("로그인 실패");
-      setToken(newToken);
-      saveToken(newToken);
-    } catch (error) {
-      throw new Error("Authentication failed");
-    }
+  const login = async ({ email, password }: LoginForm) => {
+    const nextSession = await signIn({ email, password });
+    setSession(nextSession);
+    saveSession(nextSession);
+    return nextSession;
   };
 
   const logout = () => {
-    setToken(null);
-    localStorage.removeItem("token");
+    setSession(null);
+    localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
   };
 
-  return { token, login, logout };
+  return {
+    isAuthenticated: Boolean(session?.token),
+    login,
+    logout,
+    token: session?.token ?? null,
+    user: session?.user ?? null,
+  };
 }

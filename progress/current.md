@@ -8,7 +8,7 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M4 ready to start
+- Phase: M4 in progress
 - Active milestone: M4
 - Working mode: milestone-by-milestone
 
@@ -28,26 +28,30 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Completed M2 by removing the remaining home discovery placeholders and replacing them with productized exploration copy, guides, and selection briefs in `client`
 - [x] Started M3 by turning `/find` into a real condition-based discovery page with its own filters, map/result comparison surface, and shared search execution flow in `client`
 - [x] Completed M3 by turning `/regist` into a real staged posting flow with sectioned inputs, validation, a pre-submit summary, and a local success state in `client`
+- [x] Started M4 by aligning the frontend and server auth flow around a stable login contract, shared session storage, and a working `/api/login` endpoint in `client` and `server`
 
 ## Next up
 
-1. [ ] Align the frontend and server auth flow around a stable login contract instead of the current incomplete state
-2. [ ] Replace mocked work-with registration/detail data paths with explicit API contracts
-3. [ ] Document the current search / auth / posting request-response shapes for the next milestone
+1. [ ] Replace mocked work-with registration/detail data paths with explicit API contracts
+2. [ ] Document the current search / auth / posting request-response shapes for the next milestone
 
 ## Immediate next task
 
-Start M4 by aligning the frontend and server auth flow around a stable login contract instead of the current incomplete state.
+Replace mocked work-with registration/detail data paths with explicit API contracts so the posting flow stops depending on local client test data.
 
 ## Known constraints
 
-- Server auth flow is still incomplete
+- The login flow now uses a stable demo contract, but it still authenticates against a fixed development credential set instead of persisted user data
 - Registration success is still a local UI flow and does not persist to the server yet
 - Work-with detail data is still backed by local test data on the client side
 - `docker-compose.dev.yaml` still does not start the Node server
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M4 auth contract alignment update
+- `2026-04-09`: `yarn --cwd client build` passed after the M4 auth contract alignment update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M4 auth contract alignment update
+- `2026-04-09`: `yarn --cwd server build` passed after the M4 auth contract alignment update; `server/package.json` still has no license field
 - `2026-04-09`: `yarn --cwd client lint` passed after the M3 `/regist` route split update
 - `2026-04-09`: `yarn --cwd client build` passed after the M3 `/regist` route split update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M3 `/regist` route split update

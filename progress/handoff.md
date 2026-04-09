@@ -17,25 +17,24 @@ Last updated: 2026-04-09
 ## Current handoff snapshot
 
 - Active milestone: `M4`
-- Current phase: `M4 ready to start`
+- Current phase: `M4 in progress`
 - Immediate next task:
-  Start M4 by aligning the frontend and server auth flow around a stable login contract instead of the current incomplete state.
+  Replace mocked work-with registration/detail data paths with explicit API contracts so the posting flow stops depending on local client test data.
 
 ## Recent implementation focus
 
 - M1 is complete.
 - M2 is complete.
 - M3 is complete.
-- The mobile bottom-sheet and desktop side-panel now present the same connected discovery surface.
-- Home discovery now carries shared loading/empty/error state across the map, panel, and result list.
-- `/find` now has its own condition-based discovery layout that reuses shared map search execution.
-- `/regist` now has its own staged posting flow with validation, pre-submit summary, and success-state UI.
+- M4 has started with a stable demo login contract between the frontend and server.
+- Client auth now uses a shared typed session shape, one storage key, and user-visible login failure handling.
+- Server now exposes `/api/login` with JSON body parsing plus consistent JWT signing and verification helpers.
 
 ## Files most likely relevant next
 
-- `client/src/pages/Login.tsx`
-- `client/src/hooks/auth`
-- `client/src/api/auth`
+- `client/src/api/map/workWith/index.ts`
+- `client/src/pages/Regist.tsx`
+- `client/src/pages/Home.tsx`
 - `client/src/service`
 - `server/src`
 - `docs`
@@ -43,13 +42,13 @@ Last updated: 2026-04-09
 
 ## Recent commits
 
+- `356a7f9` `Split regist route into real page`
 - `680b19b` `Split find route into real page`
 - `8bb9052` `Complete M2 home discovery polish`
-- `2dba558` `Expand M2 discovery state handling`
 
 ## Known working assumptions
 
-- Auth is still incomplete and out of scope unless the active milestone moves there.
+- Auth now has a stable demo login contract, but it still relies on fixed development credentials rather than persisted user storage.
 - Registration success is still local-only and not persisted yet.
 - Work-with detail data still comes from client-side test data.
 - `work-with-codex-setup.patch` is currently untracked in the repo root; ignore it unless the user explicitly asks about it.
@@ -58,6 +57,6 @@ Last updated: 2026-04-09
 ## Update checklist for future turns
 
 - Refresh the active milestone / Immediate next task summary if it changed.
-- Replace the “Recent implementation focus” bullets when the center of gravity moves.
-- Update the “Files most likely relevant next” list if the hot path changes.
+- Replace the `Recent implementation focus` bullets when the center of gravity moves.
+- Update the `Files most likely relevant next` list if the hot path changes.
 - Append or rotate the latest commit hashes if a meaningful checkpoint was committed.

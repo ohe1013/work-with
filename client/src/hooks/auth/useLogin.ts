@@ -1,36 +1,33 @@
-import { loginForm } from "../../types/auth";
+import { signIn } from "../../api/auth/authApi";
+import type { AuthSession, LoginForm } from "../../types/auth";
 
-const fetchToken = async ({ email, password }: loginForm): Promise<string> => {
+const AUTH_SESSION_STORAGE_KEY = "work-with.auth.session";
+
+const fetchSession = async ({
+  email,
+  password,
+}: LoginForm): Promise<AuthSession> => {
+  const session = await signIn({ email, password });
+  saveSession(session);
+  return session;
+};
+
+const getStoredSession = (): AuthSession | null => {
+  const stored = localStorage.getItem(AUTH_SESSION_STORAGE_KEY);
+  if (!stored) {
+    return null;
+  }
+
   try {
-    const token = await login({ email, password });
-    saveToken(token);
-    return token;
-  } catch (error) {
-    throw new Error("Failed to fetch token");
+    return JSON.parse(stored) as AuthSession;
+  } catch (_error) {
+    localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
+    return null;
   }
 };
 
-const login = async ({ email, password }: loginForm): Promise<string> => {
-  const response = await fetch("http://localhost:3000/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  console.log(response);
-  if (!response.ok) {
-    throw new Error("Authentication failed");
-  }
-  const data = await response.json();
-  console.log(data);
-  return data.token;
+const saveSession = (session: AuthSession) => {
+  localStorage.setItem(AUTH_SESSION_STORAGE_KEY, JSON.stringify(session));
 };
 
-const getToken = () => {
-  return localStorage.getItem("token");
-};
-
-const saveToken = (token: string) => {
-  localStorage.setItem("token", token);
-};
-
-export { fetchToken, login, saveToken, getToken };
+export { fetchSession, getStoredSession, saveSession };
