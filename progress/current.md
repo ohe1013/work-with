@@ -8,7 +8,7 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: Ready for M2 implementation
+- Phase: M2 in progress
 - Active milestone: M2
 - Working mode: milestone-by-milestone
 
@@ -22,17 +22,18 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Introduced M1 shared design tokens, shared UI primitives, and an updated app shell in `client`
 - [x] Refined the map-first home layout for mobile and desktop with a denser map surface, a clearer side panel, and stronger search/result hierarchy in `client`
 - [x] Completed the remaining M1 map discovery polish by aligning loading, empty, and detail states with the shared component language in `client`
+- [x] Started M2 by connecting map selection, list selection, and panel detail flow into one shared interaction model in `client`
 
 ## Next up
 
-1. [ ] Start M2 by tightening map/list selection and turning the current map detail flow into a more explicit discovery experience
+1. [ ] Expand the connected selection flow into a more complete mobile bottom-sheet / desktop side-panel discovery experience
 2. [ ] Expand map discovery state handling from component-level polish to full-flow empty/loading/error behavior
 3. [ ] Split `/find` and `/regist` into real pages in milestone order
 4. [ ] Continue auth/API contract cleanup after the UI milestone
 
 ## Immediate next task
 
-Start M2 by making map selection, list selection, and detail presentation feel like one connected flow instead of separate interactions.
+Turn the new connected selection flow into a more explicit discovery surface, especially the mobile bottom-sheet and desktop side-panel detail behavior.
 
 ## Known constraints
 
@@ -42,6 +43,9 @@ Start M2 by making map selection, list selection, and detail presentation feel l
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M2 connected-selection flow update
+- `2026-04-09`: `yarn --cwd client build` passed after the M2 connected-selection flow update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M2 connected-selection flow update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M1 discovery-state polish update
 - `2026-04-09`: `yarn --cwd client build` passed after the M1 discovery-state polish update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M1 discovery-state polish update

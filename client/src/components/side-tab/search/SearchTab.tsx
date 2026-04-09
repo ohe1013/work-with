@@ -1,4 +1,4 @@
-import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   ChangeEvent,
   FormEventHandler,
@@ -9,9 +9,12 @@ import {
 } from "react";
 import Pagination from "../../common/Pagination";
 import Button from "@/components/common/Button";
+import Card from "@/components/common/Card";
+import EmptyState from "@/components/common/EmptyState";
 import Loader from "@/components/common/Loader";
 import SearchField from "@/components/common/SearchField";
-import { MapInfoAtom, MapMarkersAtom, MapUserAtom } from "@/recoil/map";
+import { MapMarkersAtom, MapUserAtom } from "@/recoil/map";
+import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
 import { MarkerWithId } from "@/types/map";
 import { pageClickType } from "../../../types/util";
 import { getSearchList } from "../../../service/search/kakaoSearch";
@@ -21,20 +24,30 @@ import SuggestList from "./SuggestList";
 const SearchBar = () => {
   const [keyword, setKeyword] = useState("");
   const markers = useRecoilValue(MapMarkersAtom);
-  const selectedMarker = useRecoilValue(MapInfoAtom);
   const setMarkers = useSetRecoilState(MapMarkersAtom);
-  const resetSelectedMarker = useResetRecoilState(MapInfoAtom);
   const mapInfo = useRecoilValue(MapUserAtom);
+  const { selectedMarker, clearSelectedMarker } = useMarkerSelection();
   const [pagination, setPagination] = useState<kakao.maps.Pagination>();
-  const [isfocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const queryKey = useDeferredValue(keyword);
   const inputRef = useRef<HTMLInputElement>(null);
-  const activeSuggestList = isfocused;
+  const activeSuggestList = isFocused;
   const normalizedKeyword = keyword.trim();
   const isSearchDisabled = normalizedKeyword.length === 0;
   const resultSummary =
     markers.length > 0 ? `${markers.length}곳 표시 중` : "검색 전";
-  const selectedSummary = selectedMarker?.content ?? "마커를 누르면 미리보기가 열려요";
+  const selectedSummary =
+    selectedMarker?.content ?? "마커를 누르면 미리보기가 열려요";
+  const detailTitle = selectedMarker
+    ? "선택한 장소의 모집 흐름"
+    : markers.length > 0
+      ? "장소를 하나 선택하면 상세가 이어집니다"
+      : "검색 후 상세 흐름이 이어집니다";
+  const detailDescription = selectedMarker
+    ? "리스트와 지도는 같은 선택 상태를 공유합니다."
+    : markers.length > 0
+      ? "리스트 카드나 맵 마커를 누르면 같은 상세 패널이 여기서 열립니다."
+      : "먼저 장소를 검색하면 결과 목록과 상세 패널이 함께 활성화됩니다.";
 
   const cb = (
     resultArr: kakao.maps.services.PlacesSearchResult,
@@ -42,14 +55,14 @@ const SearchBar = () => {
     currentPagination: kakao.maps.Pagination
   ) => {
     if (status === kakao.maps.services.Status.OK) {
-      const markers: MarkerWithId[] = [];
+      const nextMarkers: MarkerWithId[] = [];
 
       for (const result of resultArr) {
         const categorySegments = result.category_name.split(">");
         const categoryName =
           categorySegments[categorySegments.length - 1].trim();
 
-        markers.push({
+        nextMarkers.push({
           id: result.id,
           position: {
             lat: +result.y,
@@ -67,8 +80,8 @@ const SearchBar = () => {
         setPagination(currentPagination);
       }
 
-      resetSelectedMarker();
-      setMarkers(markers);
+      clearSelectedMarker();
+      setMarkers(nextMarkers);
     }
   };
 
@@ -115,8 +128,7 @@ const SearchBar = () => {
   };
 
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const newKeyword = e.target.value;
-    setKeyword(newKeyword);
+    setKeyword(e.target.value);
   };
 
   return (
@@ -173,7 +185,7 @@ const SearchBar = () => {
               {selectedSummary}
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              지도 위 모집 미리보기와 리스트 선택 상태를 맞춰둡니다.
+              지도와 리스트가 같은 선택 상태를 유지합니다.
             </p>
           </div>
         </div>
@@ -197,7 +209,50 @@ const SearchBar = () => {
       </Suspense>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 md:px-5">
-        <SearchList></SearchList>
+        <div className="space-y-4">
+          <section className="space-y-3">
+            <div className="flex items-end justify-between gap-3 px-1">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Detail flow
+                </p>
+                <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {detailTitle}
+                </h3>
+              </div>
+
+              {selectedMarker ? (
+                <button
+                  type="button"
+                  onClick={clearSelectedMarker}
+                  className="inline-flex min-h-[36px] items-center justify-center rounded-full bg-slate-100 px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+                >
+                  선택 해제
+                </button>
+              ) : null}
+            </div>
+
+            {selectedMarker ? (
+              <Card
+                id={selectedMarker.id}
+                title={selectedMarker.content}
+                position={selectedMarker.position}
+                addressName={selectedMarker.address_name}
+                phone={selectedMarker.phone}
+                onClose={clearSelectedMarker}
+                className="w-full"
+              />
+            ) : (
+              <EmptyState
+                eyebrow="Selection flow"
+                title={detailTitle}
+                description={detailDescription}
+              />
+            )}
+          </section>
+
+          <SearchList></SearchList>
+        </div>
       </div>
 
       <Pagination

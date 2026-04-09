@@ -1,48 +1,47 @@
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import Card from "../common/Card";
-import { MarkerWithId } from "../../types/map";
 import { useMapStatus } from "../../hooks/map/useMapStatus";
-import { MapInfoAtom } from "@/recoil/map";
+import { useMarkerSelection } from "../../hooks/map/useMarkerSelection";
 
 export default function BaseMap() {
-  const [info, setInfo] = useRecoilState<MarkerWithId>(MapInfoAtom);
-  const resetInfo = useResetRecoilState(MapInfoAtom);
   const { markers, mapInfo } = useMapStatus();
+  const { selectedMarker, focusMarker, clearSelectedMarker } =
+    useMarkerSelection();
 
   return (
-    <>
-      <Map // 로드뷰를 표시할 Container
-        center={mapInfo.center}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        level={mapInfo.zoom}
-      >
+    <Map
+      center={mapInfo.center}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+      level={mapInfo.zoom}
+      onClick={clearSelectedMarker}
+    >
+      {selectedMarker ? (
         <CustomOverlayMap
-          position={{
-            lat: mapInfo.center.lat,
-            lng: mapInfo.center.lng,
-          }}
-        ></CustomOverlayMap>
-        {markers.map((marker) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          >
-            {info && info.id === marker.id && (
-              <Card
-                id={marker.id}
-                title={marker.content}
-                position={marker.position}
-                onClose={resetInfo}
-              ></Card>
-            )}
-          </MapMarker>
-        ))}
-      </Map>
-    </>
+          position={selectedMarker.position}
+          yAnchor={1.35}
+          xAnchor={0.5}
+        >
+          <div className="pointer-events-none inline-flex items-center gap-2 rounded-full bg-slate-950/84 px-3 py-2 text-xs font-semibold text-white shadow-[0_14px_34px_rgba(15,23,42,0.24)] backdrop-blur-sm">
+            <span
+              className="h-2 w-2 rounded-full bg-[rgb(var(--color-accent))]"
+              aria-hidden="true"
+            />
+            <span className="max-w-[180px] truncate">
+              {selectedMarker.content}
+            </span>
+          </div>
+        </CustomOverlayMap>
+      ) : null}
+
+      {markers.map((marker) => (
+        <MapMarker
+          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+          position={marker.position}
+          onClick={() => focusMarker(marker)}
+        />
+      ))}
+    </Map>
   );
 }

@@ -1,19 +1,12 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import EmptyState from "@/components/common/EmptyState";
 import Panel from "@/components/common/Panel";
-import { MarkerWithId } from "../../../types/map";
-import { MapInfoAtom, MapMarkersAtom, MapUserAtom } from "@/recoil/map";
+import { MapMarkersAtom } from "@/recoil/map";
+import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
 
 export default function SearchList() {
   const markers = useRecoilValue(MapMarkersAtom);
-  const selectedMarker = useRecoilValue(MapInfoAtom);
-  const setInfo = useSetRecoilState<MarkerWithId>(MapInfoAtom);
-  const setMapInfo = useSetRecoilState(MapUserAtom);
-
-  const clickHandler = (marker: MarkerWithId) => {
-    setInfo(marker);
-    setMapInfo({ zoom: 3, center: { ...marker.position } });
-  };
+  const { selectedMarker, focusMarker } = useMarkerSelection();
 
   if (markers.length === 0) {
     return (
@@ -37,7 +30,7 @@ export default function SearchList() {
           </h3>
         </div>
         <p className="text-xs leading-5 text-slate-500">
-          카드를 누르면 지도 중심이 이동합니다.
+          카드나 마커를 누르면 같은 상세가 바로 열립니다.
         </p>
       </div>
 
@@ -54,7 +47,8 @@ export default function SearchList() {
         >
           <button
             type="button"
-            onClick={() => clickHandler(marker)}
+            onClick={() => focusMarker(marker, { toggle: true })}
+            aria-pressed={selectedMarker?.id === marker.id}
             className={[
               "flex w-full flex-col gap-3 px-4 py-4 text-left transition hover:bg-white/60",
               selectedMarker?.id === marker.id ? "bg-white/70" : "",

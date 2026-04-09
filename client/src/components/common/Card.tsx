@@ -48,12 +48,18 @@ export default function Card({
   id,
   title,
   position,
+  addressName,
+  phone,
   onClose,
+  className = "",
 }: {
   id: string;
   title: string;
   position: { lat: number; lng: number };
+  addressName?: string;
+  phone?: string;
   onClose?: () => void;
+  className?: string;
 }) {
   const { data: workWithList, isLoading } = useQuery({
     queryKey: ["workWith", id],
@@ -64,7 +70,12 @@ export default function Card({
   const hasMatches = (workWithList?.length ?? 0) > 0;
 
   return (
-    <div className="w-[320px] rounded-[28px] border border-white/80 bg-white/95 p-3 shadow-[0_26px_60px_rgba(15,23,42,0.20)] backdrop-blur-xl">
+    <div
+      className={[
+        "w-[320px] rounded-[28px] border border-white/80 bg-white/95 p-3 shadow-[0_26px_60px_rgba(15,23,42,0.20)] backdrop-blur-xl",
+        className,
+      ].join(" ")}
+    >
       <div className="overflow-hidden rounded-[22px]">
         <Roadview
           style={{ width: "100%", height: "148px" }}
@@ -84,6 +95,14 @@ export default function Card({
             <p className="mt-1 text-xs leading-5 text-slate-500">
               지도를 벗어나지 않고 현재 열려 있는 모집 상태만 빠르게 비교합니다.
             </p>
+            {addressName ? (
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                {addressName}
+              </p>
+            ) : null}
+            {phone ? (
+              <p className="mt-1 text-xs leading-5 text-slate-500">{phone}</p>
+            ) : null}
           </div>
 
           {onClose ? (
