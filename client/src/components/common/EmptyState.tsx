@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Panel from "./Panel";
 
 interface EmptyStateProps {
+  eyebrow?: string;
   title: string;
   description: string;
   icon?: ReactNode;
@@ -10,6 +11,7 @@ interface EmptyStateProps {
 }
 
 export default function EmptyState({
+  eyebrow = "Map discovery",
   title,
   description,
   icon,
@@ -20,7 +22,7 @@ export default function EmptyState({
     <Panel
       tone="soft"
       className={[
-        "flex flex-col items-start gap-3 px-5 py-5 text-left",
+        "flex flex-col items-start gap-4 rounded-[24px] px-5 py-5 text-left",
         className,
       ].join(" ")}
     >
@@ -31,13 +33,18 @@ export default function EmptyState({
           </span>
         )}
       </div>
-      <div className="space-y-1">
+
+      <div className="space-y-1.5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          {eyebrow}
+        </p>
         <h3 className="text-base font-semibold tracking-[-0.02em] text-slate-900">
           {title}
         </h3>
         <p className="text-sm leading-6 text-slate-500">{description}</p>
       </div>
-      {action}
+
+      {action ? <div className="w-full">{action}</div> : null}
     </Panel>
   );
 }

@@ -1,5 +1,5 @@
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import Card from "../common/Card";
 import { MarkerWithId } from "../../types/map";
 import { useMapStatus } from "../../hooks/map/useMapStatus";
@@ -7,6 +7,7 @@ import { MapInfoAtom } from "@/recoil/map";
 
 export default function BaseMap() {
   const [info, setInfo] = useRecoilState<MarkerWithId>(MapInfoAtom);
+  const resetInfo = useResetRecoilState(MapInfoAtom);
   const { markers, mapInfo } = useMapStatus();
 
   return (
@@ -36,6 +37,7 @@ export default function BaseMap() {
                 id={marker.id}
                 title={marker.content}
                 position={marker.position}
+                onClose={resetInfo}
               ></Card>
             )}
           </MapMarker>

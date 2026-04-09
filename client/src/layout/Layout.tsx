@@ -38,7 +38,6 @@ const menuList = [
 function Layout() {
   const [activeTabState, setActiveTabState] =
     useRecoilState<PageEnum>(pageAtom);
-
   const location = useLocation();
   const findRouteByPath = (path: string) => {
     return routes[0].children.find((route) => route.path === path);
@@ -58,7 +57,7 @@ function Layout() {
       <Header currentPage={activeTabState} />
 
       <div className="px-3 pb-4 md:px-4">
-        <div className="flex gap-4">
+        <div className="flex gap-3 xl:gap-4">
           <aside className="hidden md:block">
             <Panel className="sticky top-[104px] flex w-[96px] flex-col items-center gap-4 px-3 py-4">
               {menuList.map((menu) => {
@@ -86,7 +85,7 @@ function Layout() {
             </Panel>
           </aside>
 
-          <div className="relative flex min-h-[calc(100vh-126px)] flex-1 overflow-hidden md:min-h-[calc(100vh-108px)]">
+          <div className="relative flex min-h-[calc(100vh-126px)] flex-1 gap-3 md:min-h-[calc(100vh-108px)] xl:gap-4">
             <SideTab path={location.pathname}></SideTab>
             <main className="min-w-0 flex-1">
               <Outlet />

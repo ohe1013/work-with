@@ -8,8 +8,8 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: Ready for M1 implementation
-- Active milestone: M1
+- Phase: Ready for M2 implementation
+- Active milestone: M2
 - Working mode: milestone-by-milestone
 
 ## Completed
@@ -20,17 +20,19 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Fixed frontend lint, build, and test blockers so the documented validation path now works
 - [x] Fixed backend build blockers in `server/src/util/jwt.utils.ts`
 - [x] Introduced M1 shared design tokens, shared UI primitives, and an updated app shell in `client`
+- [x] Refined the map-first home layout for mobile and desktop with a denser map surface, a clearer side panel, and stronger search/result hierarchy in `client`
+- [x] Completed the remaining M1 map discovery polish by aligning loading, empty, and detail states with the shared component language in `client`
 
 ## Next up
 
-1. [ ] Refine the home/map layout for mobile-first responsiveness
-2. [ ] Apply the shared component language more deeply across the map discovery flow
+1. [ ] Start M2 by tightening map/list selection and turning the current map detail flow into a more explicit discovery experience
+2. [ ] Expand map discovery state handling from component-level polish to full-flow empty/loading/error behavior
 3. [ ] Split `/find` and `/regist` into real pages in milestone order
 4. [ ] Continue auth/API contract cleanup after the UI milestone
 
 ## Immediate next task
 
-Refine the map-first home experience so the new shell, side panel, and map surface behave more intentionally across mobile and desktop widths.
+Start M2 by making map selection, list selection, and detail presentation feel like one connected flow instead of separate interactions.
 
 ## Known constraints
 
@@ -40,6 +42,12 @@ Refine the map-first home experience so the new shell, side panel, and map surfa
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M1 discovery-state polish update
+- `2026-04-09`: `yarn --cwd client build` passed after the M1 discovery-state polish update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M1 discovery-state polish update
+- `2026-04-09`: `yarn --cwd client lint` passed after the home/map responsive layout refinement
+- `2026-04-09`: `yarn --cwd client build` passed after the home/map responsive layout refinement; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the home/map responsive layout refinement
 - `2026-04-09`: `yarn run check` passed after the M1 shared UI system update
 - `2026-04-09`: `yarn client:lint` passed
 - `2026-04-09`: `yarn client:build` passed

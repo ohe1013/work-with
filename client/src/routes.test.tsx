@@ -44,6 +44,13 @@ describe("routes", () => {
     renderRouter("/");
 
     expect(screen.getByRole("searchbox")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "지도에서 보기" })
+    ).toBeDisabled();
+    expect(
+      screen.getByText("운동 메이트를 지도 위에서 빠르게 비교하세요")
+    ).toBeInTheDocument();
+    expect(screen.getByText("검색 결과가 아직 없어요")).toBeInTheDocument();
     expect(screen.getByTestId("kakao-map")).toBeInTheDocument();
   });
 
