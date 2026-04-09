@@ -50,7 +50,9 @@ describe("routes", () => {
     expect(
       screen.getByText("운동 메이트를 지도 위에서 빠르게 비교하세요")
     ).toBeInTheDocument();
-    expect(screen.getByText("먼저 장소를 검색해보세요")).toBeInTheDocument();
+    expect(
+      screen.getByText("먼저 어디서 만날지부터 정해볼까요?")
+    ).toBeInTheDocument();
     expect(screen.getByTestId("kakao-map")).toBeInTheDocument();
   });
 

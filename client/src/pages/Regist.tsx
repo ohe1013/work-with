@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { FormEvent, ReactNode, useState } from "react";
+import { FormEvent, ReactNode, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "@/components/common/Button";
 import EmptyState from "@/components/common/EmptyState";
@@ -69,10 +69,12 @@ function ChoiceChips<T extends string>({
   options,
   value,
   onChange,
+  getButtonRef,
 }: {
   options: readonly T[];
   value: T | "";
   onChange: (nextValue: T) => void;
+  getButtonRef?: (option: T) => ((node: HTMLButtonElement | null) => void) | undefined;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -82,6 +84,7 @@ function ChoiceChips<T extends string>({
         return (
           <button
             key={option}
+            ref={getButtonRef?.(option)}
             type="button"
             onClick={() => onChange(option)}
             className={[
@@ -207,6 +210,18 @@ function formatCreatedSchedule(item: WorkWithItem) {
 
 export default function Regist(): JSX.Element {
   const queryClient = useQueryClient();
+  const workoutButtonRefs = useRef<
+    Partial<Record<WorkoutType, HTMLButtonElement | null>>
+  >({});
+  const levelButtonRefs = useRef<
+    Partial<Record<WorkWithLevel, HTMLButtonElement | null>>
+  >({});
+  const maxCountButtonRefs = useRef<
+    Partial<Record<Exclude<MaxCountType, "">, HTMLButtonElement | null>>
+  >({});
+  const placeNameInputRef = useRef<HTMLInputElement>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const timeInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<RegistForm>({
     workoutType: "",
     placeName: "",
@@ -237,6 +252,37 @@ export default function Regist(): JSX.Element {
   const summaryNote = form.note.trim() || "추가 안내 없이 가볍게 모집합니다.";
   const progressLabel = `${completedRequiredCount}/${requiredCount}개 필수 항목 완료`;
   const readyToPreview = isFormValid(validateForm(form));
+
+  const focusNextMissingField = () => {
+    if (!form.workoutType) {
+      workoutButtonRefs.current[workoutOptions[0]]?.focus();
+      return;
+    }
+
+    if (!form.placeName.trim()) {
+      placeNameInputRef.current?.focus();
+      return;
+    }
+
+    if (!form.date) {
+      dateInputRef.current?.focus();
+      return;
+    }
+
+    if (!form.time) {
+      timeInputRef.current?.focus();
+      return;
+    }
+
+    if (!form.level) {
+      levelButtonRefs.current[levelOptions[0]]?.focus();
+      return;
+    }
+
+    if (!form.maxCount) {
+      maxCountButtonRefs.current[maxCountOptions[0]]?.focus();
+    }
+  };
 
   const updateField = <K extends keyof RegistForm>(
     field: K,
@@ -398,6 +444,9 @@ export default function Regist(): JSX.Element {
               options={workoutOptions}
               value={form.workoutType}
               onChange={(nextValue) => updateField("workoutType", nextValue)}
+              getButtonRef={(option) => (node) => {
+                workoutButtonRefs.current[option] = node;
+              }}
             />
             {errors.workoutType ? (
               <p className="text-sm leading-5 text-rose-600">
@@ -423,6 +472,7 @@ export default function Regist(): JSX.Element {
                 }
               >
                 <Input.TextFieldWithRef
+                  ref={placeNameInputRef}
                   name="placeName"
                   value={form.placeName}
                   onChange={(event) =>
@@ -460,6 +510,7 @@ export default function Regist(): JSX.Element {
                 bottomText={errors.date ?? "필수 입력입니다."}
               >
                 <Input.TextFieldWithRef
+                  ref={dateInputRef}
                   type="date"
                   name="date"
                   value={form.date}
@@ -473,6 +524,7 @@ export default function Regist(): JSX.Element {
                 bottomText={errors.time ?? "필수 입력입니다."}
               >
                 <Input.TextFieldWithRef
+                  ref={timeInputRef}
                   type="time"
                   name="time"
                   value={form.time}
@@ -497,6 +549,9 @@ export default function Regist(): JSX.Element {
                   options={levelOptions}
                   value={form.level}
                   onChange={(nextValue) => updateField("level", nextValue)}
+                  getButtonRef={(option) => (node) => {
+                    levelButtonRefs.current[option] = node;
+                  }}
                 />
                 <p
                   className={[
@@ -516,6 +571,9 @@ export default function Regist(): JSX.Element {
                   options={maxCountOptions}
                   value={form.maxCount}
                   onChange={(nextValue) => updateField("maxCount", nextValue)}
+                  getButtonRef={(option) => (node) => {
+                    maxCountButtonRefs.current[option] = node;
+                  }}
                 />
                 <p
                   className={[
@@ -624,8 +682,18 @@ export default function Regist(): JSX.Element {
             ) : (
               <EmptyState
                 eyebrow="요약 대기"
-                title="필수 항목을 먼저 채워주세요"
-                description="운동 종류, 장소 이름, 날짜, 시간, 운동 수준, 최대 인원이 채워지면 제출 전 요약이 활성화됩니다."
+                title="지금 필요한 입력부터 이어서 채워볼까요?"
+                description="운동 종류, 장소 이름, 날짜, 시간, 운동 수준, 최대 인원까지 채워지면 여기서 바로 최종 확인으로 넘어갈 수 있어요."
+                action={
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={focusNextMissingField}
+                  >
+                    다음 필수 항목으로 이동
+                  </Button>
+                }
               />
             )}
           </Panel>

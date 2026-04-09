@@ -24,6 +24,9 @@ describe("Regist", () => {
     expect(
       screen.getByRole("button", { name: "제출 전 요약 보기" })
     ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "다음 필수 항목으로 이동" })
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "러닝" }));
     fireEvent.change(screen.getByLabelText("장소 이름"), {

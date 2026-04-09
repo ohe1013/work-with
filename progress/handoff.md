@@ -19,7 +19,7 @@ Last updated: 2026-04-09
 - Active milestone: `M5`
 - Current phase: `M5 in progress`
 - Immediate next task:
-  Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance.
+  Refresh README / docs where the implementation or milestone state has drifted.
 
 ## Recent implementation focus
 
@@ -27,29 +27,28 @@ Last updated: 2026-04-09
 - M2 is complete.
 - M3 is complete.
 - M4 is complete.
-- M5 has started with a first polish pass on trust/access copy and login flow finish.
+- M5 has moved through trust/access polish into softer flow-finish recovery guidance across home, `/find`, and `/regist`.
 - `docs/api-contracts.md` now documents the current implemented search, auth, and work-with request-response shapes.
 - Client auth uses a shared typed session shape, one storage key, and user-visible login failure handling.
 - Work-with detail cards and the `/regist` flow use explicit API contracts instead of client-side mock JSON.
 - Server exposes `/api/login`, `GET /api/work-with/locations/:locationId`, and `POST /api/work-with` with demo in-memory persistence.
+- Shared search empty/error states now use softer recovery copy, and `/regist` can jump the user to the next missing required field from the summary panel.
 
 ## Files most likely relevant next
 
 - `docs/acceptance-checklist.md`
-- `client/src/pages/Home.tsx`
-- `client/src/pages/Find.tsx`
-- `client/src/pages/Regist.tsx`
-- `client/src/pages/Login.tsx`
-- `client/src/components`
-- `client/src/layout/Header.tsx`
 - `README.md`
+- `docs/milestones.md`
+- `docs/user-flows.md`
+- `docs/toss-inspired-ui-spec.md`
 - `progress/current.md`
+- `progress/handoff.md`
 
 ## Recent commits
 
+- `4123585` `Start M5 trust and access polish`
 - `58e5c15` `Document M4 API contracts`
 - `d6900bd` `Replace mocked work-with contracts`
-- `30e3621` `Align M4 auth login contract`
 
 ## Known working assumptions
 

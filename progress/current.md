@@ -32,16 +32,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Replaced the mocked work-with registration/detail paths with explicit client-server API contracts, shared types, and demo persistence in `client` and `server`
 - [x] Completed M4 by documenting the current search / auth / posting request-response shapes in `docs/api-contracts.md`
 - [x] Started M5 by auditing the acceptance checklist and polishing the highest-signal trust/access copy gaps across the header, `/find`, and `/login`
+- [x] Continued M5 by softening home / find / regist flow-finish empty states and adding clearer recovery actions across shared search and posting flows
 
 ## Next up
 
-1. [ ] Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance
-2. [ ] Refresh README / docs where the implementation or milestone state has drifted
-3. [ ] Add any remaining focused tests needed to support the M5 polish pass
+1. [ ] Refresh README / docs where the implementation or milestone state has drifted
+2. [ ] Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure
+3. [ ] Add any remaining focused tests needed to support the final M5 polish pass
 
 ## Immediate next task
 
-Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance.
+Refresh README / docs where the implementation or milestone state has drifted.
 
 ## Known constraints
 
@@ -51,6 +52,9 @@ Continue the M5 audit on home / find / regist flow-finish gaps, especially clear
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M5 flow-finish recovery-action polish update
+- `2026-04-09`: `yarn --cwd client build` passed after the M5 flow-finish recovery-action polish update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M5 flow-finish recovery-action polish update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M5 trust/access polish update
 - `2026-04-09`: `yarn --cwd client build` passed after the M5 trust/access polish update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M5 trust/access polish update

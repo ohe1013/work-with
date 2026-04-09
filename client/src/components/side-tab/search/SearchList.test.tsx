@@ -52,7 +52,26 @@ describe("SearchList", () => {
       },
     });
 
-    expect(screen.getByText("먼저 장소를 검색해보세요")).toBeInTheDocument();
+    expect(
+      screen.getByText("먼저 어디서 만날지부터 정해볼까요?")
+    ).toBeInTheDocument();
+  });
+
+  test("lets the user start from the search field before any search", () => {
+    const onRefineSearch = jest.fn();
+
+    renderSearchList({
+      discoveryState: {
+        phase: "idle",
+        keyword: "",
+        resultCount: 0,
+      },
+      onRefineSearch,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "검색부터 시작하기" }));
+
+    expect(onRefineSearch).toHaveBeenCalledTimes(1);
   });
 
   test("renders a loading panel while map discovery is in progress", () => {
@@ -81,7 +100,7 @@ describe("SearchList", () => {
       onRefineSearch,
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "검색어 수정하기" }));
+    fireEvent.click(screen.getByRole("button", { name: "검색어 다듬기" }));
 
     expect(onRefineSearch).toHaveBeenCalledTimes(1);
   });
@@ -99,7 +118,9 @@ describe("SearchList", () => {
       onRetrySearch,
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "다시 시도" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "같은 조건으로 다시 시도" })
+    );
 
     expect(onRetrySearch).toHaveBeenCalledTimes(1);
   });

@@ -40,13 +40,27 @@ export default function SearchList({
         title="검색 결과를 불러오지 못했어요"
         description={
           discoveryState.errorMessage ??
-          "잠시 후 다시 시도하거나 다른 장소 이름으로 다시 검색해 주세요."
+          "잠시 후 다시 시도하거나, 검색어를 조금 넓혀 다시 열어보세요."
         }
         action={
-          onRetrySearch ? (
-            <Button type="button" size="sm" onClick={onRetrySearch}>
-              다시 시도
-            </Button>
+          onRetrySearch || onRefineSearch ? (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              {onRetrySearch ? (
+                <Button type="button" size="sm" onClick={onRetrySearch}>
+                  같은 조건으로 다시 시도
+                </Button>
+              ) : null}
+              {onRefineSearch ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={onRefineSearch}
+                >
+                  검색어 다시 고르기
+                </Button>
+              ) : null}
+            </div>
           ) : undefined
         }
       />
@@ -59,10 +73,10 @@ export default function SearchList({
         eyebrow="주변 결과 없음"
         title={
           discoveryState.keyword
-            ? `${discoveryState.keyword} 주변 장소가 아직 없어요`
+            ? `${discoveryState.keyword} 주변에서는 바로 비교할 장소가 아직 없어요`
             : "조건에 맞는 장소가 아직 없어요"
         }
-        description="검색어를 조금 넓히거나 다른 공원, 체육관 이름으로 다시 찾아보세요."
+        description="동네 이름이나 대표 시설명처럼 조금 더 큰 범위로 바꾸면 결과가 더 부드럽게 열릴 수 있어요."
         action={
           onRefineSearch ? (
             <Button
@@ -71,7 +85,7 @@ export default function SearchList({
               variant="secondary"
               onClick={onRefineSearch}
             >
-              검색어 수정하기
+              검색어 다듬기
             </Button>
           ) : undefined
         }
@@ -83,8 +97,20 @@ export default function SearchList({
     return (
       <EmptyState
         eyebrow="탐색 시작"
-        title="먼저 장소를 검색해보세요"
-        description="공원이나 체육관 이름을 입력하면 지도와 결과 목록이 함께 열립니다."
+        title="먼저 어디서 만날지부터 정해볼까요?"
+        description="공원, 체육관, 동네 이름처럼 크게 입력해도 지도와 결과 목록이 함께 열립니다."
+        action={
+          onRefineSearch ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={onRefineSearch}
+            >
+              검색부터 시작하기
+            </Button>
+          ) : undefined
+        }
       />
     );
   }

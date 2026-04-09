@@ -370,6 +370,16 @@ export default function Find(): JSX.Element {
                 eyebrow="조건 탐색 상세"
                 title="먼저 한 곳을 골라 조건에 맞는 모집 현황을 열어보세요"
                 description="찾기 화면에서는 결과 목록과 지도가 같은 선택 상태를 유지해서 장소별 후보를 더 명시적으로 비교할 수 있습니다."
+                action={
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={focusSearchField}
+                  >
+                    검색창으로 돌아가기
+                  </Button>
+                }
               />
             )}
           </section>
