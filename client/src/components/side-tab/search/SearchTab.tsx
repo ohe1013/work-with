@@ -119,10 +119,10 @@ const SearchBar = () => {
             지도 기반 탐색
           </p>
           <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-900">
-            운동 장소를 찾고 바로 모집 흐름을 비교해보세요
+            운동 장소를 찾고 바로 비교해보세요
           </h3>
           <p className="text-sm leading-6 text-slate-500">
-            공원이나 체육관 이름으로 검색하면, 같은 화면에서 모집 여부와 여유 자리까지 가볍게 확인할 수 있습니다.
+            공원이나 체육관 이름으로 검색하면 같은 화면에서 모집 흐름까지 이어집니다.
           </p>
         </div>
 
@@ -143,30 +143,16 @@ const SearchBar = () => {
           </Button>
         </form>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-[22px] bg-slate-50 px-4 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              탐색 상태
-            </p>
-            <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-              {resultSummary}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-slate-500">
-              검색 결과 카드를 누르면 지도와 상세 흐름이 같은 선택으로 이어집니다.
-            </p>
-          </div>
-
-          <div className="rounded-[22px] bg-slate-50 px-4 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              현재 선택
-            </p>
-            <p className="mt-2 truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
-              {selectedSummary}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-slate-500">
-              지도와 리스트가 같은 장소를 가리키도록 맞춰 두었습니다.
-            </p>
-          </div>
+        <div className="space-y-1 border-t border-slate-200/80 pt-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            현재 상태
+          </p>
+          <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+            {resultSummary}
+          </p>
+          <p className="text-xs leading-5 text-slate-500">
+            {selectedSummary}
+          </p>
         </div>
       </div>
 
@@ -194,7 +180,7 @@ const SearchBar = () => {
             className={[
               "space-y-3",
               hasSelection
-                ? "sticky top-0 z-10 rounded-[28px] bg-[rgba(248,250,252,0.96)] pb-3 pt-1 backdrop-blur-sm"
+                ? "sticky top-0 z-10 border-b border-slate-200/80 bg-white pb-3 pt-1"
                 : "",
             ].join(" ")}
           >
@@ -247,15 +233,15 @@ const SearchBar = () => {
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {hasSelection
                     ? "다른 후보를 이어서 비교해보세요"
-                    : "먼저 한 곳을 고르고 모집 흐름을 이어보세요"}
+                    : "먼저 한 곳을 고르고 비교를 시작해보세요"}
                 </h3>
               </div>
               <p className="text-xs leading-5 text-slate-500">
                 {hasSelection
-                  ? "현재 상세 흐름을 닫지 않고 다른 장소의 모집 브리프로 빠르게 전환할 수 있어요."
+                  ? "현재 상세를 유지한 채 다른 장소로 바꿔볼 수 있어요."
                   : discoveryState.phase === "loading"
                     ? "검색 결과를 불러오는 동안 지도와 목록을 함께 정리합니다."
-                    : "카드와 지도 마커를 누르면 선택한 장소 브리프가 상단에 고정됩니다."}
+                    : "카드와 지도 마커를 누르면 같은 장소가 선택됩니다."}
               </p>
             </div>
 

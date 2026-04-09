@@ -30,27 +30,14 @@
     min-width: 320px;
     color: rgb(var(--color-text));
     background-color: rgb(var(--color-canvas));
-    background-image:
-      radial-gradient(circle at top left, rgba(125, 211, 252, 0.18), transparent 28%),
-      radial-gradient(circle at top right, rgba(226, 232, 240, 0.66), transparent 22%),
-      radial-gradient(circle at bottom left, rgba(186, 230, 253, 0.18), transparent 20%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(244, 247, 250, 1));
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(244, 247, 250, 1)
+    );
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(circle at center, black 45%, transparent 86%);
-    opacity: 0.4;
   }
 
   a {

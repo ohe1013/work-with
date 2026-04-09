@@ -136,11 +136,11 @@ export default function SearchList({
       {markers.map((marker, idx) => (
         <Panel
           key={marker.id + idx}
-          tone="soft"
+          tone="default"
           className={[
             "overflow-hidden",
             selectedMarker?.id === marker.id
-              ? "ring-1 ring-[rgba(14,116,144,0.18)] shadow-[0_18px_44px_rgba(14,116,144,0.12)]"
+              ? "border-slate-300"
               : "",
           ].join(" ")}
         >
@@ -149,8 +149,8 @@ export default function SearchList({
             onClick={() => focusMarker(marker, { toggle: true })}
             aria-pressed={selectedMarker?.id === marker.id}
             className={[
-              "flex w-full flex-col gap-3 px-4 py-4 text-left transition hover:bg-white/60",
-              selectedMarker?.id === marker.id ? "bg-white/72" : "",
+              "flex w-full flex-col gap-3 px-4 py-4 text-left transition hover:bg-slate-50",
+              selectedMarker?.id === marker.id ? "bg-slate-50" : "",
             ].join(" ")}
           >
             <div className="flex items-start justify-between gap-3">
@@ -162,8 +162,8 @@ export default function SearchList({
                   {marker.category_name}
                 </p>
               </div>
-              <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--color-accent))]">
-                {selectedMarker?.id === marker.id ? "선택됨" : "모집 보기"}
+              <span className="text-xs font-semibold text-slate-500">
+                {selectedMarker?.id === marker.id ? "선택됨" : "선택"}
               </span>
             </div>
 

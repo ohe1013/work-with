@@ -10,9 +10,9 @@ const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
   ({ shellClassName = "", className = "", ...props }, ref) => {
     return (
       <Panel
-        tone="soft"
+        tone="default"
         className={[
-          "flex items-center gap-3 rounded-[26px] px-4 py-3 ring-1 ring-transparent transition focus-within:ring-[rgba(14,116,144,0.16)]",
+          "flex items-center gap-3 rounded-[22px] px-4 py-3 ring-1 ring-transparent transition duration-150 focus-within:ring-slate-100",
           shellClassName,
         ].join(" ")}
       >

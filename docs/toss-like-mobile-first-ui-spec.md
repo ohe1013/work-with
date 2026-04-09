@@ -1,5 +1,7 @@
 # Toss-like Mobile-First Map Product UI Spec
 
+> 비주얼 밀도와 강조 방식은 `docs/toss-like-minimal-visual-override.md`의 오버라이드 규칙을 함께 적용한다.
+
 ## 0. 문서 목적
 
 이 문서는 운동 메이트 서비스의 UI를 설계하거나 생성할 때 사용하는 기준 문서다.

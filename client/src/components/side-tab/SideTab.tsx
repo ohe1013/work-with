@@ -44,11 +44,6 @@ const SideTab = ({ path }: { path: string }) => {
           : markers.length > 0
             ? `${markers.length}곳`
             : "검색 대기";
-  const panelStateLabel = selectedMarker
-    ? "상세 열림"
-    : discoveryState.phase === "loading"
-      ? "업데이트 중"
-      : "둘러보기";
 
   useEffect(() => {
     const cachedData = localStorage.getItem(`cachedData:${path}`);
@@ -74,7 +69,7 @@ const SideTab = ({ path }: { path: string }) => {
         on ? "translate-y-0" : "translate-y-[calc(100%-114px)] md:translate-y-0",
       ].join(" ")}
     >
-      <Panel className="overflow-hidden rounded-[34px]">
+      <Panel className="overflow-hidden rounded-[30px]">
         <div className="border-b border-[rgba(148,163,184,0.12)] px-4 pb-4 pt-3 md:px-5 md:py-5">
           <div className="mb-3 flex justify-center md:hidden">
             <span className="h-1.5 w-12 rounded-full bg-slate-200" aria-hidden="true" />
@@ -83,24 +78,21 @@ const SideTab = ({ path }: { path: string }) => {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                   지도 탐색
                 </span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   {resultBadgeLabel}
-                </span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  {panelStateLabel}
                 </span>
               </div>
 
               <div className="space-y-1">
                 <h2 className="text-base font-semibold tracking-[-0.02em] text-slate-900">
-                  지금 비교하고 있는 운동 장소
+                  지금 보고 있는 운동 장소
                 </h2>
                 <p className="text-sm leading-6 text-slate-500">
                   {selectedMarker
-                    ? "선택한 장소의 모집 흐름이 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
+                    ? "선택한 장소가 상단에 고정되고, 다른 후보와 바로 바꿔볼 수 있어요."
                     : on
                       ? resultSummary
                       : helperCopy}
@@ -124,11 +116,11 @@ const SideTab = ({ path }: { path: string }) => {
           <SearchTab key={"sideTab" + path} />
         ) : (
           <div className="space-y-2 px-4 py-4 md:px-5">
-            <div className="rounded-[22px] bg-slate-50 px-4 py-3">
+            <div className="space-y-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 현재 선택
               </p>
-              <p className="mt-2 truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              <p className="truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
                 {selectedMarker?.content ??
                   (discoveryState.phase === "loading"
                     ? "검색 결과 준비 중"
@@ -138,7 +130,7 @@ const SideTab = ({ path }: { path: string }) => {
                         ? "검색 재시도 필요"
                         : "아직 선택한 장소가 없어요")}
               </p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">
+              <p className="text-xs leading-5 text-slate-500">
                 {discoveryState.phase === "loading"
                   ? "패널을 다시 열면 검색 진행 상태와 결과를 바로 이어서 볼 수 있습니다."
                   : "패널을 다시 열면 장소 검색과 모집 비교 흐름을 바로 이어서 볼 수 있습니다."}

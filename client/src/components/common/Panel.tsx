@@ -6,10 +6,10 @@ interface PanelProps extends HTMLAttributes<HTMLDivElement> {
 
 const toneClassMap = {
   default:
-    "border border-white/80 bg-white/88 shadow-[0_18px_44px_rgba(15,23,42,0.09)] backdrop-blur-xl",
-  soft: "border border-white/72 bg-[rgba(255,255,255,0.74)] shadow-[0_14px_38px_rgba(15,23,42,0.07)] backdrop-blur-xl",
+    "border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]",
+  soft: "border border-slate-200/70 bg-white/96 shadow-[0_4px_16px_rgba(15,23,42,0.03)]",
   strong:
-    "border border-[rgba(14,116,144,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.96))] shadow-[0_24px_58px_rgba(14,116,144,0.12)] backdrop-blur-xl",
+    "border border-slate-200/85 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)]",
 };
 
 export default function Panel({
@@ -20,7 +20,7 @@ export default function Panel({
 }: PanelProps) {
   return (
     <div
-      className={["rounded-[30px]", toneClassMap[tone], className].join(" ")}
+      className={["rounded-[28px]", toneClassMap[tone], className].join(" ")}
       {...props}
     >
       {children}

@@ -44,24 +44,19 @@ export default function Header({
   return (
     <header className="sticky top-0 z-30 px-3 pt-3 md:px-4 md:pt-4">
       <Panel
-        tone="soft"
+        tone="default"
         className="mx-auto flex max-w-[1520px] items-center justify-between gap-4 px-4 py-3 md:px-6 md:py-4"
       >
         <div className="min-w-0">
           <Link to="/" className="inline-flex max-w-full items-center gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-[18px] bg-[rgb(var(--color-accent))] text-sm font-bold tracking-[0.18em] text-white shadow-[0_14px_30px_rgba(14,116,144,0.22)]">
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[rgb(var(--color-accent))] text-sm font-bold tracking-[0.18em] text-white">
               WW
             </span>
 
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  {copy.eyebrow}
-                </p>
-                <span className="hidden rounded-full bg-white/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 md:inline-flex">
-                  지도 중심 제품
-                </span>
-              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                {copy.eyebrow}
+              </p>
 
               <h1 className="truncate text-base font-semibold tracking-[-0.03em] text-slate-950 md:text-lg">
                 {copy.title}
@@ -79,14 +74,14 @@ export default function Header({
               찾기
             </Button>
           </Link>
-          <Link to="/regist">
-            <Button variant="secondary" fullWidth={false} size="sm">
-              등록
+          <Link to="/login">
+            <Button variant="ghost" fullWidth={false} size="sm">
+              로그인
             </Button>
           </Link>
-          <Link to="/login">
+          <Link to="/regist">
             <Button fullWidth={false} size="sm">
-              로그인
+              등록
             </Button>
           </Link>
         </div>

@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
-import PageHero, { PageHeroStat } from "../components/common/PageHero";
+import PageHero from "../components/common/PageHero";
 import Panel from "../components/common/Panel";
 import { useAuth } from "../hooks/auth/useAuth";
 import useInputs from "../hooks/util/useInputs";
@@ -101,37 +101,40 @@ export default function Login() {
         badge={nextPath === "/" ? "홈으로 복귀" : `${nextPathLabel}로 복귀`}
         title="필요할 때만 간단하게 로그인하고 바로 이어서 탐색합니다"
         description="로그인이 목적이 되지 않도록, 데모 계정으로 빠르게 진입한 뒤 지도 탐색과 요청 흐름으로 바로 돌아갈 수 있게 구성했습니다."
-        aside={
-          <Panel className="space-y-4 px-4 py-4">
+      >
+        <div className="grid gap-3 border-t border-slate-200/80 pt-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              후속 흐름
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {nextPath === "/"
+                ? "로그인 후 홈 탐색으로 복귀"
+                : `로그인 후 ${nextPathLabel} 흐름으로 복귀`}
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              현재 상태
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {isSubmitting ? "로그인 중" : "입력 대기"}
+            </p>
+          </div>
+        </div>
+      </PageHero>
+
+      <div className="mx-auto max-w-[720px]">
+        <Panel className="space-y-5 px-5 py-6 md:px-6 md:py-7">
+          <div className="space-y-3 border-b border-slate-200/80 pb-5">
             <div className="space-y-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                 데모 계정
               </p>
-              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
-                지금 바로 체험할 수 있는 계정이 준비되어 있어요
-              </h3>
-              <p className="text-sm leading-6 text-slate-500">
-                아래 정보를 직접 입력하거나 한 번에 채워서 로그인할 수 있습니다.
+              <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                {DEMO_EMAIL}
               </p>
-            </div>
-
-            <div className="grid gap-2">
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                  이메일
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {DEMO_EMAIL}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                  비밀번호
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {DEMO_PASSWORD}
-                </p>
-              </div>
+              <p className="text-sm text-slate-500">{DEMO_PASSWORD}</p>
             </div>
 
             <Button
@@ -142,36 +145,8 @@ export default function Login() {
             >
               데모 계정 채우기
             </Button>
-          </Panel>
-        }
-        stats={
-          <>
-            <PageHeroStat
-              label="진입 방식"
-              value="이메일과 비밀번호만 확인"
-              helper="추가 단계 없이 간단하게 로그인합니다."
-              emphasize
-            />
-            <PageHeroStat
-              label="후속 흐름"
-              value={
-                nextPath === "/"
-                  ? "로그인 후 홈 탐색으로 복귀"
-                  : `로그인 후 ${nextPathLabel} 흐름으로 복귀`
-              }
-              helper="탐색이나 요청 흐름이 끊기지 않도록 바로 이어집니다."
-            />
-            <PageHeroStat
-              label="현재 상태"
-              value={isSubmitting ? "로그인 중" : "입력 대기"}
-              helper="오류가 생기면 바로 아래에서 이유를 확인할 수 있어요."
-            />
-          </>
-        }
-      />
+          </div>
 
-      <div className="mx-auto max-w-[720px]">
-        <Panel className="px-5 py-6 md:px-6 md:py-7">
           <form onSubmit={submitHandler} className="space-y-5" method="POST">
             <Input label="이메일">
               <Input.TextFieldWithRef
@@ -187,7 +162,7 @@ export default function Login() {
               label="비밀번호"
               bottomText={
                 errorMessage ??
-                "지금은 데모 계정으로 전체 로그인 흐름을 확인할 수 있어요."
+                "데모 계정으로 바로 로그인 흐름을 확인할 수 있어요."
               }
             >
               <Input.TextFieldWithRef

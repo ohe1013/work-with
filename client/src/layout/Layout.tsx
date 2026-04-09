@@ -80,8 +80,8 @@ function Layout() {
                     className={[
                       "flex w-full flex-col items-center gap-1 rounded-[24px] px-2 py-3 text-center transition",
                       isActive
-                        ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_18px_38px_rgba(14,116,144,0.20)]"
-                        : "text-slate-500 hover:bg-white/84 hover:text-slate-900",
+                        ? "bg-slate-900 text-white"
+                        : "text-slate-500 hover:bg-slate-100 hover:text-slate-900",
                     ].join(" ")}
                   >
                     <span className="text-sm font-semibold tracking-[-0.02em]">
@@ -117,8 +117,8 @@ function Layout() {
                 className={[
                   "flex min-h-[60px] flex-col items-center justify-center rounded-[22px] px-2 text-center transition",
                   isActive
-                    ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.22)]"
-                    : "text-slate-500 hover:bg-white/72 hover:text-slate-900",
+                    ? "bg-slate-900 text-white"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-900",
                 ].join(" ")}
               >
                 <span className="text-sm font-semibold tracking-[-0.02em]">

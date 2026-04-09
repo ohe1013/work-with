@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "@/components/common/Button";
 import EmptyState from "@/components/common/EmptyState";
 import Input from "@/components/common/Input";
-import PageHero, { PageHeroStat } from "@/components/common/PageHero";
+import PageHero from "@/components/common/PageHero";
 import Panel from "@/components/common/Panel";
 import { registerWorkWith } from "@/service/workWith/workWith";
 import type {
@@ -53,7 +53,7 @@ function Section({
   return (
     <Panel tone="soft" className="space-y-4 px-4 py-4 md:px-5 md:py-5">
       <div className="space-y-2">
-        <p className="inline-flex rounded-full bg-[rgba(14,116,144,0.08)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
           {step}
         </p>
         <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-900">
@@ -89,19 +89,12 @@ function ChoiceChips<T extends string>({
             type="button"
             onClick={() => onChange(option)}
             className={[
-              "inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
+              "inline-flex min-h-[42px] items-center justify-center rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
               isActive
-                ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.18)]"
+                ? "bg-slate-900 text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900",
             ].join(" ")}
           >
-            <span
-              className={[
-                "h-2 w-2 rounded-full",
-                isActive ? "bg-white" : "bg-slate-300",
-              ].join(" ")}
-              aria-hidden="true"
-            />
             {option}
           </button>
         );
@@ -120,7 +113,7 @@ function SummaryItem({
   helper?: string;
 }) {
   return (
-    <div className="rounded-[22px] bg-slate-50 px-4 py-3">
+    <div className="rounded-[20px] border border-slate-200/80 bg-white px-4 py-3">
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
         {label}
       </p>
@@ -425,54 +418,47 @@ export default function Regist(): JSX.Element {
               </div>
             </>
           }
-          aside={
-            <Panel className="space-y-3 px-4 py-4">
-              <div className="space-y-1">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  저장된 일정
-                </p>
-                <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
-                  {formatCreatedSchedule(createdWorkWith)}
-                </h3>
-              </div>
-              <p className="text-sm leading-6 text-slate-500">
-                {createdWorkWith.note ||
-                  "추가 메모 없이도 바로 판단할 수 있게 핵심 조건만 정리했습니다."}
+        >
+          <div className="grid gap-3 border-t border-slate-200/80 pt-3 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                저장된 일정
               </p>
-            </Panel>
-          }
-          stats={
-            <>
-              <PageHeroStat
-                label="운동 종류"
-                value={createdWorkWith.workoutType}
-                helper="어떤 운동인지 먼저 보이도록 저장했습니다."
-                emphasize
-              />
-              <PageHeroStat
-                label="장소"
-                value={buildSummaryPlace(
-                  createdWorkWith.placeName,
-                  createdWorkWith.placeDetail
-                )}
-                helper="장소 정보는 홈과 찾기 흐름에서 그대로 이어집니다."
-              />
-              <PageHeroStat
-                label="일정"
-                value={formatCreatedSchedule(createdWorkWith)}
-                helper="오늘 일정처럼 빠르게 판단할 수 있는 형식으로 정리했습니다."
-              />
-              <PageHeroStat
-                label="모집 조건"
-                value={`${createdWorkWith.level} · 최대 ${createdWorkWith.maxCount}명`}
-                helper={
-                  createdWorkWith.note ||
-                  "추가 메모 없이도 모집 조건이 바로 드러나게 저장했습니다."
-                }
-              />
-            </>
-          }
-        />
+              <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                {formatCreatedSchedule(createdWorkWith)}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                모집 조건
+              </p>
+              <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                {createdWorkWith.level} · 최대 {createdWorkWith.maxCount}명
+              </p>
+            </div>
+          </div>
+        </PageHero>
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <SummaryItem label="운동 종류" value={createdWorkWith.workoutType} />
+          <SummaryItem
+            label="장소"
+            value={buildSummaryPlace(
+              createdWorkWith.placeName,
+              createdWorkWith.placeDetail
+            )}
+          />
+          <SummaryItem
+            label="일정"
+            value={formatCreatedSchedule(createdWorkWith)}
+          />
+          <SummaryItem
+            label="메모"
+            value={
+              createdWorkWith.note || "추가 메모 없이 기본 조건만 정리했습니다."
+            }
+          />
+        </div>
       </section>
     );
   }
@@ -484,89 +470,33 @@ export default function Regist(): JSX.Element {
         badge={progressLabel}
         title="오늘 운동 메이트 모집을 단계별로 정리해보세요"
         description="운동 종류, 장소, 시간, 모집 조건을 짧은 섹션으로 나눠 입력하고, 제출 직전 요약에서 다시 확인할 수 있게 구성했습니다."
-        aside={
-          <Panel className="space-y-4 px-4 py-4">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                현재 작성 상태
-              </p>
-              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
-                {previewStateLabel}
-              </h3>
-              <p className="text-sm leading-6 text-slate-500">
-                {readyToPreview
-                  ? "필수 항목이 모두 채워져서 요약을 열고 제출 전 확인으로 넘어갈 수 있어요."
-                  : `${nextRequirement}부터 이어서 채우면 요약으로 넘어갈 수 있어요.`}
-              </p>
-            </div>
+      >
+        <div className="grid gap-3 border-t border-slate-200/80 pt-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              현재 상태
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {previewStateLabel}
+            </p>
+            <p className="text-xs leading-5 text-slate-500">
+              {readyToPreview
+                ? "필수 항목이 모두 채워졌어요."
+                : `${nextRequirement}부터 이어서 채우면 요약으로 넘어갈 수 있어요.`}
+            </p>
+          </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  운동
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {form.workoutType || "선택 전"}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  일정
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {summaryDateTime}
-                </p>
-              </div>
-            </div>
-
-            {readyToPreview ? (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  openSummary();
-                }}
-              >
-                지금 요약 열기
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={focusNextMissingField}
-              >
-                다음 입력으로 이동
-              </Button>
-            )}
-          </Panel>
-        }
-        stats={
-          <>
-            <PageHeroStat
-              label="작성 방식"
-              value="4단계로 나눠 입력"
-              helper="긴 폼을 한 번에 쏟아내지 않고 단계별로 정리합니다."
-              emphasize
-            />
-            <PageHeroStat
-              label="현재 상태"
-              value={previewStateLabel}
-              helper={
-                showSummary
-                  ? "요약 패널에서 제출 전에 마지막으로 다시 확인할 수 있어요."
-                  : readyToPreview
-                    ? "필수 항목이 모두 채워져 요약으로 바로 넘어갈 수 있습니다."
-                    : `${nextRequirement}부터 채우면 제출 전 요약을 열 수 있어요.`
-              }
-            />
-            <PageHeroStat
-              label="등록 후 흐름"
-              value="홈과 찾기에서 다시 확인"
-              helper="등록 직후 같은 계약의 상세 카드와 목록 흐름으로 이어집니다."
-            />
-          </>
-        }
-      />
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              현재 요약
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {form.workoutType || "운동 종류 선택 전"}
+            </p>
+            <p className="text-xs leading-5 text-slate-500">{summaryDateTime}</p>
+          </div>
+        </div>
+      </PageHero>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <form className="space-y-4" onSubmit={previewHandler}>
@@ -729,7 +659,7 @@ export default function Regist(): JSX.Element {
                   value={form.note}
                   onChange={(event) => updateField("note", event.target.value)}
                   placeholder="예: 5km 정도 가볍게 달리고 싶어요"
-                  className="block min-h-[132px] w-full rounded-[24px] border border-transparent bg-white/94 px-4 py-3.5 text-[15px] text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.16)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.18)]"
+                  className="block min-h-[132px] w-full rounded-[20px] border border-slate-200 bg-white px-4 py-3.5 text-[15px] text-slate-900 placeholder:text-slate-400 transition duration-150 focus:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </Input>
             </div>
@@ -755,7 +685,7 @@ export default function Regist(): JSX.Element {
           className="space-y-4 xl:sticky xl:top-[104px] xl:h-fit"
         >
           <Panel
-            tone={showSummary ? "strong" : "default"}
+            tone="default"
             className="space-y-4 px-4 py-4 md:px-5 md:py-5"
           >
             <div className="space-y-1">
@@ -768,8 +698,7 @@ export default function Regist(): JSX.Element {
                   : "필수 항목을 채우면 여기서 최종 확인할 수 있어요"}
               </h3>
               <p className="text-sm leading-6 text-slate-500">
-                긴 폼을 한 번에 읽지 않아도 되도록, 마지막 단계에서 필요한 정보만
-                다시 정리해 보여줍니다.
+                마지막에 필요한 정보만 다시 확인합니다.
               </p>
             </div>
 

@@ -12,7 +12,7 @@ import Card from "@/components/common/Card";
 import EmptyState from "@/components/common/EmptyState";
 import Loader from "@/components/common/Loader";
 import Pagination from "@/components/common/Pagination";
-import PageHero, { PageHeroStat } from "@/components/common/PageHero";
+import PageHero from "@/components/common/PageHero";
 import Panel from "@/components/common/Panel";
 import SearchField from "@/components/common/SearchField";
 import BaseMap from "@/components/map/BaseMap";
@@ -64,19 +64,12 @@ function ConditionGroup<T extends string>({
               type="button"
               onClick={() => onChange(option)}
               className={[
-                "inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
+                "inline-flex min-h-[42px] items-center justify-center rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
                 isActive
-                  ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.18)]"
+                  ? "bg-slate-900 text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900",
               ].join(" ")}
             >
-              <span
-                className={[
-                  "h-2 w-2 rounded-full",
-                  isActive ? "bg-white" : "bg-slate-300",
-                ].join(" ")}
-                aria-hidden="true"
-              />
               {option}
             </button>
           );
@@ -211,75 +204,6 @@ export default function Find(): JSX.Element {
         badge={`${activeConditionCount}개 조건 활성화`}
         title="찾는 조건을 먼저 좁히고 지도 위에서 바로 비교해보세요"
         description="운동 종류, 시간대, 강도를 정한 뒤 지역 키워드로 검색하면 지도와 결과 목록이 같은 흐름으로 맞물려 비교됩니다."
-        aside={
-          <Panel className="space-y-3 px-4 py-4">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                현재 조건
-              </p>
-              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
-                {conditionSummary}
-              </h3>
-            </div>
-            <p className="text-sm leading-6 text-slate-500">{routeSummary}</p>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  운동
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {workoutType}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  시간대
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {timeWindow}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  강도
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {intensity}
-                </p>
-              </div>
-            </div>
-          </Panel>
-        }
-        stats={
-          <>
-            <PageHeroStat
-              label="검색 기준"
-              value={composedKeyword || "지역 키워드를 입력해 주세요"}
-              helper="운동 종류는 검색어에 자연스럽게 함께 반영됩니다."
-              emphasize
-            />
-            <PageHeroStat
-              label="비교 방식"
-              value="지도와 목록을 같은 선택 상태로 연결"
-              helper="장소 하나를 고르면 상세 카드와 비교 흐름이 이어집니다."
-            />
-            <PageHeroStat
-              label="현재 상태"
-              value={
-                discoveryState.phase === "results"
-                  ? `${discoveryState.resultCount}곳 준비 완료`
-                  : discoveryState.phase === "loading"
-                    ? "검색 진행 중"
-                    : discoveryState.phase === "empty"
-                      ? "조건 재조정 필요"
-                      : discoveryState.phase === "error"
-                        ? "재시도 필요"
-                        : "검색 대기"
-              }
-              helper="찾기 화면에서도 지도 중심 비교 흐름은 그대로 유지됩니다."
-            />
-          </>
-        }
       >
         <form className="space-y-3" onSubmit={submitHandler}>
           <SearchField
@@ -305,6 +229,38 @@ export default function Find(): JSX.Element {
             </Button>
           </div>
         </form>
+
+        <div className="grid gap-3 border-t border-slate-200/80 pt-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              현재 조건
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {conditionSummary}
+            </p>
+            <p className="text-xs leading-5 text-slate-500">
+              {composedKeyword || "지역 키워드를 입력해 주세요"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              현재 상태
+            </p>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+              {discoveryState.phase === "results"
+                ? `${discoveryState.resultCount}곳 준비 완료`
+                : discoveryState.phase === "loading"
+                  ? "검색 진행 중"
+                  : discoveryState.phase === "empty"
+                    ? "조건 재조정 필요"
+                    : discoveryState.phase === "error"
+                      ? "재시도 필요"
+                      : "검색 대기"}
+            </p>
+            <p className="text-xs leading-5 text-slate-500">{routeSummary}</p>
+          </div>
+        </div>
 
         <Suspense
           fallback={
@@ -349,25 +305,6 @@ export default function Find(): JSX.Element {
               value={intensity}
               onChange={setIntensity}
             />
-          </Panel>
-
-          <Panel tone="soft" className="space-y-3 px-4 py-4 md:px-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  탐색 요약
-                </p>
-                <h3 className="mt-1 text-base font-semibold tracking-[-0.03em] text-slate-900">
-                  {routeSummary}
-                </h3>
-              </div>
-              <span className="rounded-full bg-white/84 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                {composedKeyword || "키워드 대기"}
-              </span>
-            </div>
-            <p className="text-sm leading-6 text-slate-500">
-              찾기 화면은 조건을 먼저 좁히되, 최종 판단은 지도와 상세 카드 비교로 이어지도록 설계했습니다.
-            </p>
           </Panel>
 
           <section ref={detailSurfaceRef} className="space-y-3">
@@ -457,17 +394,16 @@ export default function Find(): JSX.Element {
         </div>
 
         <div className="order-1 space-y-4 xl:order-2">
-          <section className="relative min-h-[420px] overflow-hidden rounded-[34px] md:min-h-[560px] xl:sticky xl:top-[104px] xl:h-[calc(100vh-132px)]">
+          <section className="relative min-h-[420px] overflow-hidden rounded-[30px] md:min-h-[560px] xl:sticky xl:top-[104px] xl:h-[calc(100vh-132px)]">
             <BaseMap />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.22),_transparent_42%)]" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950/14 via-slate-950/4 to-transparent" />
-            <div className="pointer-events-none absolute left-4 right-4 top-4 md:left-6 md:right-auto md:w-[340px]">
-              <Panel tone="soft" className="space-y-3 px-4 py-4">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/20 to-transparent" />
+            <div className="pointer-events-none absolute left-4 right-4 top-4 md:left-6 md:right-auto md:w-[320px]">
+              <Panel className="space-y-2 px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[rgba(14,116,144,0.10)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     조건 탐색 지도
                   </span>
-                  <span className="rounded-full bg-white/78 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                     {discoveryState.phase === "results"
                       ? `${discoveryState.resultCount}곳`
                       : "조건 확인"}
