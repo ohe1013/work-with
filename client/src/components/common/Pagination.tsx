@@ -1,5 +1,8 @@
 import React from "react";
 
+const paginationButtonClassName =
+  "inline-flex min-h-[42px] min-w-[42px] items-center justify-center rounded-full px-3 text-sm font-semibold transition";
+
 const Pagination = React.memo(function Pagination({
   pagination,
   pageClickHandler,
@@ -27,22 +30,29 @@ const Pagination = React.memo(function Pagination({
           Page {pagination.current} / {pagination.last || 1}
         </span>
       </div>
+
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         <button
+          type="button"
           disabled={!pagination.hasPrevPage}
           onClick={() => pageClickHandler("prev")}
-          className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300"
+          className={[
+            paginationButtonClassName,
+            "bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300",
+          ].join(" ")}
           aria-label="Previous page"
         >
-          ←
+          {"<"}
         </button>
+
         {pageList.map((page: number) => {
           return (
             <button
               key={"pageList" + page}
+              type="button"
               onClick={() => pageClickHandler("current", page)}
               className={[
-                "inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full px-3 text-sm font-semibold transition",
+                paginationButtonClassName,
                 page === pagination.current
                   ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_12px_24px_rgba(14,116,144,0.22)]"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200",
@@ -53,13 +63,18 @@ const Pagination = React.memo(function Pagination({
             </button>
           );
         })}
+
         <button
+          type="button"
           disabled={!pagination.hasNextPage}
           onClick={() => pageClickHandler("next")}
-          className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300"
+          className={[
+            paginationButtonClassName,
+            "bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300",
+          ].join(" ")}
           aria-label="Next page"
         >
-          →
+          {">"}
         </button>
       </div>
     </div>

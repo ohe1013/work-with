@@ -100,7 +100,7 @@ describe("SearchList", () => {
       onRefineSearch,
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "검색어 다듬기" }));
+    fireEvent.click(screen.getByRole("button", { name: "검색어 넓히기" }));
 
     expect(onRefineSearch).toHaveBeenCalledTimes(1);
   });

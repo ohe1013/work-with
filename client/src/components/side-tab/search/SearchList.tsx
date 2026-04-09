@@ -28,7 +28,7 @@ export default function SearchList({
             ? `${discoveryState.keyword} 주변 장소를 찾고 있어요`
             : "주변 장소를 찾고 있어요"
         }
-        description="결과가 준비되면 지도 마커와 비교 카드가 함께 업데이트됩니다."
+        description="결과가 준비되면 지도와 비교 카드가 함께 업데이트됩니다."
       />
     );
   }
@@ -40,7 +40,7 @@ export default function SearchList({
         title="검색 결과를 불러오지 못했어요"
         description={
           discoveryState.errorMessage ??
-          "잠시 후 다시 시도하거나, 검색어를 조금 넓혀 다시 열어보세요."
+          "잠시 후 다시 시도하거나 검색어를 조금 더 넓혀서 다시 찾아보세요."
         }
         action={
           onRetrySearch || onRefineSearch ? (
@@ -73,10 +73,10 @@ export default function SearchList({
         eyebrow="주변 결과 없음"
         title={
           discoveryState.keyword
-            ? `${discoveryState.keyword} 주변에서는 바로 비교할 장소가 아직 없어요`
+            ? `${discoveryState.keyword} 근처에서는 바로 비교할 장소가 아직 없어요`
             : "조건에 맞는 장소가 아직 없어요"
         }
-        description="동네 이름이나 대표 시설명처럼 조금 더 큰 범위로 바꾸면 결과가 더 부드럽게 열릴 수 있어요."
+        description="동네 이름이나 대표 시설명으로 조금 더 넓은 범위에서 검색하면 결과가 더 부드럽게 열릴 수 있어요."
         action={
           onRefineSearch ? (
             <Button
@@ -85,7 +85,7 @@ export default function SearchList({
               variant="secondary"
               onClick={onRefineSearch}
             >
-              검색어 다듬기
+              검색어 넓히기
             </Button>
           ) : undefined
         }
@@ -98,7 +98,7 @@ export default function SearchList({
       <EmptyState
         eyebrow="탐색 시작"
         title="먼저 어디서 만날지부터 정해볼까요?"
-        description="공원, 체육관, 동네 이름처럼 크게 입력해도 지도와 결과 목록이 함께 열립니다."
+        description="공원, 체육관, 동네 이름처럼 가볍게 입력해도 지도와 결과 목록이 함께 열립니다."
         action={
           onRefineSearch ? (
             <Button
@@ -128,7 +128,7 @@ export default function SearchList({
             </h3>
           </div>
           <p className="text-xs leading-5 text-slate-500">
-            카드나 마커를 누르면 같은 상세가 바로 열립니다.
+            카드를 누르면 지도와 상세 흐름이 같은 선택 상태로 열립니다.
           </p>
         </div>
       ) : null}
@@ -150,7 +150,7 @@ export default function SearchList({
             aria-pressed={selectedMarker?.id === marker.id}
             className={[
               "flex w-full flex-col gap-3 px-4 py-4 text-left transition hover:bg-white/60",
-              selectedMarker?.id === marker.id ? "bg-white/70" : "",
+              selectedMarker?.id === marker.id ? "bg-white/72" : "",
             ].join(" ")}
           >
             <div className="flex items-start justify-between gap-3">

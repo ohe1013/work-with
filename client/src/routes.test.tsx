@@ -48,7 +48,7 @@ describe("routes", () => {
       screen.getByRole("button", { name: "지도에서 보기" })
     ).toBeDisabled();
     expect(
-      screen.getByText("운동 메이트를 지도 위에서 빠르게 비교하세요")
+      screen.getByText("운동 메이트를 지도 위에서 빠르게 비교해보세요")
     ).toBeInTheDocument();
     expect(
       screen.getByText("먼저 어디서 만날지부터 정해볼까요?")
@@ -60,7 +60,7 @@ describe("routes", () => {
     renderRouter("/find");
 
     expect(
-      screen.getByText("찾는 조건을 먼저 정하고 맞는 운동 장소를 골라보세요")
+      screen.getByText("찾는 조건을 먼저 좁히고 지도 위에서 바로 비교해보세요")
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "조건으로 찾기" })
@@ -74,7 +74,7 @@ describe("routes", () => {
     renderRouter("/regist");
 
     expect(
-      screen.getByText("부담 없이 올리고, 제출 전 한 번 더 확인하세요")
+      screen.getByText("오늘 운동 메이트 모집을 단계별로 정리해보세요")
     ).toBeInTheDocument();
     expect(screen.getByText("운동 종류를 정하세요")).toBeInTheDocument();
     expect(

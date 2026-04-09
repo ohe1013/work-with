@@ -1,5 +1,7 @@
 # Toss-inspired UI Spec
 
+> 참고: 더 구체적인 모바일 우선 확장 기준은 `docs/toss-like-mobile-first-ui-spec.md`를 함께 본다.
+
 ## 1. 방향 정의
 여기서 "토스라이크"는 특정 화면을 복제한다는 뜻이 아니다.
 아래의 원칙을 가져온다.

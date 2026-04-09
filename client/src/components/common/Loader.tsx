@@ -46,7 +46,7 @@ const Loader = ({
       <Panel
         tone="soft"
         className={[
-          "rounded-[24px] px-4 py-4",
+          "rounded-[26px] px-4 py-4",
           className,
         ]
           .filter(Boolean)

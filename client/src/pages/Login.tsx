@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
+import PageHero, { PageHeroStat } from "../components/common/PageHero";
 import Panel from "../components/common/Panel";
 import { useAuth } from "../hooks/auth/useAuth";
 import useInputs from "../hooks/util/useInputs";
@@ -11,6 +12,13 @@ const DEMO_PASSWORD = "test123";
 
 type LoginLocationState = {
   from?: string;
+};
+
+const returnPathCopy: Record<string, string> = {
+  "/": "홈 탐색",
+  "/find": "조건 탐색",
+  "/regist": "모집 등록",
+  "/login": "로그인",
 };
 
 export default function Login() {
@@ -33,6 +41,7 @@ export default function Login() {
   const auth = useAuth();
   const locationState = location.state as LoginLocationState | null;
   const nextPath = locationState?.from ?? "/";
+  const nextPathLabel = returnPathCopy[nextPath] ?? "이전 화면";
 
   const applyDemoCredentials = () => {
     if (isSubmitting) {
@@ -71,9 +80,7 @@ export default function Login() {
       })
       .catch((error: unknown) => {
         setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "로그인 중 문제가 생겼어요."
+          error instanceof Error ? error.message : "로그인 중 문제가 생겼어요."
         );
       })
       .finally(() => {
@@ -88,47 +95,28 @@ export default function Login() {
   }, []);
 
   return (
-    <section className="flex min-h-[calc(100vh-126px)] w-full items-center justify-center px-3 py-6 md:min-h-[calc(100vh-108px)] md:px-6">
-      <Panel className="w-full max-w-[520px] px-5 py-6 md:px-8 md:py-8">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-              가벼운 접근
-            </p>
-            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-slate-900">
-              로그인
-            </h2>
-            <p className="text-sm leading-6 text-slate-500">
-              필요한 순간에만 가볍게 로그인하고, 바로 지도 기반 탐색으로
-              돌아갈 수 있게 구성했습니다.
-            </p>
-          </div>
-
-          <div className="rounded-[24px] bg-slate-50 px-4 py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="space-y-1">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  데모 계정
-                </p>
-                <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  지금은 바로 체험할 수 있는 로그인 흐름을 열어두었습니다.
-                </p>
-              </div>
-
-              <Button
-                type="button"
-                variant="secondary"
-                fullWidth={false}
-                size="sm"
-                onClick={applyDemoCredentials}
-                disabled={isSubmitting}
-              >
-                데모 계정 채우기
-              </Button>
+    <section className="space-y-4">
+      <PageHero
+        eyebrow="가벼운 인증"
+        badge={nextPath === "/" ? "홈으로 복귀" : `${nextPathLabel}로 복귀`}
+        title="필요할 때만 간단하게 로그인하고 바로 이어서 탐색합니다"
+        description="로그인이 목적이 되지 않도록, 데모 계정으로 빠르게 진입한 뒤 지도 탐색과 요청 흐름으로 바로 돌아갈 수 있게 구성했습니다."
+        aside={
+          <Panel className="space-y-4 px-4 py-4">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                데모 계정
+              </p>
+              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
+                지금 바로 체험할 수 있는 계정이 준비되어 있어요
+              </h3>
+              <p className="text-sm leading-6 text-slate-500">
+                아래 정보를 직접 입력하거나 한 번에 채워서 로그인할 수 있습니다.
+              </p>
             </div>
 
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <div className="rounded-[18px] bg-white/88 px-3 py-3">
+            <div className="grid gap-2">
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                   이메일
                 </p>
@@ -136,7 +124,7 @@ export default function Login() {
                   {DEMO_EMAIL}
                 </p>
               </div>
-              <div className="rounded-[18px] bg-white/88 px-3 py-3">
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                   비밀번호
                 </p>
@@ -145,57 +133,93 @@ export default function Login() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        <form onSubmit={submitHandler} className="mt-8 space-y-5" method="POST">
-          <Input label="이메일">
-            <Input.TextFiledWithRef
-              ref={inputRef}
-              name="email"
-              value={email}
-              onChange={handleChange}
-              placeholder="이메일을 입력해 주세요"
-            />
-          </Input>
-
-          <Input
-            label="비밀번호"
-            bottomText={
-              errorMessage ?? "지금은 데모 계정으로 전체 로그인 흐름을 확인할 수 있어요."
-            }
-          >
-            <Input.TextFiledWithRef
-              name="password"
-              value={password}
-              onChange={handleChange}
-              type="password"
-              placeholder="비밀번호를 입력해 주세요"
-              error={Boolean(errorMessage)}
-            />
-          </Input>
-
-          {errorMessage ? (
-            <p role="alert" className="text-sm leading-5 text-rose-600">
-              {errorMessage}
-            </p>
-          ) : null}
-
-          <div className="space-y-3 pt-2">
-            <Button isDisabled={isDisabled || isSubmitting} type="submit">
-              {isSubmitting ? "로그인 중..." : "로그인"}
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={applyDemoCredentials}
+              disabled={isSubmitting}
+            >
+              데모 계정 채우기
             </Button>
+          </Panel>
+        }
+        stats={
+          <>
+            <PageHeroStat
+              label="진입 방식"
+              value="이메일과 비밀번호만 확인"
+              helper="추가 단계 없이 간단하게 로그인합니다."
+              emphasize
+            />
+            <PageHeroStat
+              label="후속 흐름"
+              value={
+                nextPath === "/"
+                  ? "로그인 후 홈 탐색으로 복귀"
+                  : `로그인 후 ${nextPathLabel} 흐름으로 복귀`
+              }
+              helper="탐색이나 요청 흐름이 끊기지 않도록 바로 이어집니다."
+            />
+            <PageHeroStat
+              label="현재 상태"
+              value={isSubmitting ? "로그인 중" : "입력 대기"}
+              helper="오류가 생기면 바로 아래에서 이유를 확인할 수 있어요."
+            />
+          </>
+        }
+      />
 
-            <div className="grid gap-2">
+      <div className="mx-auto max-w-[720px]">
+        <Panel className="px-5 py-6 md:px-6 md:py-7">
+          <form onSubmit={submitHandler} className="space-y-5" method="POST">
+            <Input label="이메일">
+              <Input.TextFieldWithRef
+                ref={inputRef}
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="이메일을 입력해 주세요"
+              />
+            </Input>
+
+            <Input
+              label="비밀번호"
+              bottomText={
+                errorMessage ??
+                "지금은 데모 계정으로 전체 로그인 흐름을 확인할 수 있어요."
+              }
+            >
+              <Input.TextFieldWithRef
+                name="password"
+                value={password}
+                onChange={handleChange}
+                type="password"
+                placeholder="비밀번호를 입력해 주세요"
+                error={Boolean(errorMessage)}
+              />
+            </Input>
+
+            {errorMessage ? (
+              <p role="alert" className="text-sm leading-5 text-rose-600">
+                {errorMessage}
+              </p>
+            ) : null}
+
+            <div className="space-y-3 pt-2">
+              <Button isDisabled={isDisabled || isSubmitting} type="submit">
+                {isSubmitting ? "로그인 중..." : "로그인"}
+              </Button>
+
               <Link to="/">
                 <Button variant="ghost" type="button">
                   홈으로 돌아가기
                 </Button>
               </Link>
             </div>
-          </div>
-        </form>
-      </Panel>
+          </form>
+        </Panel>
+      </div>
     </section>
   );
 }

@@ -22,7 +22,7 @@ interface TextFieldProps
 }
 
 const textFieldClassName =
-  "block w-full rounded-[22px] border border-transparent bg-white/92 px-4 py-3 text-[15px] text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.18)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.2)]";
+  "block w-full rounded-[24px] border border-transparent bg-white/94 px-4 py-3.5 text-[15px] text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.16)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.18)]";
 
 const TextFieldWithRef = forwardRef(
   (

@@ -12,6 +12,7 @@ import Card from "@/components/common/Card";
 import EmptyState from "@/components/common/EmptyState";
 import Loader from "@/components/common/Loader";
 import Pagination from "@/components/common/Pagination";
+import PageHero, { PageHeroStat } from "@/components/common/PageHero";
 import Panel from "@/components/common/Panel";
 import SearchField from "@/components/common/SearchField";
 import BaseMap from "@/components/map/BaseMap";
@@ -23,13 +24,13 @@ import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
 const workoutOptions = [
   { label: "전체", searchTerm: "" },
   { label: "러닝", searchTerm: "러닝" },
-  { label: "헬스", searchTerm: "헬스장" },
-  { label: "농구", searchTerm: "농구장" },
-  { label: "클라이밍", searchTerm: "클라이밍" },
+  { label: "헬스", searchTerm: "헬스" },
+  { label: "축구", searchTerm: "축구" },
+  { label: "필라테스", searchTerm: "필라테스" },
 ] as const;
 
 const timeOptions = ["오늘 저녁", "출근 전", "주말 오전"] as const;
-const intensityOptions = ["가볍게", "꾸준히", "강하게"] as const;
+const intensityOptions = ["가볍게", "꾸준하게", "강하게"] as const;
 
 function ConditionGroup<T extends string>({
   label,
@@ -45,7 +46,7 @@ function ConditionGroup<T extends string>({
   onChange: (nextValue: T) => void;
 }) {
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       <div className="space-y-1">
         <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
           {label}
@@ -63,12 +64,19 @@ function ConditionGroup<T extends string>({
               type="button"
               onClick={() => onChange(option)}
               className={[
-                "inline-flex min-h-[40px] items-center justify-center rounded-full px-4 text-sm font-semibold transition",
+                "inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
                 isActive
-                  ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_14px_30px_rgba(14,116,144,0.22)]"
+                  ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.18)]"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900",
               ].join(" ")}
             >
+              <span
+                className={[
+                  "h-2 w-2 rounded-full",
+                  isActive ? "bg-white" : "bg-slate-300",
+                ].join(" ")}
+                aria-hidden="true"
+              />
               {option}
             </button>
           );
@@ -129,14 +137,14 @@ export default function Find(): JSX.Element {
   const conditionSummary = `${workoutType}, ${timeWindow}, ${intensity}`;
   const routeSummary =
     discoveryState.phase === "results"
-      ? `${discoveryState.resultCount}곳이 조건 탐색 결과로 열렸어요`
+      ? `${discoveryState.resultCount}곳이 조건 검색 결과로 준비됐어요`
       : discoveryState.phase === "loading"
         ? `${conditionSummary} 기준으로 장소를 정리하고 있어요`
         : discoveryState.phase === "empty"
-          ? `${conditionSummary} 기준으로 다시 범위를 넓혀보세요`
+          ? `${conditionSummary} 기준에서 조금 더 넓혀볼 필요가 있어요`
           : discoveryState.phase === "error"
-            ? "조건 탐색 결과를 다시 불러와 주세요"
-            : "지역, 운동 종류, 시간대를 먼저 정하고 지도로 비교할 수 있어요";
+            ? "조건 검색 결과를 다시 불러와 주세요"
+            : "지역과 운동 조건을 먼저 고르고 지도에서 비교할 수 있게 준비해 두었습니다.";
 
   useEffect(() => {
     setAreaKeyword(discoveryState.keyword);
@@ -198,26 +206,81 @@ export default function Find(): JSX.Element {
 
   return (
     <section className="space-y-4">
-      <Panel tone="strong" className="space-y-4 px-4 py-4 md:px-6 md:py-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-[rgba(14,116,144,0.10)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
-            조건 중심 탐색
-          </span>
-          <span className="rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-            {activeConditionCount}개 조건 활성화
-          </span>
-        </div>
-
-        <div className="space-y-2">
-          <h2 className="text-xl font-semibold tracking-[-0.03em] text-slate-900 md:text-[1.9rem] md:leading-[1.2]">
-            찾는 조건을 먼저 정하고 맞는 운동 장소를 골라보세요
-          </h2>
-          <p className="text-sm leading-6 text-slate-600 md:text-[15px]">
-            홈보다 더 명시적으로 운동 종류, 시간대, 강도를 정한 뒤 지도와 결과
-            목록을 함께 비교할 수 있는 탐색 화면입니다.
-          </p>
-        </div>
-
+      <PageHero
+        eyebrow="조건 기반 탐색"
+        badge={`${activeConditionCount}개 조건 활성화`}
+        title="찾는 조건을 먼저 좁히고 지도 위에서 바로 비교해보세요"
+        description="운동 종류, 시간대, 강도를 정한 뒤 지역 키워드로 검색하면 지도와 결과 목록이 같은 흐름으로 맞물려 비교됩니다."
+        aside={
+          <Panel className="space-y-3 px-4 py-4">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                현재 조건
+              </p>
+              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
+                {conditionSummary}
+              </h3>
+            </div>
+            <p className="text-sm leading-6 text-slate-500">{routeSummary}</p>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  운동
+                </p>
+                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {workoutType}
+                </p>
+              </div>
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  시간대
+                </p>
+                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {timeWindow}
+                </p>
+              </div>
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  강도
+                </p>
+                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {intensity}
+                </p>
+              </div>
+            </div>
+          </Panel>
+        }
+        stats={
+          <>
+            <PageHeroStat
+              label="검색 기준"
+              value={composedKeyword || "지역 키워드를 입력해 주세요"}
+              helper="운동 종류는 검색어에 자연스럽게 함께 반영됩니다."
+              emphasize
+            />
+            <PageHeroStat
+              label="비교 방식"
+              value="지도와 목록을 같은 선택 상태로 연결"
+              helper="장소 하나를 고르면 상세 카드와 비교 흐름이 이어집니다."
+            />
+            <PageHeroStat
+              label="현재 상태"
+              value={
+                discoveryState.phase === "results"
+                  ? `${discoveryState.resultCount}곳 준비 완료`
+                  : discoveryState.phase === "loading"
+                    ? "검색 진행 중"
+                    : discoveryState.phase === "empty"
+                      ? "조건 재조정 필요"
+                      : discoveryState.phase === "error"
+                        ? "재시도 필요"
+                        : "검색 대기"
+              }
+              helper="찾기 화면에서도 지도 중심 비교 흐름은 그대로 유지됩니다."
+            />
+          </>
+        }
+      >
         <form className="space-y-3" onSubmit={submitHandler}>
           <SearchField
             id="find-search"
@@ -225,7 +288,7 @@ export default function Find(): JSX.Element {
             ref={inputRef}
             onChange={(event) => setAreaKeyword(event.target.value)}
             onFocus={() => setIsFocused(true)}
-            placeholder="예: 성수동, 잠실한강공원, 올림픽공원"
+            placeholder="예: 잠실 한강공원, 올림픽공원"
           />
 
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -248,7 +311,7 @@ export default function Find(): JSX.Element {
             <Loader
               surface="panel"
               label="추천 지역을 정리하고 있어요"
-              description="조건 탐색에 자주 쓰는 지역 검색어를 먼저 보여드립니다."
+              description="조건 탐색에서 자주 쓰는 지역 검색어를 먼저 보여드립니다."
             />
           }
         >
@@ -256,16 +319,16 @@ export default function Find(): JSX.Element {
             keyword={deferredKeyword}
             selectSuggest={selectSuggest}
             activeSuggestList={activeSuggestList}
-          ></SuggestList>
+          />
         </Suspense>
-      </Panel>
+      </PageHero>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
-        <div className="space-y-4">
+        <div className="order-2 space-y-4 xl:order-1">
           <Panel className="space-y-5 px-4 py-4 md:px-5 md:py-5">
             <ConditionGroup
               label="운동 종류"
-              helper="장소 검색어에 함께 반영돼 더 목적에 맞는 결과를 찾기 쉽게 합니다."
+              helper="검색어와 함께 반영되어 목적에 맞는 장소를 더 빠르게 찾게 도와줍니다."
               options={workoutOptions.map((option) => option.label)}
               value={workoutType}
               onChange={setWorkoutType}
@@ -273,7 +336,7 @@ export default function Find(): JSX.Element {
 
             <ConditionGroup
               label="선호 시간대"
-              helper="결과 비교 문구와 선택 브리프를 같은 시간대 기준으로 읽기 쉽게 정리합니다."
+              helper="결과 비교 문구와 선택 흐름을 같은 시간대 기준으로 정리합니다."
               options={timeOptions}
               value={timeWindow}
               onChange={setTimeWindow}
@@ -281,7 +344,7 @@ export default function Find(): JSX.Element {
 
             <ConditionGroup
               label="운동 강도"
-              helper="가볍게 훑을지, 꾸준히 같이할 후보를 볼지 탐색 톤을 먼저 맞춥니다."
+              helper="가볍게 움직일지, 꾸준히 달릴지 먼저 맞춘 뒤 비교할 수 있습니다."
               options={intensityOptions}
               value={intensity}
               onChange={setIntensity}
@@ -292,43 +355,19 @@ export default function Find(): JSX.Element {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  현재 조건
+                  탐색 요약
                 </p>
-                <h3 className="mt-1 text-base font-semibold tracking-[-0.02em] text-slate-900">
-                  {conditionSummary}
+                <h3 className="mt-1 text-base font-semibold tracking-[-0.03em] text-slate-900">
+                  {routeSummary}
                 </h3>
               </div>
-              <span className="rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                {composedKeyword || "지역 입력 대기"}
+              <span className="rounded-full bg-white/84 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                {composedKeyword || "키워드 대기"}
               </span>
             </div>
-            <p className="text-sm leading-6 text-slate-500">{routeSummary}</p>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="rounded-[20px] bg-white/72 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  검색 기준
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {workoutType}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-white/72 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  시간대
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {timeWindow}
-                </p>
-              </div>
-              <div className="rounded-[20px] bg-white/72 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  탐색 톤
-                </p>
-                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-                  {intensity}
-                </p>
-              </div>
-            </div>
+            <p className="text-sm leading-6 text-slate-500">
+              찾기 화면은 조건을 먼저 좁히되, 최종 판단은 지도와 상세 카드 비교로 이어지도록 설계했습니다.
+            </p>
           </Panel>
 
           <section ref={detailSurfaceRef} className="space-y-3">
@@ -339,8 +378,8 @@ export default function Find(): JSX.Element {
                 </p>
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {selectedMarker
-                    ? `${timeWindow} 기준으로 볼 ${selectedMarker.content} 모집 현황`
-                    : "장소를 고르면 조건에 맞춰 비교할 모집 브리프가 열려요"}
+                    ? `${timeWindow} 기준으로 본 ${selectedMarker.content} 모집 흐름`
+                    : "장소를 고르면 조건에 맞는 모집 흐름을 바로 비교할 수 있어요"}
                 </h3>
               </div>
 
@@ -348,7 +387,7 @@ export default function Find(): JSX.Element {
                 <button
                   type="button"
                   onClick={clearSelectedMarker}
-                  className="inline-flex min-h-[36px] items-center justify-center rounded-full bg-slate-100 px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+                  className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-slate-100 px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
                 >
                   선택 해제
                 </button>
@@ -368,8 +407,8 @@ export default function Find(): JSX.Element {
             ) : (
               <EmptyState
                 eyebrow="조건 탐색 상세"
-                title="먼저 한 곳을 골라 조건에 맞는 모집 현황을 열어보세요"
-                description="찾기 화면에서는 결과 목록과 지도가 같은 선택 상태를 유지해서 장소별 후보를 더 명시적으로 비교할 수 있습니다."
+                title="먼저 한 곳을 고르고 조건에 맞는 모집 흐름을 비교해보세요"
+                description="찾기 화면에서도 결과 목록과 지도는 같은 선택 상태를 공유해서, 장소별 비교 흐름이 자연스럽게 이어집니다."
                 action={
                   <Button
                     type="button"
@@ -393,13 +432,13 @@ export default function Find(): JSX.Element {
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {selectedMarker
                     ? "다른 후보도 같은 조건으로 이어서 비교해보세요"
-                    : "조건에 맞는 장소부터 하나 골라보세요"}
+                    : "조건에 맞는 장소부터 하나씩 골라보세요"}
                 </h3>
               </div>
               <p className="text-xs leading-5 text-slate-500">
                 {selectedMarker
-                  ? "현재 상세를 유지한 채 다른 장소 브리프로 바로 전환할 수 있어요."
-                  : "지도 마커와 목록이 같은 결과를 가리켜서 조건 중심 비교가 쉬워집니다."}
+                  ? "현재 상세 흐름을 유지한 채 다른 장소 카드로 바로 전환할 수 있습니다."
+                  : "지도와 목록이 같은 결과를 가리켜서 조건 중심 비교가 더 쉬워집니다."}
               </p>
             </div>
 
@@ -417,12 +456,12 @@ export default function Find(): JSX.Element {
           </section>
         </div>
 
-        <div className="space-y-4">
-          <section className="relative min-h-[420px] overflow-hidden rounded-[32px] md:min-h-[560px] xl:sticky xl:top-[104px] xl:h-[calc(100vh-132px)]">
-            <BaseMap></BaseMap>
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.24),_transparent_42%)]" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950/16 via-slate-950/4 to-transparent" />
-            <div className="pointer-events-none absolute left-4 right-4 top-4 md:left-6 md:right-auto md:w-[320px]">
+        <div className="order-1 space-y-4 xl:order-2">
+          <section className="relative min-h-[420px] overflow-hidden rounded-[34px] md:min-h-[560px] xl:sticky xl:top-[104px] xl:h-[calc(100vh-132px)]">
+            <BaseMap />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.22),_transparent_42%)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950/14 via-slate-950/4 to-transparent" />
+            <div className="pointer-events-none absolute left-4 right-4 top-4 md:left-6 md:right-auto md:w-[340px]">
               <Panel tone="soft" className="space-y-3 px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[rgba(14,116,144,0.10)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
@@ -436,11 +475,11 @@ export default function Find(): JSX.Element {
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-base font-semibold tracking-[-0.02em] text-slate-900">
-                    지도에서 조건 결과를 바로 비교하세요
+                    지도에서 조건 결과를 바로 비교해보세요
                   </h3>
                   <p className="text-sm leading-6 text-slate-500">
                     {discoveryState.phase === "results"
-                      ? `${conditionSummary} 기준으로 열린 장소를 지도와 목록에서 함께 보고 있습니다.`
+                      ? `${conditionSummary} 기준으로 나온 장소를 지도와 목록에서 함께 확인하고 있습니다.`
                       : "조건을 정한 뒤 검색하면 지도와 결과 목록이 같은 흐름으로 열립니다."}
                   </p>
                 </div>

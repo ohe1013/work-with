@@ -22,11 +22,11 @@ export default function EmptyState({
     <Panel
       tone="soft"
       className={[
-        "flex flex-col items-start gap-4 rounded-[24px] px-5 py-5 text-left",
+        "flex flex-col items-start gap-4 rounded-[26px] px-5 py-5 text-left",
         className,
       ].join(" ")}
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[rgba(14,116,144,0.10)] text-[rgb(var(--color-accent))]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[rgba(14,116,144,0.10)] text-[rgb(var(--color-accent))] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
         {icon ?? (
           <span className="text-lg font-semibold" aria-hidden="true">
             ·

@@ -19,7 +19,7 @@ Last updated: 2026-04-09
 - Active milestone: `M5`
 - Current phase: `M5 in progress`
 - Immediate next task:
-  Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure.
+  Recheck `docs/acceptance-checklist.md` against the refreshed Toss-like mobile-first UI state and confirm whether any UX gaps still block milestone closure.
 
 ## Recent implementation focus
 
@@ -28,7 +28,11 @@ Last updated: 2026-04-09
 - M3 is complete.
 - M4 is complete.
 - M5 has moved through trust/access polish into softer flow-finish recovery guidance across home, `/find`, and `/regist`.
+- M5 continued with a Toss-like mobile-first polish pass across `/regist`, `/login`, and the shared shell so the staged posting flow now matches the newer hero/summary language used elsewhere.
+- `/regist` now uses the shared `PageHero` pattern, surfaces current progress in the hero aside, and scrolls the user toward the submit summary when the preview opens.
+- Login now maps return destinations to user-readable copy instead of exposing raw route paths in the UI.
 - `README.md`, `docs/user-flows.md`, and `docs/toss-inspired-ui-spec.md` now match the real `/find`, `/regist`, and demo-auth scope instead of older placeholder-era expectations.
+- `docs/toss-inspired-ui-spec.md` now points readers to `docs/toss-like-mobile-first-ui-spec.md` for the more detailed mobile-first UI rules.
 - `docs/api-contracts.md` now documents the current implemented search, auth, and work-with request-response shapes.
 - Client auth uses a shared typed session shape, one storage key, and user-visible login failure handling.
 - Work-with detail cards and the `/regist` flow use explicit API contracts instead of client-side mock JSON.
@@ -38,10 +42,14 @@ Last updated: 2026-04-09
 ## Files most likely relevant next
 
 - `docs/acceptance-checklist.md`
+- `docs/toss-like-mobile-first-ui-spec.md`
 - `README.md`
 - `docs/milestones.md`
 - `docs/user-flows.md`
 - `docs/toss-inspired-ui-spec.md`
+- `client/src/pages/Regist.tsx`
+- `client/src/layout/Header.tsx`
+- `client/src/layout/Layout.tsx`
 - `progress/current.md`
 - `progress/handoff.md`
 

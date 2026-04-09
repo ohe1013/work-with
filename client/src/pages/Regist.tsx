@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "@/components/common/Button";
 import EmptyState from "@/components/common/EmptyState";
 import Input from "@/components/common/Input";
+import PageHero, { PageHeroStat } from "@/components/common/PageHero";
 import Panel from "@/components/common/Panel";
 import { registerWorkWith } from "@/service/workWith/workWith";
 import type {
@@ -50,9 +51,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <Panel className="space-y-4 px-4 py-4 md:px-5 md:py-5">
-      <div className="space-y-1">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <Panel tone="soft" className="space-y-4 px-4 py-4 md:px-5 md:py-5">
+      <div className="space-y-2">
+        <p className="inline-flex rounded-full bg-[rgba(14,116,144,0.08)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
           {step}
         </p>
         <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-900">
@@ -88,12 +89,19 @@ function ChoiceChips<T extends string>({
             type="button"
             onClick={() => onChange(option)}
             className={[
-              "inline-flex min-h-[42px] items-center justify-center rounded-full px-4 text-sm font-semibold transition",
+              "inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold tracking-[-0.02em] transition",
               isActive
-                ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_14px_32px_rgba(14,116,144,0.24)]"
+                ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.18)]"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900",
             ].join(" ")}
           >
+            <span
+              className={[
+                "h-2 w-2 rounded-full",
+                isActive ? "bg-white" : "bg-slate-300",
+              ].join(" ")}
+              aria-hidden="true"
+            />
             {option}
           </button>
         );
@@ -222,6 +230,7 @@ export default function Regist(): JSX.Element {
   const placeNameInputRef = useRef<HTMLInputElement>(null);
   const dateInputRef = useRef<HTMLInputElement>(null);
   const timeInputRef = useRef<HTMLInputElement>(null);
+  const summaryPanelRef = useRef<HTMLElement>(null);
   const [form, setForm] = useState<RegistForm>({
     workoutType: "",
     placeName: "",
@@ -252,6 +261,20 @@ export default function Regist(): JSX.Element {
   const summaryNote = form.note.trim() || "추가 안내 없이 가볍게 모집합니다.";
   const progressLabel = `${completedRequiredCount}/${requiredCount}개 필수 항목 완료`;
   const readyToPreview = isFormValid(validateForm(form));
+  const pendingRequirements = [
+    !form.workoutType ? "운동 종류" : null,
+    !form.placeName.trim() ? "장소 이름" : null,
+    !form.date ? "날짜" : null,
+    !form.time ? "시간" : null,
+    !form.level ? "운동 수준" : null,
+    !form.maxCount ? "최대 인원" : null,
+  ].filter((value): value is string => Boolean(value));
+  const nextRequirement = pendingRequirements[0] ?? "모든 필수 항목을 채웠어요";
+  const previewStateLabel = showSummary
+    ? "제출 전 확인 가능"
+    : readyToPreview
+      ? "요약 열기 가능"
+      : "필수 항목 입력 중";
 
   const focusNextMissingField = () => {
     if (!form.workoutType) {
@@ -300,18 +323,35 @@ export default function Regist(): JSX.Element {
     }
   };
 
-  const previewHandler = (event: FormEvent) => {
-    event.preventDefault();
+  const openSummary = () => {
     const nextErrors = validateForm(form);
     setErrors(nextErrors);
     setSubmitError(null);
 
     if (!isFormValid(nextErrors)) {
       setShowSummary(false);
-      return;
+      return false;
     }
 
     setShowSummary(true);
+    window.requestAnimationFrame(() => {
+      if (typeof summaryPanelRef.current?.scrollIntoView === "function") {
+        summaryPanelRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    });
+    return true;
+  };
+
+  const previewHandler = (event: FormEvent) => {
+    event.preventDefault();
+
+    const didOpenSummary = openSummary();
+    if (!didOpenSummary) {
+      focusNextMissingField();
+    }
   };
 
   const submitHandler = async () => {
@@ -361,79 +401,174 @@ export default function Regist(): JSX.Element {
 
   if (createdWorkWith) {
     return (
-      <section className="flex min-h-[calc(100vh-126px)] w-full items-center justify-center px-3 py-6 md:min-h-[calc(100vh-108px)] md:px-6">
-        <Panel className="w-full max-w-[760px] space-y-5 px-5 py-6 md:px-8 md:py-8">
-          <EmptyState
-            eyebrow="등록 완료"
-            title="오늘의 모집이 저장됐어요"
-            description="입력한 내용이 서버에 저장됐어요. 홈이나 찾기 흐름으로 돌아가면 같은 계약의 상세 카드에서 모집 데이터를 다시 확인할 수 있습니다."
-            action={
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <Link to="/" className="w-full sm:w-auto">
-                  <Button type="button" fullWidth>
-                    홈으로 돌아가기
-                  </Button>
+      <section className="space-y-4">
+        <PageHero
+          eyebrow="등록 완료"
+          badge="서버 저장 완료"
+          title="오늘의 모집이 저장됐어요"
+          description="입력한 내용이 서버에 저장됐고, 홈이나 찾기 흐름으로 돌아가면 같은 계약의 상세 카드에서 다시 확인할 수 있습니다."
+          actions={
+            <>
+              <div className="w-full sm:w-auto">
+                <Link to="/">
+                  <Button type="button">홈으로 돌아가기</Button>
                 </Link>
+              </div>
+              <div className="w-full sm:w-auto">
                 <Button
                   type="button"
                   variant="secondary"
-                  fullWidth
                   onClick={resetHandler}
                 >
                   새 모집 다시 작성
                 </Button>
               </div>
-            }
-          />
-
-          <div className="grid gap-3 md:grid-cols-2">
-            <SummaryItem label="운동 종류" value={createdWorkWith.workoutType} />
-            <SummaryItem
-              label="장소"
-              value={buildSummaryPlace(
-                createdWorkWith.placeName,
-                createdWorkWith.placeDetail
-              )}
-            />
-            <SummaryItem
-              label="일정"
-              value={formatCreatedSchedule(createdWorkWith)}
-            />
-            <SummaryItem
-              label="모집 조건"
-              value={`${createdWorkWith.level} · 최대 ${createdWorkWith.maxCount}명`}
-              helper={createdWorkWith.note}
-            />
-          </div>
-        </Panel>
+            </>
+          }
+          aside={
+            <Panel className="space-y-3 px-4 py-4">
+              <div className="space-y-1">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  저장된 일정
+                </p>
+                <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
+                  {formatCreatedSchedule(createdWorkWith)}
+                </h3>
+              </div>
+              <p className="text-sm leading-6 text-slate-500">
+                {createdWorkWith.note ||
+                  "추가 메모 없이도 바로 판단할 수 있게 핵심 조건만 정리했습니다."}
+              </p>
+            </Panel>
+          }
+          stats={
+            <>
+              <PageHeroStat
+                label="운동 종류"
+                value={createdWorkWith.workoutType}
+                helper="어떤 운동인지 먼저 보이도록 저장했습니다."
+                emphasize
+              />
+              <PageHeroStat
+                label="장소"
+                value={buildSummaryPlace(
+                  createdWorkWith.placeName,
+                  createdWorkWith.placeDetail
+                )}
+                helper="장소 정보는 홈과 찾기 흐름에서 그대로 이어집니다."
+              />
+              <PageHeroStat
+                label="일정"
+                value={formatCreatedSchedule(createdWorkWith)}
+                helper="오늘 일정처럼 빠르게 판단할 수 있는 형식으로 정리했습니다."
+              />
+              <PageHeroStat
+                label="모집 조건"
+                value={`${createdWorkWith.level} · 최대 ${createdWorkWith.maxCount}명`}
+                helper={
+                  createdWorkWith.note ||
+                  "추가 메모 없이도 모집 조건이 바로 드러나게 저장했습니다."
+                }
+              />
+            </>
+          }
+        />
       </section>
     );
   }
 
   return (
     <section className="space-y-4">
-      <Panel tone="strong" className="space-y-4 px-4 py-4 md:px-6 md:py-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-[rgba(14,116,144,0.10)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
-            오늘의 모집 등록
-          </span>
-          <span className="rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-            {progressLabel}
-          </span>
-        </div>
+      <PageHero
+        eyebrow="모집 작성"
+        badge={progressLabel}
+        title="오늘 운동 메이트 모집을 단계별로 정리해보세요"
+        description="운동 종류, 장소, 시간, 모집 조건을 짧은 섹션으로 나눠 입력하고, 제출 직전 요약에서 다시 확인할 수 있게 구성했습니다."
+        aside={
+          <Panel className="space-y-4 px-4 py-4">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                현재 작성 상태
+              </p>
+              <h3 className="text-base font-semibold tracking-[-0.03em] text-slate-900">
+                {previewStateLabel}
+              </h3>
+              <p className="text-sm leading-6 text-slate-500">
+                {readyToPreview
+                  ? "필수 항목이 모두 채워져서 요약을 열고 제출 전 확인으로 넘어갈 수 있어요."
+                  : `${nextRequirement}부터 이어서 채우면 요약으로 넘어갈 수 있어요.`}
+              </p>
+            </div>
 
-        <div className="space-y-2">
-          <h2 className="text-xl font-semibold tracking-[-0.03em] text-slate-900 md:text-[1.9rem] md:leading-[1.2]">
-            부담 없이 올리고, 제출 전 한 번 더 확인하세요
-          </h2>
-          <p className="text-sm leading-6 text-slate-600 md:text-[15px]">
-            운동 종류, 장소, 시간, 모집 조건을 짧은 섹션으로 나눠 입력하고
-            제출 직전 요약에서 다시 확인할 수 있게 구성했습니다.
-          </p>
-        </div>
-      </Panel>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  운동
+                </p>
+                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {form.workoutType || "선택 전"}
+                </p>
+              </div>
+              <div className="rounded-[20px] bg-slate-50 px-3 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  일정
+                </p>
+                <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
+                  {summaryDateTime}
+                </p>
+              </div>
+            </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+            {readyToPreview ? (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  openSummary();
+                }}
+              >
+                지금 요약 열기
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={focusNextMissingField}
+              >
+                다음 입력으로 이동
+              </Button>
+            )}
+          </Panel>
+        }
+        stats={
+          <>
+            <PageHeroStat
+              label="작성 방식"
+              value="4단계로 나눠 입력"
+              helper="긴 폼을 한 번에 쏟아내지 않고 단계별로 정리합니다."
+              emphasize
+            />
+            <PageHeroStat
+              label="현재 상태"
+              value={previewStateLabel}
+              helper={
+                showSummary
+                  ? "요약 패널에서 제출 전에 마지막으로 다시 확인할 수 있어요."
+                  : readyToPreview
+                    ? "필수 항목이 모두 채워져 요약으로 바로 넘어갈 수 있습니다."
+                    : `${nextRequirement}부터 채우면 제출 전 요약을 열 수 있어요.`
+              }
+            />
+            <PageHeroStat
+              label="등록 후 흐름"
+              value="홈과 찾기에서 다시 확인"
+              helper="등록 직후 같은 계약의 상세 카드와 목록 흐름으로 이어집니다."
+            />
+          </>
+        }
+      />
+
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <form className="space-y-4" onSubmit={previewHandler}>
           <Section
             step="Step 1"
@@ -594,7 +729,7 @@ export default function Regist(): JSX.Element {
                   value={form.note}
                   onChange={(event) => updateField("note", event.target.value)}
                   placeholder="예: 5km 정도 가볍게 달리고 싶어요"
-                  className="block min-h-[120px] w-full rounded-[22px] border border-transparent bg-white/92 px-4 py-3 text-[15px] text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.18)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.2)]"
+                  className="block min-h-[132px] w-full rounded-[24px] border border-transparent bg-white/94 px-4 py-3.5 text-[15px] text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.16)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.18)]"
                 />
               </Input>
             </div>
@@ -615,8 +750,14 @@ export default function Regist(): JSX.Element {
           </div>
         </form>
 
-        <aside className="space-y-4 xl:sticky xl:top-[104px] xl:h-fit">
-          <Panel className="space-y-4 px-4 py-4 md:px-5 md:py-5">
+        <aside
+          ref={summaryPanelRef}
+          className="space-y-4 xl:sticky xl:top-[104px] xl:h-fit"
+        >
+          <Panel
+            tone={showSummary ? "strong" : "default"}
+            className="space-y-4 px-4 py-4 md:px-5 md:py-5"
+          >
             <div className="space-y-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                 제출 전 요약

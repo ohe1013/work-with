@@ -23,17 +23,17 @@ const SideTab = ({ path }: { path: string }) => {
         : discoveryState.phase === "error"
           ? "검색 결과를 다시 불러와 주세요"
           : markers.length > 0
-            ? `${markers.length}곳이 지도에 준비됐어요`
+            ? `${markers.length}곳이 지도 위에 준비됐어요`
             : "장소를 입력하면 지도와 결과 목록이 함께 열립니다.";
   const helperCopy =
     selectedMarker?.content ??
     (discoveryState.phase === "loading"
       ? "결과가 준비되면 선택 흐름도 같은 패널에서 이어집니다."
       : discoveryState.phase === "empty"
-        ? "다른 공원, 체육관 이름으로 범위를 조금 넓혀보세요."
+        ? "다른 공원이나 체육관 이름으로 범위를 조금 넓혀보세요."
         : discoveryState.phase === "error"
-          ? "같은 검색 패널에서 다시 시도하면 흐름을 이어갈 수 있어요."
-          : "검색 후 마커를 누르면 여기서 바로 비교할 수 있어요.");
+          ? "같은 검색어로 다시 시도하면 흐름은 그대로 이어집니다."
+          : "검색 후 지도나 카드 중 어느 쪽을 눌러도 같은 장소가 선택됩니다.");
   const resultBadgeLabel =
     discoveryState.phase === "loading"
       ? "탐색 중"
@@ -43,7 +43,7 @@ const SideTab = ({ path }: { path: string }) => {
           ? "재시도"
           : markers.length > 0
             ? `${markers.length}곳`
-            : "검색 전";
+            : "검색 대기";
   const panelStateLabel = selectedMarker
     ? "상세 열림"
     : discoveryState.phase === "loading"
@@ -70,11 +70,11 @@ const SideTab = ({ path }: { path: string }) => {
   return (
     <section
       className={[
-        "fixed bottom-[92px] left-3 right-3 z-20 transition-transform duration-300 md:sticky md:top-[104px] md:bottom-auto md:left-auto md:right-auto md:z-10 md:w-[360px] xl:w-[388px]",
-        on ? "translate-y-0" : "translate-y-[calc(100%-108px)] md:translate-y-0",
+        "fixed bottom-[92px] left-3 right-3 z-20 transition-transform duration-300 md:sticky md:top-[106px] md:bottom-auto md:left-auto md:right-auto md:z-10 md:w-[368px] xl:w-[400px]",
+        on ? "translate-y-0" : "translate-y-[calc(100%-114px)] md:translate-y-0",
       ].join(" ")}
     >
-      <Panel className="overflow-hidden rounded-[32px]">
+      <Panel className="overflow-hidden rounded-[34px]">
         <div className="border-b border-[rgba(148,163,184,0.12)] px-4 pb-4 pt-3 md:px-5 md:py-5">
           <div className="mb-3 flex justify-center md:hidden">
             <span className="h-1.5 w-12 rounded-full bg-slate-200" aria-hidden="true" />
@@ -84,7 +84,7 @@ const SideTab = ({ path }: { path: string }) => {
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
-                  홈 탐색
+                  지도 탐색
                 </span>
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                   {resultBadgeLabel}
@@ -96,11 +96,11 @@ const SideTab = ({ path }: { path: string }) => {
 
               <div className="space-y-1">
                 <h2 className="text-base font-semibold tracking-[-0.02em] text-slate-900">
-                  지금 비교할 수 있는 운동 장소
+                  지금 비교하고 있는 운동 장소
                 </h2>
                 <p className="text-sm leading-6 text-slate-500">
                   {selectedMarker
-                    ? "선택한 장소의 모집 브리프가 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
+                    ? "선택한 장소의 모집 흐름이 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
                     : on
                       ? resultSummary
                       : helperCopy}
@@ -112,16 +112,16 @@ const SideTab = ({ path }: { path: string }) => {
               type="button"
               onClick={() => setOn((current) => !current)}
               aria-expanded={on}
-              aria-label={on ? "홈 검색 패널 접기" : "홈 검색 패널 펼치기"}
+              aria-label={on ? "검색 패널 접기" : "검색 패널 펼치기"}
               className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
             >
-              {on ? "−" : "+"}
+              {on ? "-" : "+"}
             </button>
           </div>
         </div>
 
         {on ? (
-          <SearchTab key={"sideTab" + path}></SearchTab>
+          <SearchTab key={"sideTab" + path} />
         ) : (
           <div className="space-y-2 px-4 py-4 md:px-5">
             <div className="rounded-[22px] bg-slate-50 px-4 py-3">
@@ -136,11 +136,11 @@ const SideTab = ({ path }: { path: string }) => {
                       ? "다른 장소를 찾아보세요"
                       : discoveryState.phase === "error"
                         ? "검색 재시도 필요"
-                        : "아직 선택된 장소가 없어요")}
+                        : "아직 선택한 장소가 없어요")}
               </p>
               <p className="mt-1 text-xs leading-5 text-slate-500">
                 {discoveryState.phase === "loading"
-                  ? "패널을 다시 열면 검색 진행 상태와 새 결과를 바로 이어서 볼 수 있습니다."
+                  ? "패널을 다시 열면 검색 진행 상태와 결과를 바로 이어서 볼 수 있습니다."
                   : "패널을 다시 열면 장소 검색과 모집 비교 흐름을 바로 이어서 볼 수 있습니다."}
               </p>
             </div>

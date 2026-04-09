@@ -28,8 +28,7 @@ const SearchBar = () => {
     pageClickHandler,
     pagination,
     runSearch: executeSearch,
-  } =
-    useMapDiscoverySearch();
+  } = useMapDiscoverySearch();
   const { selectedMarker, clearSelectedMarker } = useMarkerSelection();
   const [isFocused, setIsFocused] = useState(false);
   const queryKey = useDeferredValue(keyword);
@@ -48,19 +47,19 @@ const SearchBar = () => {
           ? "다시 시도 필요"
           : markers.length > 0
             ? `${markers.length}곳 표시 중`
-            : "검색 전";
+            : "검색 대기";
   const selectedSummary =
-    selectedMarker?.content ?? "장소를 고르면 모집 브리프가 열려요";
+    selectedMarker?.content ?? "장소를 고르면 모집 흐름이 여기서 열려요";
   const detailTitle = selectedMarker
-    ? "선택한 장소의 모집 현황"
+    ? "선택한 장소의 모집 흐름"
     : markers.length > 0
-      ? "장소를 하나 고르면 모집 현황이 바로 열려요"
-      : "검색 후 선택한 장소의 모집 현황이 이어집니다";
+      ? "장소를 하나 고르면 모집 흐름이 바로 열려요"
+      : "검색 후 선택한 장소의 모집 흐름이 이어집니다";
   const detailDescription = selectedMarker
-    ? "리스트와 지도는 같은 선택 상태를 유지한 채 같은 상세를 보여줍니다."
+    ? "목록과 지도는 같은 선택 상태를 공유해서 비교 흐름이 끊기지 않습니다."
     : markers.length > 0
-      ? "리스트 카드나 지도 마커를 누르면 같은 장소 브리프가 여기서 열립니다."
-      : "먼저 장소를 검색하면 결과 목록과 장소별 모집 현황이 함께 활성화됩니다.";
+      ? "목록 카드나 지도 마커를 누르면 같은 장소 브리프가 여기에서 열립니다."
+      : "먼저 장소를 검색하면 결과 목록과 장소별 모집 흐름이 함께 활성화됩니다.";
 
   useEffect(() => {
     if (!hasSelection) {
@@ -110,21 +109,20 @@ const SearchBar = () => {
       className={[
         "flex h-full flex-col md:max-h-[calc(100vh-236px)]",
         hasSelection
-          ? "max-h-[calc(100vh-184px)]"
-          : "max-h-[min(56vh,520px)]",
+          ? "max-h-[calc(100vh-188px)]"
+          : "max-h-[min(58vh,560px)]",
       ].join(" ")}
     >
       <div className="space-y-4 px-4 pb-4 pt-4 md:px-5">
         <div className="space-y-1.5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            홈 지도 탐색
+            지도 기반 탐색
           </p>
           <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-900">
-            운동 장소를 찾고 바로 모집 흐름을 비교하세요
+            운동 장소를 찾고 바로 모집 흐름을 비교해보세요
           </h3>
           <p className="text-sm leading-6 text-slate-500">
-            공원이나 체육관 이름으로 검색한 뒤, 같은 화면에서 모집 수와 남은
-            자리까지 가볍게 확인할 수 있습니다.
+            공원이나 체육관 이름으로 검색하면, 같은 화면에서 모집 여부와 여유 자리까지 가볍게 확인할 수 있습니다.
           </p>
         </div>
 
@@ -134,7 +132,7 @@ const SearchBar = () => {
             value={keyword}
             onChange={inputHandler}
             ref={inputRef}
-            placeholder="예: 잠실한강공원, 올림픽공원"
+            placeholder="예: 여의도공원, 올림픽공원"
             onFocus={() => {
               setIsFocused(true);
             }}
@@ -154,7 +152,7 @@ const SearchBar = () => {
               {resultSummary}
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              검색 결과 카드를 누르면 지도와 상세가 같은 선택으로 이어집니다.
+              검색 결과 카드를 누르면 지도와 상세 흐름이 같은 선택으로 이어집니다.
             </p>
           </div>
 
@@ -166,7 +164,7 @@ const SearchBar = () => {
               {selectedSummary}
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              지도와 리스트가 같은 장소를 가리키도록 동기화됩니다.
+              지도와 리스트가 같은 장소를 가리키도록 맞춰 두었습니다.
             </p>
           </div>
         </div>
@@ -178,7 +176,7 @@ const SearchBar = () => {
             className="px-4 pb-3 md:px-5"
             surface="panel"
             label="추천 검색어를 정리하고 있어요"
-            description="주변 장소를 빠르게 찾을 수 있도록 자주 쓰는 검색어를 먼저 보여줍니다."
+            description="주변 장소를 더 빨리 찾을 수 있도록 자주 쓰는 검색어를 먼저 보여드립니다."
           />
         }
       >
@@ -186,7 +184,7 @@ const SearchBar = () => {
           keyword={queryKey}
           selectSuggest={selectSuggest}
           activeSuggestList={activeSuggestList}
-        ></SuggestList>
+        />
       </Suspense>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 md:px-5">
@@ -249,15 +247,15 @@ const SearchBar = () => {
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {hasSelection
                     ? "다른 후보를 이어서 비교해보세요"
-                    : "먼저 한 곳을 골라 모집 현황을 열어보세요"}
+                    : "먼저 한 곳을 고르고 모집 흐름을 이어보세요"}
                 </h3>
               </div>
               <p className="text-xs leading-5 text-slate-500">
                 {hasSelection
-                  ? "현재 상세를 닫지 않고 다른 장소의 모집 브리프로 빠르게 전환할 수 있어요."
+                  ? "현재 상세 흐름을 닫지 않고 다른 장소의 모집 브리프로 빠르게 전환할 수 있어요."
                   : discoveryState.phase === "loading"
-                    ? "새 결과를 불러오는 동안 지도와 목록이 함께 정리됩니다."
-                    : "카드나 마커를 누르면 선택한 장소 브리프가 시트 상단에 고정됩니다."}
+                    ? "검색 결과를 불러오는 동안 지도와 목록을 함께 정리합니다."
+                    : "카드와 지도 마커를 누르면 선택한 장소 브리프가 상단에 고정됩니다."}
               </p>
             </div>
 
@@ -265,7 +263,7 @@ const SearchBar = () => {
               showHeader={false}
               onRetrySearch={() => runSearch(discoveryState.keyword)}
               onRefineSearch={focusSearchField}
-            ></SearchList>
+            />
           </section>
         </div>
       </div>

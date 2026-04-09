@@ -5,10 +5,13 @@
 @layer base {
   :root {
     font-family: "Pretendard Variable", "SUIT Variable", "Segoe UI", sans-serif;
-    --color-canvas: 243 247 250;
+    --color-canvas: 244 247 250;
     --color-surface: 255 255 255;
+    --color-surface-soft: 248 250 252;
+    --color-border: 203 213 225;
     --color-accent: 14 116 144;
     --color-accent-strong: 8 95 116;
+    --color-accent-soft: 236 253 255;
     --color-text: 15 23 42;
   }
 
@@ -28,12 +31,26 @@
     color: rgb(var(--color-text));
     background-color: rgb(var(--color-canvas));
     background-image:
-      radial-gradient(circle at top left, rgba(125, 211, 252, 0.22), transparent 32%),
-      radial-gradient(circle at top right, rgba(226, 232, 240, 0.7), transparent 24%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(243, 247, 250, 1));
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.18), transparent 28%),
+      radial-gradient(circle at top right, rgba(226, 232, 240, 0.66), transparent 22%),
+      radial-gradient(circle at bottom left, rgba(186, 230, 253, 0.18), transparent 20%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(244, 247, 250, 1));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at center, black 45%, transparent 86%);
+    opacity: 0.4;
   }
 
   a {
@@ -46,5 +63,9 @@
   textarea,
   select {
     font: inherit;
+  }
+
+  ::selection {
+    background: rgba(14, 116, 144, 0.18);
   }
 }

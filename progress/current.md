@@ -34,16 +34,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Started M5 by auditing the acceptance checklist and polishing the highest-signal trust/access copy gaps across the header, `/find`, and `/login`
 - [x] Continued M5 by softening home / find / regist flow-finish empty states and adding clearer recovery actions across shared search and posting flows
 - [x] Refreshed `README.md` and core product docs so the current `/find`, `/regist`, and demo-auth implementation state no longer drifts from the documented runbook
+- [x] Continued M5 by aligning `/regist` with the shared mobile-first hero/summary language, polishing `/login` return copy plus shared shell labels, and linking the detailed Toss-like UI spec reference in `client` and `docs`
 
 ## Next up
 
-1. [ ] Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure
-2. [ ] Add any remaining focused tests needed to support the final M5 polish pass
+1. [ ] Recheck `docs/acceptance-checklist.md` against the refreshed Toss-like mobile-first UI state and confirm whether any UX gaps still block milestone closure
+2. [ ] Decide whether any remaining focused polish or test coverage is still needed before closing M5
 3. [ ] If the checklist closes cleanly, mark M5 complete and update the release-facing docs accordingly
 
 ## Immediate next task
 
-Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure.
+Recheck `docs/acceptance-checklist.md` against the refreshed Toss-like mobile-first UI state and confirm whether any UX gaps still block milestone closure.
 
 ## Known constraints
 
@@ -53,6 +54,10 @@ Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and co
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the Toss-like mobile-first `/regist` and shared shell polish update
+- `2026-04-09`: `yarn --cwd client build` passed after the Toss-like mobile-first `/regist` and shared shell polish update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the Toss-like mobile-first `/regist` and shared shell polish update
+- `2026-04-09`: `yarn --cwd server build` passed after the Toss-like mobile-first `/regist` and shared shell polish update; `server/package.json` still has no license field
 - `2026-04-09`: `yarn --cwd client lint` passed after the M5 README/docs alignment update
 - `2026-04-09`: `yarn --cwd client build` passed after the M5 README/docs alignment update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M5 README/docs alignment update

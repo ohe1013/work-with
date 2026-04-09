@@ -12,7 +12,7 @@ const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
       <Panel
         tone="soft"
         className={[
-          "flex items-center gap-3 rounded-[24px] px-4 py-2.5",
+          "flex items-center gap-3 rounded-[26px] px-4 py-3 ring-1 ring-transparent transition focus-within:ring-[rgba(14,116,144,0.16)]",
           shellClassName,
         ].join(" ")}
       >
@@ -41,7 +41,7 @@ const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           ref={ref}
           type="search"
           className={[
-            "w-full border-0 bg-transparent py-2 text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none",
+            "w-full border-0 bg-transparent py-1 text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none",
             className,
           ].join(" ")}
           {...props}
