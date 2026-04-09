@@ -54,6 +54,20 @@ describe("routes", () => {
     expect(screen.getByTestId("kakao-map")).toBeInTheDocument();
   });
 
+  test("renders the condition-based find route", () => {
+    renderRouter("/find");
+
+    expect(
+      screen.getByText("찾는 조건을 먼저 정하고 맞는 운동 장소를 골라보세요")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "조건으로 찾기" })
+    ).toBeDisabled();
+    expect(screen.getByText("운동 종류")).toBeInTheDocument();
+    expect(screen.getByText("현재 조건")).toBeInTheDocument();
+    expect(screen.getByTestId("kakao-map")).toBeInTheDocument();
+  });
+
   test("enables login when email and password are filled", () => {
     renderRouter("/login");
 

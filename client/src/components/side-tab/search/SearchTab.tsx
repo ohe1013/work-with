@@ -1,4 +1,4 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
   ChangeEvent,
   FormEventHandler,
@@ -14,27 +14,23 @@ import Card from "@/components/common/Card";
 import EmptyState from "@/components/common/EmptyState";
 import Loader from "@/components/common/Loader";
 import SearchField from "@/components/common/SearchField";
-import {
-  MapDiscoveryAtom,
-  MapMarkersAtom,
-  MapUserAtom,
-} from "@/recoil/map";
+import { MapMarkersAtom } from "@/recoil/map";
+import { useMapDiscoverySearch } from "@/hooks/map/useMapDiscoverySearch";
 import { useMarkerSelection } from "@/hooks/map/useMarkerSelection";
-import { MarkerWithId } from "@/types/map";
-import { pageClickType } from "../../../types/util";
-import { getSearchList } from "../../../service/search/kakaoSearch";
 import SearchList from "./SearchList";
 import SuggestList from "./SuggestList";
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState("");
   const markers = useRecoilValue(MapMarkersAtom);
-  const setMarkers = useSetRecoilState(MapMarkersAtom);
-  const discoveryState = useRecoilValue(MapDiscoveryAtom);
-  const setDiscoveryState = useSetRecoilState(MapDiscoveryAtom);
-  const mapInfo = useRecoilValue(MapUserAtom);
+  const {
+    discoveryState,
+    pageClickHandler,
+    pagination,
+    runSearch: executeSearch,
+  } =
+    useMapDiscoverySearch();
   const { selectedMarker, clearSelectedMarker } = useMarkerSelection();
-  const [pagination, setPagination] = useState<kakao.maps.Pagination>();
   const [isFocused, setIsFocused] = useState(false);
   const queryKey = useDeferredValue(keyword);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -77,31 +73,6 @@ const SearchBar = () => {
     });
   }, [hasSelection, selectedMarker?.id]);
 
-  const buildMarkers = (resultArr: kakao.maps.services.PlacesSearchResult) => {
-    const nextMarkers: MarkerWithId[] = [];
-
-    for (const result of resultArr) {
-      const categorySegments = result.category_name.split(">");
-      const categoryName =
-        categorySegments[categorySegments.length - 1].trim();
-
-      nextMarkers.push({
-        id: result.id,
-        position: {
-          lat: +result.y,
-          lng: +result.x,
-        },
-        content: result.place_name,
-        place_url: result.place_url,
-        category_name: categoryName,
-        phone: result.phone,
-        address_name: result.address_name,
-      });
-    }
-
-    return nextMarkers;
-  };
-
   const focusSearchField = () => {
     inputRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -111,74 +82,9 @@ const SearchBar = () => {
   };
 
   const runSearch = (nextKeyword: string) => {
-    const trimmedKeyword = nextKeyword.trim();
-    if (trimmedKeyword.length === 0) {
+    const didStart = executeSearch(nextKeyword);
+    if (!didStart) {
       return;
-    }
-
-    clearSelectedMarker();
-    setMarkers([]);
-    setPagination(undefined);
-    setDiscoveryState({
-      phase: "loading",
-      keyword: trimmedKeyword,
-      resultCount: 0,
-    });
-
-    const cb = (
-      resultArr: kakao.maps.services.PlacesSearchResult,
-      status: kakao.maps.services.Status,
-      currentPagination: kakao.maps.Pagination
-    ) => {
-      if (status === kakao.maps.services.Status.OK) {
-        const nextMarkers = buildMarkers(resultArr);
-
-        clearSelectedMarker();
-        setPagination(currentPagination);
-        setMarkers(nextMarkers);
-        setDiscoveryState({
-          phase: "results",
-          keyword: trimmedKeyword,
-          resultCount: nextMarkers.length,
-        });
-        return;
-      }
-
-      clearSelectedMarker();
-      setMarkers([]);
-      setPagination(undefined);
-
-      if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        setDiscoveryState({
-          phase: "empty",
-          keyword: trimmedKeyword,
-          resultCount: 0,
-        });
-        return;
-      }
-
-      setDiscoveryState({
-        phase: "error",
-        keyword: trimmedKeyword,
-        resultCount: 0,
-        errorMessage:
-          "검색 결과를 불러오지 못했어요. 같은 장소로 다시 시도해 주세요.",
-      });
-    };
-
-    try {
-      getSearchList({ keyword: trimmedKeyword, mapInfo, cb });
-    } catch (_error) {
-      clearSelectedMarker();
-      setMarkers([]);
-      setPagination(undefined);
-      setDiscoveryState({
-        phase: "error",
-        keyword: trimmedKeyword,
-        resultCount: 0,
-        errorMessage:
-          "검색 준비 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.",
-      });
     }
 
     inputRef.current?.blur();
@@ -193,44 +99,6 @@ const SearchBar = () => {
   const selectSuggest = (nextKeyword: string) => {
     setKeyword(nextKeyword);
     runSearch(nextKeyword);
-  };
-
-  const pageClickHandler = (
-    type: pageClickType,
-    page?: number,
-    currentPagination?: kakao.maps.Pagination
-  ) => {
-    const activeKeyword = discoveryState.keyword.trim();
-    if (!currentPagination || activeKeyword.length === 0) {
-      return;
-    }
-
-    clearSelectedMarker();
-    setMarkers([]);
-    setPagination(undefined);
-    setDiscoveryState({
-      phase: "loading",
-      keyword: activeKeyword,
-      resultCount: 0,
-    });
-
-    switch (type) {
-      case "prev":
-        if (currentPagination?.hasPrevPage) {
-          currentPagination.prevPage();
-        }
-        break;
-      case "next":
-        if (currentPagination?.hasNextPage) {
-          currentPagination.nextPage();
-        }
-        break;
-      case "current":
-        if (page && currentPagination) {
-          currentPagination.gotoPage(page);
-        }
-        break;
-    }
   };
 
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {

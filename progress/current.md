@@ -8,7 +8,7 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M3 ready to start
+- Phase: M3 in progress
 - Active milestone: M3
 - Working mode: milestone-by-milestone
 
@@ -26,25 +26,28 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Expanded the connected selection flow into a more explicit mobile bottom-sheet and desktop side-panel discovery surface in `client`
 - [x] Expanded the M2 home discovery flow with shared loading/empty/error state, retry/refine actions, and map/panel status messaging in `client`
 - [x] Completed M2 by removing the remaining home discovery placeholders and replacing them with productized exploration copy, guides, and selection briefs in `client`
+- [x] Started M3 by turning `/find` into a real condition-based discovery page with its own filters, map/result comparison surface, and shared search execution flow in `client`
 
 ## Next up
 
-1. [ ] Split `/find` into a real condition-based discovery page instead of reusing `Home`
-2. [ ] Build `/regist` as a real staged posting flow with validation and a pre-submit summary
-3. [ ] Continue auth/API contract cleanup after the route split milestone
+1. [ ] Build `/regist` as a real staged posting flow with validation and a pre-submit summary
+2. [ ] Continue auth/API contract cleanup after the route split milestone
 
 ## Immediate next task
 
-Turn `/find` into a real condition-based discovery page so M3 starts by separating the route from `Home` without breaking the workout-matching product thesis.
+Turn `/regist` into a real staged posting flow with clear sectioning, validation, and a pre-submit summary instead of reusing `Home`.
 
 ## Known constraints
 
-- `/find` and `/regist` still point to `Home`
+- `/regist` still points to `Home`
 - Server auth flow is still incomplete
 - `docker-compose.dev.yaml` still does not start the Node server
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M3 `/find` route split update
+- `2026-04-09`: `yarn --cwd client build` passed after the M3 `/find` route split update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M3 `/find` route split update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M2 discovery placeholder removal update
 - `2026-04-09`: `yarn --cwd client build` passed after the M2 discovery placeholder removal update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M2 discovery placeholder removal update

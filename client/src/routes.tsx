@@ -2,6 +2,7 @@ import Error from "./pages/Error";
 import Layout from "./layout/Layout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Find from "./pages/Find";
 import { PageEnum } from "./enum/page";
 
 const routes = [
@@ -22,7 +23,7 @@ const routes = [
       },
       {
         path: "/find",
-        element: <Home />,
+        element: <Find />,
         label: PageEnum.FIND,
       },
     ],
