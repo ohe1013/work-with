@@ -8,6 +8,7 @@
 - @docs/milestones.md
 - @docs/api-contracts.md
 - @progress/current.md
+- @progress/handoff.md
 
 Goal
 - `progress/current.md`의 Immediate next task 또는 가장 위 미완료 항목 하나만 구현한다.

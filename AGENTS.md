@@ -26,6 +26,8 @@
 - Do not introduce a new product direction without updating `docs/product-invariants.md` and `progress/decisions.md`.
 - Do not remove the map-first discovery flow to simplify implementation.
 - Do not leave placeholder route wiring in the active milestone when a milestone says that flow is complete.
+- `progress/current.md` remains the source of truth for milestone state.
+- `progress/handoff.md` is a compact session-handoff companion and must stay aligned with `progress/current.md` when work meaningfully shifts.
 
 ## UI direction
 - Toss-inspired, not copied.
@@ -47,6 +49,7 @@
 4. `docs/user-flows.md`
 5. `docs/milestones.md`
 6. `progress/current.md`
+7. `progress/handoff.md`
 
 ## Validation commands
 - Root dev: `yarn start`
