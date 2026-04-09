@@ -41,13 +41,13 @@ describe("Login", () => {
       </MemoryRouter>
     );
 
-    fireEvent.change(screen.getByLabelText("Email"), {
+    fireEvent.change(screen.getByLabelText("이메일"), {
       target: { value: "test123@naver.com" },
     });
-    fireEvent.change(screen.getByLabelText("Password"), {
+    fireEvent.change(screen.getByLabelText("비밀번호"), {
       target: { value: "wrong-password" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    fireEvent.click(screen.getByRole("button", { name: "로그인" }));
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent(
@@ -73,13 +73,13 @@ describe("Login", () => {
       </MemoryRouter>
     );
 
-    fireEvent.change(screen.getByLabelText("Email"), {
+    fireEvent.change(screen.getByLabelText("이메일"), {
       target: { value: "test123@naver.com" },
     });
-    fireEvent.change(screen.getByLabelText("Password"), {
+    fireEvent.change(screen.getByLabelText("비밀번호"), {
       target: { value: "test123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    fireEvent.click(screen.getByRole("button", { name: "로그인" }));
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/");

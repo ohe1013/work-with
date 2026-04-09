@@ -8,7 +8,7 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M5 ready to start
+- Phase: M5 in progress
 - Active milestone: M5
 - Working mode: milestone-by-milestone
 
@@ -31,16 +31,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Started M4 by aligning the frontend and server auth flow around a stable login contract, shared session storage, and a working `/api/login` endpoint in `client` and `server`
 - [x] Replaced the mocked work-with registration/detail paths with explicit client-server API contracts, shared types, and demo persistence in `client` and `server`
 - [x] Completed M4 by documenting the current search / auth / posting request-response shapes in `docs/api-contracts.md`
+- [x] Started M5 by auditing the acceptance checklist and polishing the highest-signal trust/access copy gaps across the header, `/find`, and `/login`
 
 ## Next up
 
-1. [ ] Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps
+1. [ ] Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance
 2. [ ] Refresh README / docs where the implementation or milestone state has drifted
 3. [ ] Add any remaining focused tests needed to support the M5 polish pass
 
 ## Immediate next task
 
-Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps in copy, state UI, and flow finish.
+Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance.
 
 ## Known constraints
 
@@ -50,6 +51,9 @@ Start M5 by auditing the current product against `docs/acceptance-checklist.md` 
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M5 trust/access polish update
+- `2026-04-09`: `yarn --cwd client build` passed after the M5 trust/access polish update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M5 trust/access polish update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M4 API contract documentation update
 - `2026-04-09`: `yarn --cwd client build` passed after the M4 API contract documentation update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M4 API contract documentation update

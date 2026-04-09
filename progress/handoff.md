@@ -17,9 +17,9 @@ Last updated: 2026-04-09
 ## Current handoff snapshot
 
 - Active milestone: `M5`
-- Current phase: `M5 ready to start`
+- Current phase: `M5 in progress`
 - Immediate next task:
-  Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps in copy, state UI, and flow finish.
+  Continue the M5 audit on home / find / regist flow-finish gaps, especially clearer action copy and softer empty-state guidance.
 
 ## Recent implementation focus
 
@@ -27,6 +27,7 @@ Last updated: 2026-04-09
 - M2 is complete.
 - M3 is complete.
 - M4 is complete.
+- M5 has started with a first polish pass on trust/access copy and login flow finish.
 - `docs/api-contracts.md` now documents the current implemented search, auth, and work-with request-response shapes.
 - Client auth uses a shared typed session shape, one storage key, and user-visible login failure handling.
 - Work-with detail cards and the `/regist` flow use explicit API contracts instead of client-side mock JSON.
@@ -40,14 +41,15 @@ Last updated: 2026-04-09
 - `client/src/pages/Regist.tsx`
 - `client/src/pages/Login.tsx`
 - `client/src/components`
+- `client/src/layout/Header.tsx`
 - `README.md`
 - `progress/current.md`
 
 ## Recent commits
 
+- `58e5c15` `Document M4 API contracts`
 - `d6900bd` `Replace mocked work-with contracts`
 - `30e3621` `Align M4 auth login contract`
-- `356a7f9` `Split regist route into real page`
 
 ## Known working assumptions
 

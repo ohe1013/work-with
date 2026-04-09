@@ -84,9 +84,16 @@ describe("routes", () => {
   test("enables login when email and password are filled", () => {
     renderRouter("/login");
 
-    const email = screen.getByLabelText("Email");
-    const password = screen.getByLabelText("Password");
-    const loginButton = screen.getByRole("button", { name: "Login" });
+    const email = screen.getByLabelText("이메일");
+    const password = screen.getByLabelText("비밀번호");
+    const loginButton = screen
+      .getAllByRole("button", { name: "로그인" })
+      .find((button) => button.getAttribute("type") === "submit");
+
+    expect(loginButton).toBeDefined();
+    if (!loginButton) {
+      throw new Error("로그인 submit 버튼을 찾지 못했습니다.");
+    }
 
     expect(loginButton).toBeDisabled();
 

@@ -416,7 +416,7 @@ export default function Find(): JSX.Element {
               <Panel tone="soft" className="space-y-3 px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[rgba(14,116,144,0.10)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
-                    Find map
+                    조건 탐색 지도
                   </span>
                   <span className="rounded-full bg-white/78 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                     {discoveryState.phase === "results"
