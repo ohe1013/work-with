@@ -1,22 +1,22 @@
-import { AxiosError } from "axios";
-import { fetchWorkWithList } from "../../api/map/workWith";
-import WorkWith from "../../api/map/workWith/model";
+import {
+  createWorkWithPost,
+  fetchWorkWithList,
+} from "../../api/map/workWith";
+import type { CreateWorkWithRequest, WorkWithItem } from "../../types/workWith";
 
 const getWorkWithList = async (
-  id: string
-): Promise<Array<WorkWith.LocItem["item"]>> => {
-  await new Promise((res) => {
-    setTimeout(() => res(1), (Math.random() * 1000) >> 0);
-  });
-  try {
-    const kakaoSuggestRes = await fetchWorkWithList(id);
-    const { items } = kakaoSuggestRes.data;
-    return items;
-  } catch (error) {
-    if (error instanceof AxiosError) console.log("axios 에러발생", error);
-    else console.log("error발생", error);
-    return [];
-  }
+  id: string,
+  placeName?: string
+): Promise<WorkWithItem[]> => {
+  const response = await fetchWorkWithList(id, placeName);
+  return response.items;
 };
 
-export { getWorkWithList };
+const registerWorkWith = async (
+  request: CreateWorkWithRequest
+): Promise<WorkWithItem> => {
+  const response = await createWorkWithPost(request);
+  return response.item;
+};
+
+export { getWorkWithList, registerWorkWith };

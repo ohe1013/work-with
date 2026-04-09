@@ -4,11 +4,37 @@ import Button from "./Button";
 import EmptyState from "./EmptyState";
 import Loader from "./Loader";
 import Panel from "./Panel";
-import WorkWith from "../../api/map/workWith/model";
 import { getWorkWithList } from "../../service/workWith/workWith";
+import type { WorkWithItem } from "../../types/workWith";
 
-function DetailCard({ option }: { option: WorkWith.LocItem["item"] }) {
-  const remainingMinutes = Math.max(1, Math.ceil(option.dueTime / 60000));
+function getRemainingMinutes(dueAt: string) {
+  const dueAtTime = new Date(dueAt).getTime();
+
+  if (Number.isNaN(dueAtTime)) {
+    return 1;
+  }
+
+  return Math.max(1, Math.ceil((dueAtTime - Date.now()) / 60000));
+}
+
+function formatScheduleLabel(scheduledAt: string) {
+  const date = new Date(scheduledAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return "일정 조율 중";
+  }
+
+  return date.toLocaleString("ko-KR", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function DetailCard({ option }: { option: WorkWithItem }) {
+  const remainingMinutes = getRemainingMinutes(option.dueAt);
   const remainingLabel =
     remainingMinutes >= 60
       ? `${Math.ceil(remainingMinutes / 60)}시간 남음`
@@ -37,8 +63,9 @@ function DetailCard({ option }: { option: WorkWith.LocItem["item"] }) {
       </div>
 
       <div className="mt-3 space-y-1 text-xs leading-5 text-slate-500">
-        <p>운동 시간 {option.workTime}</p>
+        <p>운동 시간 {formatScheduleLabel(option.scheduledAt)}</p>
         <p>현재 인원 {option.currentCount}명, 최대 {option.maxCount}명</p>
+        <p>{option.note}</p>
       </div>
     </Panel>
   );
@@ -67,9 +94,9 @@ export default function Card({
   onClose?: () => void;
   className?: string;
 }) {
-  const { data: workWithList, isLoading } = useQuery({
-    queryKey: ["workWith", id],
-    queryFn: () => getWorkWithList(id),
+  const { data: workWithList, error, isError, isLoading, refetch } = useQuery({
+    queryKey: ["workWith", id, title],
+    queryFn: () => getWorkWithList(id, title),
     staleTime: 1000,
     gcTime: 5000,
   });
@@ -80,7 +107,7 @@ export default function Card({
     0
   );
   const nearestClosingMinutes = hasMatches
-    ? Math.min(...matches.map((option) => Math.max(1, Math.ceil(option.dueTime / 60000))))
+    ? Math.min(...matches.map((option) => getRemainingMinutes(option.dueAt)))
     : null;
   const levelLabels = Array.from(new Set(matches.map((option) => option.level)));
   const levelSummary = levelLabels.length
@@ -176,7 +203,9 @@ export default function Card({
             모집 톤
           </p>
           <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
-            {isLoading ? "난이도와 시간대를 정리하고 있어요" : `${levelSummary} 모집을 확인할 수 있어요`}
+            {isLoading
+              ? "난이도와 시간대를 정리하고 있어요"
+              : `${levelSummary} 모집을 확인할 수 있어요`}
           </p>
           <p className="mt-1 text-xs leading-5 text-slate-500">
             {hasMatches
@@ -191,6 +220,22 @@ export default function Card({
               surface="panel"
               label="주변 모집을 정리하고 있어요"
               description="선택한 장소 근처에서 바로 합류할 수 있는 운동 메이트를 불러오는 중입니다."
+            />
+          ) : isError ? (
+            <EmptyState
+              eyebrow="모집 불러오기 실패"
+              title="이 장소 모집 정보를 아직 가져오지 못했어요"
+              description={
+                error instanceof Error
+                  ? error.message
+                  : "잠시 후 다시 시도해 주세요."
+              }
+              action={
+                <Button type="button" onClick={() => void refetch()}>
+                  다시 시도
+                </Button>
+              }
+              className="px-4 py-4"
             />
           ) : hasMatches ? (
             workWithList?.map((workWith) => (

@@ -29,25 +29,28 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Started M3 by turning `/find` into a real condition-based discovery page with its own filters, map/result comparison surface, and shared search execution flow in `client`
 - [x] Completed M3 by turning `/regist` into a real staged posting flow with sectioned inputs, validation, a pre-submit summary, and a local success state in `client`
 - [x] Started M4 by aligning the frontend and server auth flow around a stable login contract, shared session storage, and a working `/api/login` endpoint in `client` and `server`
+- [x] Replaced the mocked work-with registration/detail paths with explicit client-server API contracts, shared types, and demo persistence in `client` and `server`
 
 ## Next up
 
-1. [ ] Replace mocked work-with registration/detail data paths with explicit API contracts
-2. [ ] Document the current search / auth / posting request-response shapes for the next milestone
+1. [ ] Document the current search / auth / posting request-response shapes for the next milestone
 
 ## Immediate next task
 
-Replace mocked work-with registration/detail data paths with explicit API contracts so the posting flow stops depending on local client test data.
+Document the current search / auth / posting request-response shapes so the active M4 contracts are explicit before the next milestone.
 
 ## Known constraints
 
 - The login flow now uses a stable demo contract, but it still authenticates against a fixed development credential set instead of persisted user data
-- Registration success is still a local UI flow and does not persist to the server yet
-- Work-with detail data is still backed by local test data on the client side
+- Work-with registration/detail now use explicit API contracts, but the server storage is still in-memory demo data and resets when the Node server restarts
 - `docker-compose.dev.yaml` still does not start the Node server
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M4 work-with contract update
+- `2026-04-09`: `yarn --cwd client build` passed after the M4 work-with contract update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M4 work-with contract update
+- `2026-04-09`: `yarn --cwd server build` passed after the M4 work-with contract update; `server/package.json` still has no license field
 - `2026-04-09`: `yarn --cwd client lint` passed after the M4 auth contract alignment update
 - `2026-04-09`: `yarn --cwd client build` passed after the M4 auth contract alignment update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M4 auth contract alignment update

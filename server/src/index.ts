@@ -4,6 +4,10 @@ import https from "https";
 import crypto from "crypto";
 import axios from "axios";
 import { login } from "./controller/authController.ts";
+import {
+  createWorkWith,
+  listByLocation,
+} from "./controller/workWithController.ts";
 
 const app = express();
 const origin = "http://localhost:5173";
@@ -16,6 +20,8 @@ app.use(
 app.use(express.json());
 
 app.post("/api/login", login);
+app.get("/api/work-with/locations/:locationId", listByLocation);
+app.post("/api/work-with", createWorkWith);
 
 const allowLegacyRenegotiationforNodeJsOptions = {
   httpsAgent: new https.Agent({

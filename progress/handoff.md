@@ -19,7 +19,7 @@ Last updated: 2026-04-09
 - Active milestone: `M4`
 - Current phase: `M4 in progress`
 - Immediate next task:
-  Replace mocked work-with registration/detail data paths with explicit API contracts so the posting flow stops depending on local client test data.
+  Document the current search / auth / posting request-response shapes so the active M4 contracts are explicit before the next milestone.
 
 ## Recent implementation focus
 
@@ -28,16 +28,18 @@ Last updated: 2026-04-09
 - M3 is complete.
 - M4 has started with a stable demo login contract between the frontend and server.
 - Client auth now uses a shared typed session shape, one storage key, and user-visible login failure handling.
-- Server now exposes `/api/login` with JSON body parsing plus consistent JWT signing and verification helpers.
+- Work-with detail cards and the `/regist` flow now use explicit API contracts instead of client-side mock JSON.
+- Server now exposes `/api/login`, `GET /api/work-with/locations/:locationId`, and `POST /api/work-with` with demo in-memory persistence.
 
 ## Files most likely relevant next
 
+- `docs`
+- `client/src/api/auth/authApi.ts`
 - `client/src/api/map/workWith/index.ts`
-- `client/src/pages/Regist.tsx`
-- `client/src/pages/Home.tsx`
+- `client/src/types/auth.ts`
+- `client/src/types/workWith.ts`
 - `client/src/service`
 - `server/src`
-- `docs`
 - `progress/current.md`
 
 ## Recent commits
@@ -49,8 +51,7 @@ Last updated: 2026-04-09
 ## Known working assumptions
 
 - Auth now has a stable demo login contract, but it still relies on fixed development credentials rather than persisted user storage.
-- Registration success is still local-only and not persisted yet.
-- Work-with detail data still comes from client-side test data.
+- Work-with registration/detail now use explicit API contracts, but the storage is still in-memory and resets when the Node server restarts.
 - `work-with-codex-setup.patch` is currently untracked in the repo root; ignore it unless the user explicitly asks about it.
 - Browserslist still warns that `caniuse-lite` is outdated, but that is non-blocking for current milestone work.
 

@@ -1,25 +1,37 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { FormEvent, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "@/components/common/Button";
 import EmptyState from "@/components/common/EmptyState";
 import Input from "@/components/common/Input";
 import Panel from "@/components/common/Panel";
+import { registerWorkWith } from "@/service/workWith/workWith";
+import type {
+  CreateWorkWithRequest,
+  WorkWithItem,
+  WorkWithLevel,
+  WorkoutType,
+} from "@/types/workWith";
 
-const workoutOptions = ["러닝", "헬스", "농구", "클라이밍", "요가"] as const;
-const levelOptions = ["초급", "중급", "고급"] as const;
+const workoutOptions: readonly WorkoutType[] = [
+  "러닝",
+  "헬스",
+  "농구",
+  "클라이밍",
+  "요가",
+] as const;
+const levelOptions: readonly WorkWithLevel[] = ["초급", "중급", "고급"] as const;
 const maxCountOptions = ["2", "3", "4", "6"] as const;
 
-type WorkoutType = (typeof workoutOptions)[number] | "";
-type LevelType = (typeof levelOptions)[number] | "";
 type MaxCountType = (typeof maxCountOptions)[number] | "";
 
 type RegistForm = {
-  workoutType: WorkoutType;
+  workoutType: WorkoutType | "";
   placeName: string;
   placeDetail: string;
   date: string;
   time: string;
-  level: LevelType;
+  level: WorkWithLevel | "";
   maxCount: MaxCountType;
   note: string;
 };
@@ -145,7 +157,56 @@ function isFormValid(errors: FormErrors) {
   return Object.keys(errors).length === 0;
 }
 
+function buildSummaryDateTime(date: string, time: string) {
+  return date && time ? `${date} · ${time}` : "날짜와 시간을 선택해 주세요";
+}
+
+function buildSummaryPlace(placeName: string, placeDetail: string) {
+  if (!placeName.trim()) {
+    return "장소를 입력해 주세요";
+  }
+
+  return placeDetail.trim() ? `${placeName} · ${placeDetail}` : placeName;
+}
+
+function buildSummaryCondition(level: string, maxCount: string) {
+  return level && maxCount
+    ? `${level} · 최대 ${maxCount}명`
+    : "난이도와 최대 인원을 정해 주세요";
+}
+
+function buildCreateRequest(form: RegistForm): CreateWorkWithRequest {
+  return {
+    workoutType: form.workoutType as WorkoutType,
+    placeName: form.placeName.trim(),
+    placeDetail: form.placeDetail.trim(),
+    date: form.date,
+    time: form.time,
+    level: form.level as WorkWithLevel,
+    maxCount: Number(form.maxCount),
+    note: form.note.trim(),
+  };
+}
+
+function formatCreatedSchedule(item: WorkWithItem) {
+  const scheduledAt = new Date(item.scheduledAt);
+
+  if (Number.isNaN(scheduledAt.getTime())) {
+    return `${item.placeName} 일정`;
+  }
+
+  return scheduledAt.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 export default function Regist(): JSX.Element {
+  const queryClient = useQueryClient();
   const [form, setForm] = useState<RegistForm>({
     workoutType: "",
     placeName: "",
@@ -158,7 +219,9 @@ export default function Regist(): JSX.Element {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showSummary, setShowSummary] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [createdWorkWith, setCreatedWorkWith] = useState<WorkWithItem | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const requiredCount = 6;
   const completedRequiredCount = [
     Boolean(form.workoutType),
@@ -168,17 +231,9 @@ export default function Regist(): JSX.Element {
     Boolean(form.level),
     Boolean(form.maxCount),
   ].filter(Boolean).length;
-  const summaryDateTime =
-    form.date && form.time ? `${form.date} · ${form.time}` : "날짜와 시간을 선택해 주세요";
-  const summaryPlace = form.placeName.trim()
-    ? form.placeDetail.trim()
-      ? `${form.placeName} · ${form.placeDetail}`
-      : form.placeName
-    : "장소를 입력해 주세요";
-  const summaryCondition =
-    form.level && form.maxCount
-      ? `${form.level} · 최대 ${form.maxCount}명`
-      : "난이도와 최대 인원을 정해 주세요";
+  const summaryDateTime = buildSummaryDateTime(form.date, form.time);
+  const summaryPlace = buildSummaryPlace(form.placeName, form.placeDetail);
+  const summaryCondition = buildSummaryCondition(form.level, form.maxCount);
   const summaryNote = form.note.trim() || "추가 안내 없이 가볍게 모집합니다.";
   const progressLabel = `${completedRequiredCount}/${requiredCount}개 필수 항목 완료`;
   const readyToPreview = isFormValid(validateForm(form));
@@ -188,6 +243,8 @@ export default function Regist(): JSX.Element {
     value: RegistForm[K]
   ) => {
     setForm((current) => ({ ...current, [field]: value }));
+    setSubmitError(null);
+
     if (errors[field]) {
       setErrors((current) => {
         const nextErrors = { ...current };
@@ -201,6 +258,7 @@ export default function Regist(): JSX.Element {
     event.preventDefault();
     const nextErrors = validateForm(form);
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (!isFormValid(nextErrors)) {
       setShowSummary(false);
@@ -210,16 +268,31 @@ export default function Regist(): JSX.Element {
     setShowSummary(true);
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const nextErrors = validateForm(form);
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (!isFormValid(nextErrors)) {
       setShowSummary(false);
       return;
     }
 
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const item = await registerWorkWith(buildCreateRequest(form));
+      setCreatedWorkWith(item);
+      await queryClient.invalidateQueries({ queryKey: ["workWith"] });
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "모집 등록 중 문제가 생겼어요."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetHandler = () => {
@@ -235,17 +308,19 @@ export default function Regist(): JSX.Element {
     });
     setErrors({});
     setShowSummary(false);
-    setIsSubmitted(false);
+    setCreatedWorkWith(null);
+    setSubmitError(null);
+    setIsSubmitting(false);
   };
 
-  if (isSubmitted) {
+  if (createdWorkWith) {
     return (
       <section className="flex min-h-[calc(100vh-126px)] w-full items-center justify-center px-3 py-6 md:min-h-[calc(100vh-108px)] md:px-6">
         <Panel className="w-full max-w-[760px] space-y-5 px-5 py-6 md:px-8 md:py-8">
           <EmptyState
             eyebrow="등록 완료"
-            title="오늘의 모집 초안이 준비됐어요"
-            description="입력한 내용이 한 번 더 정리됐어요. 홈이나 찾기 흐름으로 돌아가도 같은 조건을 기준으로 다시 비교할 수 있게 구성했습니다."
+            title="오늘의 모집이 저장됐어요"
+            description="입력한 내용이 서버에 저장됐어요. 홈이나 찾기 흐름으로 돌아가면 같은 계약의 상세 카드에서 모집 데이터를 다시 확인할 수 있습니다."
             action={
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Link to="/" className="w-full sm:w-auto">
@@ -266,10 +341,23 @@ export default function Regist(): JSX.Element {
           />
 
           <div className="grid gap-3 md:grid-cols-2">
-            <SummaryItem label="운동 종류" value={form.workoutType} />
-            <SummaryItem label="장소" value={summaryPlace} />
-            <SummaryItem label="일정" value={summaryDateTime} />
-            <SummaryItem label="모집 조건" value={summaryCondition} />
+            <SummaryItem label="운동 종류" value={createdWorkWith.workoutType} />
+            <SummaryItem
+              label="장소"
+              value={buildSummaryPlace(
+                createdWorkWith.placeName,
+                createdWorkWith.placeDetail
+              )}
+            />
+            <SummaryItem
+              label="일정"
+              value={formatCreatedSchedule(createdWorkWith)}
+            />
+            <SummaryItem
+              label="모집 조건"
+              value={`${createdWorkWith.level} · 최대 ${createdWorkWith.maxCount}명`}
+              helper={createdWorkWith.note}
+            />
           </div>
         </Panel>
       </section>
@@ -455,13 +543,14 @@ export default function Regist(): JSX.Element {
           </Section>
 
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button type="submit" isDisabled={!readyToPreview}>
+            <Button type="submit" isDisabled={!readyToPreview || isSubmitting}>
               제출 전 요약 보기
             </Button>
             <Button
               type="button"
               variant="secondary"
               onClick={resetHandler}
+              disabled={isSubmitting}
             >
               다시 작성
             </Button>
@@ -508,15 +597,26 @@ export default function Regist(): JSX.Element {
               />
             </div>
 
+            {submitError ? (
+              <p role="alert" className="text-sm leading-5 text-rose-600">
+                {submitError}
+              </p>
+            ) : null}
+
             {showSummary ? (
               <div className="space-y-2">
-                <Button type="button" onClick={submitHandler}>
-                  이 내용으로 모집 등록하기
+                <Button
+                  type="button"
+                  onClick={() => void submitHandler()}
+                  isDisabled={isSubmitting}
+                >
+                  {isSubmitting ? "등록 중..." : "이 내용으로 모집 등록하기"}
                 </Button>
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => setShowSummary(false)}
+                  disabled={isSubmitting}
                 >
                   다시 수정하기
                 </Button>
