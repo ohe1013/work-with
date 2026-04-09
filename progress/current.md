@@ -8,8 +8,8 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M2 in progress
-- Active milestone: M2
+- Phase: M3 ready to start
+- Active milestone: M3
 - Working mode: milestone-by-milestone
 
 ## Completed
@@ -25,16 +25,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Started M2 by connecting map selection, list selection, and panel detail flow into one shared interaction model in `client`
 - [x] Expanded the connected selection flow into a more explicit mobile bottom-sheet and desktop side-panel discovery surface in `client`
 - [x] Expanded the M2 home discovery flow with shared loading/empty/error state, retry/refine actions, and map/panel status messaging in `client`
+- [x] Completed M2 by removing the remaining home discovery placeholders and replacing them with productized exploration copy, guides, and selection briefs in `client`
 
 ## Next up
 
-1. [ ] Remove the remaining discovery placeholders so the home exploration flow feels fully productized
-2. [ ] Split `/find` and `/regist` into real pages in milestone order
-3. [ ] Continue auth/API contract cleanup after the UI milestone
+1. [ ] Split `/find` into a real condition-based discovery page instead of reusing `Home`
+2. [ ] Build `/regist` as a real staged posting flow with validation and a pre-submit summary
+3. [ ] Continue auth/API contract cleanup after the route split milestone
 
 ## Immediate next task
 
-Remove the remaining discovery placeholders in the home exploration flow so M2 feels productized beyond state handling and connected selection.
+Turn `/find` into a real condition-based discovery page so M3 starts by separating the route from `Home` without breaking the workout-matching product thesis.
 
 ## Known constraints
 
@@ -44,6 +45,9 @@ Remove the remaining discovery placeholders in the home exploration flow so M2 f
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M2 discovery placeholder removal update
+- `2026-04-09`: `yarn --cwd client build` passed after the M2 discovery placeholder removal update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M2 discovery placeholder removal update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M2 discovery-state flow update
 - `2026-04-09`: `yarn --cwd client build` passed after the M2 discovery-state flow update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M2 discovery-state flow update

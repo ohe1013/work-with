@@ -36,19 +36,19 @@ const SideTab = ({ path }: { path: string }) => {
           : "검색 후 마커를 누르면 여기서 바로 비교할 수 있어요.");
   const resultBadgeLabel =
     discoveryState.phase === "loading"
-      ? "Searching"
+      ? "탐색 중"
       : discoveryState.phase === "empty"
-        ? "No results"
+        ? "결과 없음"
         : discoveryState.phase === "error"
-          ? "Retry"
+          ? "재시도"
           : markers.length > 0
-            ? `${markers.length} results`
-            : "Start search";
+            ? `${markers.length}곳`
+            : "검색 전";
   const panelStateLabel = selectedMarker
-    ? "Detail open"
+    ? "상세 열림"
     : discoveryState.phase === "loading"
-      ? "Updating"
-      : "Browse";
+      ? "업데이트 중"
+      : "둘러보기";
 
   useEffect(() => {
     const cachedData = localStorage.getItem(`cachedData:${path}`);
@@ -84,7 +84,7 @@ const SideTab = ({ path }: { path: string }) => {
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--color-accent))]">
-                  Discovery panel
+                  홈 탐색
                 </span>
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                   {resultBadgeLabel}
@@ -96,11 +96,11 @@ const SideTab = ({ path }: { path: string }) => {
 
               <div className="space-y-1">
                 <h2 className="text-base font-semibold tracking-[-0.02em] text-slate-900">
-                  지금 가능한 운동 메이트
+                  지금 비교할 수 있는 운동 장소
                 </h2>
                 <p className="text-sm leading-6 text-slate-500">
                   {selectedMarker
-                    ? "선택한 장소의 상세가 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
+                    ? "선택한 장소의 모집 브리프가 패널 상단에 고정되고, 아래에서 다른 후보를 이어서 비교할 수 있어요."
                     : on
                       ? resultSummary
                       : helperCopy}
@@ -126,7 +126,7 @@ const SideTab = ({ path }: { path: string }) => {
           <div className="space-y-2 px-4 py-4 md:px-5">
             <div className="rounded-[22px] bg-slate-50 px-4 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                Current focus
+                현재 선택
               </p>
               <p className="mt-2 truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
                 {selectedMarker?.content ??
@@ -141,7 +141,7 @@ const SideTab = ({ path }: { path: string }) => {
               <p className="mt-1 text-xs leading-5 text-slate-500">
                 {discoveryState.phase === "loading"
                   ? "패널을 다시 열면 검색 진행 상태와 새 결과를 바로 이어서 볼 수 있습니다."
-                  : "패널을 다시 열면 검색과 결과 목록을 바로 이어서 볼 수 있습니다."}
+                  : "패널을 다시 열면 장소 검색과 모집 비교 흐름을 바로 이어서 볼 수 있습니다."}
               </p>
             </div>
           </div>

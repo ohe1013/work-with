@@ -16,35 +16,35 @@ Last updated: 2026-04-09
 
 ## Current handoff snapshot
 
-- Active milestone: `M2`
-- Current phase: `M2 in progress`
+- Active milestone: `M3`
+- Current phase: `M3 ready to start`
 - Immediate next task:
-  Remove the remaining discovery placeholders in the home exploration flow so M2 feels productized beyond state handling and connected selection.
+  Turn `/find` into a real condition-based discovery page so M3 starts by separating the route from `Home` without breaking the workout-matching product thesis.
 
 ## Recent implementation focus
 
 - M1 is complete.
-- M2 work has started by connecting map selection, list selection, and panel detail flow.
+- M2 is complete.
 - The mobile bottom-sheet and desktop side-panel now present the same connected discovery surface.
 - Home discovery now carries shared loading/empty/error state across the map, panel, and result list.
+- The remaining placeholder-feeling exploration copy and detail summaries were replaced with productized home discovery surfaces.
 - Home is still the active map-first entry point.
 
 ## Files most likely relevant next
 
-- `client/src/components/side-tab/SideTab.tsx`
-- `client/src/components/side-tab/search/SearchTab.tsx`
-- `client/src/components/side-tab/search/SearchList.tsx`
-- `client/src/components/map/BaseMap.tsx`
+- `client/src/routes.tsx`
 - `client/src/pages/Home.tsx`
-- `client/src/components/common/Card.tsx`
-- `client/src/recoil/map/index.ts`
+- `client/src/pages`
+- `client/src/layout/Header.tsx`
+- `client/src/components/common`
+- `client/src/components/side-tab`
 - `progress/current.md`
 
 ## Recent commits
 
+- `2dba558` `Expand M2 discovery state handling`
 - `af1f2c1` `Refine M2 discovery surfaces`
 - `7246945` `Start M2 connected discovery flow`
-- `d9b4f8e` `Complete M1 map discovery polish`
 
 ## Known working assumptions
 

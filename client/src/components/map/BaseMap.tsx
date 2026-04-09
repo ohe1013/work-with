@@ -13,14 +13,14 @@ export default function BaseMap() {
     ? null
     : discoveryState.phase === "loading"
       ? {
-          eyebrow: "Searching",
+          eyebrow: "탐색 중",
           title: `${discoveryState.keyword || "주변 장소"} 주변을 찾고 있어요`,
           description:
-            "결과가 준비되면 지도 마커와 비교 패널이 함께 업데이트됩니다.",
+            "결과가 준비되면 지도 마커와 비교 패널이 함께 갱신됩니다.",
         }
       : discoveryState.phase === "empty"
         ? {
-            eyebrow: "No results",
+            eyebrow: "결과 없음",
             title: "다른 장소로 다시 찾아보세요",
             description: `${
               discoveryState.keyword || "이번 검색"
@@ -28,7 +28,7 @@ export default function BaseMap() {
           }
         : discoveryState.phase === "error"
           ? {
-              eyebrow: "Search error",
+              eyebrow: "재시도 필요",
               title: "검색을 다시 시도해 주세요",
               description:
                 discoveryState.errorMessage ??
@@ -36,10 +36,10 @@ export default function BaseMap() {
             }
           : markers.length === 0
             ? {
-                eyebrow: "Start search",
+                eyebrow: "탐색 시작",
                 title: "공원이나 체육관 이름으로 시작하세요",
                 description:
-                  "장소를 검색하면 마커와 결과 카드가 함께 열립니다.",
+                  "장소를 검색하면 마커와 결과 카드가 함께 열리고 바로 비교를 이어갈 수 있어요.",
               }
             : null;
 

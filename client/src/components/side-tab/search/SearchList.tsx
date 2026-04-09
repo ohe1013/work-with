@@ -36,7 +36,7 @@ export default function SearchList({
   if (discoveryState.phase === "error") {
     return (
       <EmptyState
-        eyebrow="Search error"
+        eyebrow="탐색 오류"
         title="검색 결과를 불러오지 못했어요"
         description={
           discoveryState.errorMessage ??
@@ -56,7 +56,7 @@ export default function SearchList({
   if (discoveryState.phase === "empty") {
     return (
       <EmptyState
-        eyebrow="No nearby places"
+        eyebrow="주변 결과 없음"
         title={
           discoveryState.keyword
             ? `${discoveryState.keyword} 주변 장소가 아직 없어요`
@@ -82,7 +82,7 @@ export default function SearchList({
   if (markers.length === 0) {
     return (
       <EmptyState
-        eyebrow="Start search"
+        eyebrow="탐색 시작"
         title="먼저 장소를 검색해보세요"
         description="공원이나 체육관 이름을 입력하면 지도와 결과 목록이 함께 열립니다."
       />
@@ -95,7 +95,7 @@ export default function SearchList({
         <div className="flex flex-col gap-1.5 px-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-              Map results
+              비교 후보
             </p>
             <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
               {markers.length}곳을 바로 비교할 수 있어요
@@ -137,7 +137,7 @@ export default function SearchList({
                 </p>
               </div>
               <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--color-accent))]">
-                {selectedMarker?.id === marker.id ? "선택됨" : "지도 보기"}
+                {selectedMarker?.id === marker.id ? "선택됨" : "모집 보기"}
               </span>
             </div>
 

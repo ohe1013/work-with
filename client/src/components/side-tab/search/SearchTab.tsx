@@ -54,17 +54,17 @@ const SearchBar = () => {
             ? `${markers.length}곳 표시 중`
             : "검색 전";
   const selectedSummary =
-    selectedMarker?.content ?? "마커를 누르면 미리보기가 열려요";
+    selectedMarker?.content ?? "장소를 고르면 모집 브리프가 열려요";
   const detailTitle = selectedMarker
-    ? "선택한 장소의 모집 흐름"
+    ? "선택한 장소의 모집 현황"
     : markers.length > 0
-      ? "장소를 하나 선택하면 상세가 이어집니다"
-      : "검색 후 상세 흐름이 이어집니다";
+      ? "장소를 하나 고르면 모집 현황이 바로 열려요"
+      : "검색 후 선택한 장소의 모집 현황이 이어집니다";
   const detailDescription = selectedMarker
-    ? "리스트와 지도는 같은 선택 상태를 공유합니다."
+    ? "리스트와 지도는 같은 선택 상태를 유지한 채 같은 상세를 보여줍니다."
     : markers.length > 0
-      ? "리스트 카드나 맵 마커를 누르면 같은 상세 패널이 여기서 열립니다."
-      : "먼저 장소를 검색하면 결과 목록과 상세 패널이 함께 활성화됩니다.";
+      ? "리스트 카드나 지도 마커를 누르면 같은 장소 브리프가 여기서 열립니다."
+      : "먼저 장소를 검색하면 결과 목록과 장소별 모집 현황이 함께 활성화됩니다.";
 
   useEffect(() => {
     if (!hasSelection) {
@@ -249,14 +249,14 @@ const SearchBar = () => {
       <div className="space-y-4 px-4 pb-4 pt-4 md:px-5">
         <div className="space-y-1.5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            Search nearby
+            홈 지도 탐색
           </p>
           <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-900">
-            장소를 입력하고 바로 지도에서 비교하세요
+            운동 장소를 찾고 바로 모집 흐름을 비교하세요
           </h3>
           <p className="text-sm leading-6 text-slate-500">
-            운동 장소, 공원, 체육관 이름으로 검색한 뒤 부담 없이 조건만
-            확인할 수 있습니다.
+            공원이나 체육관 이름으로 검색한 뒤, 같은 화면에서 모집 수와 남은
+            자리까지 가볍게 확인할 수 있습니다.
           </p>
         </div>
 
@@ -280,25 +280,25 @@ const SearchBar = () => {
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-[22px] bg-slate-50 px-4 py-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              Results
+              탐색 상태
             </p>
             <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-slate-900">
               {resultSummary}
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              검색 결과 카드를 누르면 지도가 즉시 이동합니다.
+              검색 결과 카드를 누르면 지도와 상세가 같은 선택으로 이어집니다.
             </p>
           </div>
 
           <div className="rounded-[22px] bg-slate-50 px-4 py-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              Preview
+              현재 선택
             </p>
             <p className="mt-2 truncate text-sm font-semibold tracking-[-0.02em] text-slate-900">
               {selectedSummary}
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              지도와 리스트가 같은 선택 상태를 유지합니다.
+              지도와 리스트가 같은 장소를 가리키도록 동기화됩니다.
             </p>
           </div>
         </div>
@@ -335,7 +335,7 @@ const SearchBar = () => {
             <div className="flex items-end justify-between gap-3 px-1">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Detail flow
+                  선택한 장소
                 </p>
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {detailTitle}
@@ -365,7 +365,7 @@ const SearchBar = () => {
               />
             ) : (
               <EmptyState
-                eyebrow="Selection flow"
+                eyebrow="선택 대기"
                 title={detailTitle}
                 description={detailDescription}
               />
@@ -376,20 +376,20 @@ const SearchBar = () => {
             <div className="flex flex-col gap-1.5 px-1 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Nearby places
+                  비교 후보
                 </p>
                 <h3 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-slate-900">
                   {hasSelection
                     ? "다른 후보를 이어서 비교해보세요"
-                    : "먼저 한 곳을 골라 상세를 열어보세요"}
+                    : "먼저 한 곳을 골라 모집 현황을 열어보세요"}
                 </h3>
               </div>
               <p className="text-xs leading-5 text-slate-500">
                 {hasSelection
-                  ? "현재 상세는 유지한 채 다른 후보로 빠르게 전환할 수 있어요."
+                  ? "현재 상세를 닫지 않고 다른 장소의 모집 브리프로 빠르게 전환할 수 있어요."
                   : discoveryState.phase === "loading"
                     ? "새 결과를 불러오는 동안 지도와 목록이 함께 정리됩니다."
-                    : "카드나 마커를 누르면 상세 패널이 시트 상단에 고정됩니다."}
+                    : "카드나 마커를 누르면 선택한 장소 브리프가 시트 상단에 고정됩니다."}
               </p>
             </div>
 
