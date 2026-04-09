@@ -1,16 +1,15 @@
 import { FormEvent, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/common/Input";
 import Button from "../components/common/Button";
-import useInputs from "../hooks/util/useInputs";
+import Input from "../components/common/Input";
+import Panel from "../components/common/Panel";
 import { useAuth } from "../hooks/auth/useAuth";
-export default function Login() {
-  // const [email, setEmail] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
+import useInputs from "../hooks/util/useInputs";
 
+export default function Login() {
   const {
     form: { email, password },
-    onChange: onChange,
+    onChange,
   } = useInputs<{
     email: string;
     password: string;
@@ -28,70 +27,71 @@ export default function Login() {
     if (isDisabled) return false;
 
     auth
-      .login({ email: email, password: password })
+      .login({ email, password })
       .then(() => {
         navigate("/");
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.log(error);
       });
   };
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+
   return (
-    <section className="pt-10 w-full" id="osm">
-      <article className="relative w-full h-[calc(100vh_-_10px)]">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            로그인
+    <section className="flex min-h-[calc(100vh-126px)] w-full items-center justify-center px-3 py-6 md:min-h-[calc(100vh-108px)] md:px-6">
+      <Panel className="w-full max-w-[480px] px-5 py-6 md:px-8 md:py-8">
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            Access
+          </p>
+          <h2 className="text-2xl font-semibold tracking-[-0.04em] text-slate-900">
+            Login
           </h2>
+          <p className="text-sm leading-6 text-slate-500">
+            필요한 순간에만 가볍게 로그인하고, 바로 지도 기반 탐색으로
+            돌아갈 수 있게 구성했습니다.
+          </p>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={submitHandler} className="space-y-6" method="POST">
-            <div>
-              <Input label="Email">
-                <Input.TextFiledWithRef
-                  ref={inputRef}
-                  name={"email"}
-                  value={email}
-                  onChange={onChange}
-                />
-              </Input>
-            </div>
+        <form onSubmit={submitHandler} className="mt-8 space-y-5" method="POST">
+          <Input label="Email">
+            <Input.TextFiledWithRef
+              ref={inputRef}
+              name="email"
+              value={email}
+              onChange={onChange}
+              placeholder="you@example.com"
+            />
+          </Input>
 
-            <div>
-              <Input label="Password">
-                <Input.TextFiledWithRef
-                  name={"password"}
-                  value={password}
-                  onChange={onChange}
-                  type={"password"}
-                />
-              </Input>
-              <div className="flex items-center justify-between">
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-            </div>
+          <Input
+            label="Password"
+            bottomText="로그인은 필요한 순간에만 사용됩니다."
+          >
+            <Input.TextFiledWithRef
+              name="password"
+              value={password}
+              onChange={onChange}
+              type="password"
+              placeholder="Enter your password"
+            />
+          </Input>
 
-            <div>
-              <Button isDisabled={isDisabled} type="submit">
-                Login
-              </Button>
-            </div>
-          </form>
-        </div>
-      </article>
+          <div className="space-y-3 pt-2">
+            <Button isDisabled={isDisabled} type="submit">
+              Login
+            </Button>
+            <Button variant="ghost" type="button">
+              Forgot password?
+            </Button>
+          </div>
+        </form>
+      </Panel>
     </section>
   );
 }

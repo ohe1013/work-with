@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-button[aria-current] {
-  @apply bg-yellow-300;
+@layer base {
+  :root {
+    font-family: "Pretendard Variable", "SUIT Variable", "Segoe UI", sans-serif;
+    --color-canvas: 243 247 250;
+    --color-surface: 255 255 255;
+    --color-accent: 14 116 144;
+    --color-accent-strong: 8 95 116;
+    --color-text: 15 23 42;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    color: rgb(var(--color-text));
+    background-color: rgb(var(--color-canvas));
+    background-image:
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.22), transparent 32%),
+      radial-gradient(circle at top right, rgba(226, 232, 240, 0.7), transparent 24%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(243, 247, 250, 1));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 }

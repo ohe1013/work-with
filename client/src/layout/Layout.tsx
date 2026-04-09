@@ -1,30 +1,49 @@
+import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import DynamicSvg from "../components/common/DynamicSvg";
+import { useRecoilState } from "recoil";
+import Panel from "../components/common/Panel";
 import SideTab from "../components/side-tab/SideTab";
 import { PageEnum } from "../enum/page";
-import { useRecoilState } from "recoil";
 import { pageAtom } from "../recoil/page";
 import { routes } from "../routes";
-import { useEffect } from "react";
+import Header from "./Header";
+
+const menuList = [
+  {
+    path: "/",
+    label: PageEnum.HOME,
+    shortLabel: "홈",
+    description: "지도",
+  },
+  {
+    path: "/find",
+    label: PageEnum.FIND,
+    shortLabel: "찾기",
+    description: "조건",
+  },
+  {
+    path: "/regist",
+    label: PageEnum.REGIST,
+    shortLabel: "등록",
+    description: "모집",
+  },
+  {
+    path: "/login",
+    label: PageEnum.AUTH,
+    shortLabel: "로그인",
+    description: "인증",
+  },
+];
 
 function Layout() {
   const [activeTabState, setActiveTabState] =
     useRecoilState<PageEnum>(pageAtom);
 
-  const handleClick = (page: PageEnum) => {
-    setActiveTabState(page === PageEnum.HOME ? PageEnum.HOME : page);
-  };
-
-  const menuList = [
-    { path: "/", label: PageEnum.HOME },
-    { path: "find", label: PageEnum.FIND },
-    { path: "regist", label: PageEnum.REGIST },
-    { path: "login", label: PageEnum.AUTH },
-  ];
   const location = useLocation();
   const findRouteByPath = (path: string) => {
     return routes[0].children.find((route) => route.path === path);
   };
+
   useEffect(() => {
     const currentRoutes = findRouteByPath(location.pathname);
     if (currentRoutes) {
@@ -35,31 +54,73 @@ function Layout() {
   }, [location.pathname, setActiveTabState]);
 
   return (
-    <>
-      <aside className="flex">
-        <div className="flex shrink-0 flex-col items-center w-12 h-screen py-8 space-y-8 bg-white dark:bg-gray-900 dark:border-gray-700">
-          <a href="#"></a>
-          {menuList.map((menu, idx) => (
-            <Link
-              key={menu.label + idx}
-              to={menu.path}
-              onClick={() => handleClick(menu.label)}
-              title={menu.label}
-              className={
-                (activeTabState === menu.label
-                  ? "p-1.5 shrink-0 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
-                  : "p-1.5 shrink-0 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100") +
-                (menu.label === PageEnum.AUTH ? " bottom-0 absolute" : "")
-              }
-            >
-              <DynamicSvg iconName={menu.label.toLowerCase()} />
-            </Link>
-          ))}
+    <div className="min-h-screen pb-24 md:pb-4">
+      <Header currentPage={activeTabState} />
+
+      <div className="px-3 pb-4 md:px-4">
+        <div className="flex gap-4">
+          <aside className="hidden md:block">
+            <Panel className="sticky top-[104px] flex w-[96px] flex-col items-center gap-4 px-3 py-4">
+              {menuList.map((menu) => {
+                const isActive = activeTabState === menu.label;
+
+                return (
+                  <Link
+                    key={menu.label}
+                    to={menu.path}
+                    title={menu.label}
+                    className={[
+                      "flex w-full flex-col items-center gap-1 rounded-[22px] px-2 py-3 text-center transition",
+                      isActive
+                        ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_18px_38px_rgba(14,116,144,0.24)]"
+                        : "text-slate-500 hover:bg-white/80 hover:text-slate-900",
+                    ].join(" ")}
+                  >
+                    <span className="text-sm font-semibold">{menu.shortLabel}</span>
+                    <span className="text-[11px] uppercase tracking-[0.14em] opacity-80">
+                      {menu.description}
+                    </span>
+                  </Link>
+                );
+              })}
+            </Panel>
+          </aside>
+
+          <div className="relative flex min-h-[calc(100vh-126px)] flex-1 overflow-hidden md:min-h-[calc(100vh-108px)]">
+            <SideTab path={location.pathname}></SideTab>
+            <main className="min-w-0 flex-1">
+              <Outlet />
+            </main>
+          </div>
         </div>
-        <SideTab path={location.pathname}></SideTab>
-        <Outlet />
-      </aside>
-    </>
+      </div>
+
+      <nav className="fixed bottom-4 left-3 right-3 z-40 md:hidden">
+        <Panel className="grid grid-cols-4 gap-2 px-2 py-2">
+          {menuList.map((menu) => {
+            const isActive = activeTabState === menu.label;
+
+            return (
+              <Link
+                key={menu.label}
+                to={menu.path}
+                className={[
+                  "flex min-h-[58px] flex-col items-center justify-center rounded-[22px] px-2 text-center transition",
+                  isActive
+                    ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_16px_34px_rgba(14,116,144,0.24)]"
+                    : "text-slate-500",
+                ].join(" ")}
+              >
+                <span className="text-sm font-semibold">{menu.shortLabel}</span>
+                <span className="text-[10px] uppercase tracking-[0.14em] opacity-80">
+                  {menu.description}
+                </span>
+              </Link>
+            );
+          })}
+        </Panel>
+      </nav>
+    </div>
   );
 }
 

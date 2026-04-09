@@ -1,67 +1,89 @@
 import {
-    forwardRef,
-    HTMLAttributes,
-    ReactNode,
-    ReactElement,
-    Children,
-    InputHTMLAttributes,
-    ForwardedRef,
-    cloneElement,
+  Children,
+  ForwardedRef,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  ReactElement,
+  ReactNode,
+  cloneElement,
+  forwardRef,
 } from "react";
 import useId from "../../hooks/util/useId";
 
 interface InputProps extends HTMLAttributes<HTMLDivElement> {
-    label?: ReactNode;
-    children: ReactElement;
-    bottomText?: string;
+  label?: ReactNode;
+  children: ReactElement;
+  bottomText?: string;
 }
 
-const Input = ({ label, children, bottomText, ...props }: InputProps) => {
-    const child = Children.only(children);
-    const generatedId = useId("input");
-    const id = child.props.id ?? generatedId;
-    const isError: boolean = child.props.error ?? false;
+interface TextFieldProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+  error?: boolean;
+}
 
+const textFieldClassName =
+  "block w-full rounded-[22px] border border-transparent bg-white/92 px-4 py-3 text-[15px] text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)] ring-1 ring-[rgba(148,163,184,0.18)] placeholder:text-slate-400 transition duration-200 focus:border-[rgba(14,116,144,0.18)] focus:outline-none focus:ring-2 focus:ring-[rgba(14,116,144,0.2)]";
+
+const TextFieldWithRef = forwardRef(
+  (
+    { error, className = "", ...props }: TextFieldProps,
+    ref: ForwardedRef<HTMLInputElement>
+  ) => {
     return (
-        <div className="w-full" {...props}>
-            <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
-                {label}
-            </label>
-            {cloneElement(child, {
-                id,
-                ...child.props,
-            })}
-            {bottomText != null ? (
-                <p
-                    className={
-                        "mt-1 inline-block font-normal text-base " +
-                        (isError ? "text-red-600 " : "text-gray-500 ")
-                    }
-                >
-                    {bottomText}
-                </p>
-            ) : null}
-        </div>
+      <input
+        ref={ref}
+        {...props}
+        className={[
+          textFieldClassName,
+          error
+            ? "border-rose-200 ring-[rgba(244,63,94,0.22)] focus:ring-[rgba(244,63,94,0.22)]"
+            : "",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      />
     );
-};
-interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
-    error?: boolean;
-}
-Input.TextFiledWithRef = forwardRef(
-    ({ error, ...props }: TextFieldProps, ref: ForwardedRef<HTMLInputElement>) => {
-        return (
-            <div className="mt-2">
-                <input
-                    ref={ref}
-                    {...props}
-                    className={
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" +
-                        (error ? " shadow-lg shadow-red-600" : " ")
-                    }
-                />
-            </div>
-        );
-    }
+  }
 );
+
+const InputRoot = ({ label, children, bottomText, ...props }: InputProps) => {
+  const child = Children.only(children);
+  const generatedId = useId("input");
+  const id = child.props.id ?? generatedId;
+  const isError: boolean = child.props.error ?? false;
+
+  return (
+    <div className="w-full space-y-2" {...props}>
+      {label ? (
+        <label
+          htmlFor={id}
+          className="block text-sm font-semibold tracking-[-0.01em] text-slate-800"
+        >
+          {label}
+        </label>
+      ) : null}
+      {cloneElement(child, {
+        id,
+        ...child.props,
+      })}
+      {bottomText != null ? (
+        <p
+          className={[
+            "text-sm leading-5",
+            isError ? "text-rose-600" : "text-slate-500",
+          ].join(" ")}
+        >
+          {bottomText}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
+const Input = Object.assign(InputRoot, {
+  TextFiledWithRef: TextFieldWithRef,
+  TextFieldWithRef,
+});
 
 export default Input;

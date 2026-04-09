@@ -1,19 +1,52 @@
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  isDisabled: boolean;
+  isDisabled?: boolean;
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
 }
 
-//확장성 쓰레기
-const Button: React.FC<ButtonProps> = ({ isDisabled, children, ...rest }) => {
+const variantClassMap = {
+  primary:
+    "bg-[rgb(var(--color-accent))] text-white shadow-[0_18px_42px_rgba(14,116,144,0.28)] hover:bg-[rgb(var(--color-accent-strong))]",
+  secondary:
+    "bg-white/88 text-slate-900 ring-1 ring-[rgba(148,163,184,0.24)] hover:bg-white",
+  ghost:
+    "bg-transparent text-slate-600 hover:bg-white/60 hover:text-slate-900",
+};
+
+const sizeClassMap = {
+  sm: "min-h-[40px] px-4 text-sm",
+  md: "min-h-[48px] px-5 text-sm",
+  lg: "min-h-[54px] px-6 text-base",
+};
+
+const Button: React.FC<ButtonProps> = ({
+  isDisabled = false,
+  variant = "primary",
+  size = "md",
+  fullWidth = true,
+  className = "",
+  children,
+  disabled,
+  ...rest
+}) => {
+  const isButtonDisabled = isDisabled || disabled;
+
   return (
     <button
-      disabled={isDisabled}
-      {...rest}
-      className={
-        "flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" +
-        (isDisabled
-          ? " text-black hover:bg-gray-600 hover:text-white"
-          : " bg-indigo-600 text-white hover:bg-indigo-800")
-      }
+      disabled={isButtonDisabled}
+      className={[
+        "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgb(var(--color-accent))]",
+        variantClassMap[variant],
+        sizeClassMap[size],
+        fullWidth ? "w-full" : "w-auto",
+        isButtonDisabled
+          ? "cursor-not-allowed bg-slate-200 text-slate-400 shadow-none hover:bg-slate-200"
+          : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       {...rest}
     >
       {children}
