@@ -8,8 +8,8 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M4 in progress
-- Active milestone: M4
+- Phase: M5 ready to start
+- Active milestone: M5
 - Working mode: milestone-by-milestone
 
 ## Completed
@@ -30,14 +30,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Completed M3 by turning `/regist` into a real staged posting flow with sectioned inputs, validation, a pre-submit summary, and a local success state in `client`
 - [x] Started M4 by aligning the frontend and server auth flow around a stable login contract, shared session storage, and a working `/api/login` endpoint in `client` and `server`
 - [x] Replaced the mocked work-with registration/detail paths with explicit client-server API contracts, shared types, and demo persistence in `client` and `server`
+- [x] Completed M4 by documenting the current search / auth / posting request-response shapes in `docs/api-contracts.md`
 
 ## Next up
 
-1. [ ] Document the current search / auth / posting request-response shapes for the next milestone
+1. [ ] Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps
+2. [ ] Refresh README / docs where the implementation or milestone state has drifted
+3. [ ] Add any remaining focused tests needed to support the M5 polish pass
 
 ## Immediate next task
 
-Document the current search / auth / posting request-response shapes so the active M4 contracts are explicit before the next milestone.
+Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps in copy, state UI, and flow finish.
 
 ## Known constraints
 
@@ -47,6 +50,10 @@ Document the current search / auth / posting request-response shapes so the acti
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M4 API contract documentation update
+- `2026-04-09`: `yarn --cwd client build` passed after the M4 API contract documentation update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M4 API contract documentation update
+- `2026-04-09`: `yarn --cwd server build` passed after the M4 API contract documentation update; `server/package.json` still has no license field
 - `2026-04-09`: `yarn --cwd client lint` passed after the M4 work-with contract update
 - `2026-04-09`: `yarn --cwd client build` passed after the M4 work-with contract update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M4 work-with contract update

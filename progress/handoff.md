@@ -16,37 +16,38 @@ Last updated: 2026-04-09
 
 ## Current handoff snapshot
 
-- Active milestone: `M4`
-- Current phase: `M4 in progress`
+- Active milestone: `M5`
+- Current phase: `M5 ready to start`
 - Immediate next task:
-  Document the current search / auth / posting request-response shapes so the active M4 contracts are explicit before the next milestone.
+  Start M5 by auditing the current product against `docs/acceptance-checklist.md` and closing the highest-signal polish gaps in copy, state UI, and flow finish.
 
 ## Recent implementation focus
 
 - M1 is complete.
 - M2 is complete.
 - M3 is complete.
-- M4 has started with a stable demo login contract between the frontend and server.
-- Client auth now uses a shared typed session shape, one storage key, and user-visible login failure handling.
-- Work-with detail cards and the `/regist` flow now use explicit API contracts instead of client-side mock JSON.
-- Server now exposes `/api/login`, `GET /api/work-with/locations/:locationId`, and `POST /api/work-with` with demo in-memory persistence.
+- M4 is complete.
+- `docs/api-contracts.md` now documents the current implemented search, auth, and work-with request-response shapes.
+- Client auth uses a shared typed session shape, one storage key, and user-visible login failure handling.
+- Work-with detail cards and the `/regist` flow use explicit API contracts instead of client-side mock JSON.
+- Server exposes `/api/login`, `GET /api/work-with/locations/:locationId`, and `POST /api/work-with` with demo in-memory persistence.
 
 ## Files most likely relevant next
 
-- `docs`
-- `client/src/api/auth/authApi.ts`
-- `client/src/api/map/workWith/index.ts`
-- `client/src/types/auth.ts`
-- `client/src/types/workWith.ts`
-- `client/src/service`
-- `server/src`
+- `docs/acceptance-checklist.md`
+- `client/src/pages/Home.tsx`
+- `client/src/pages/Find.tsx`
+- `client/src/pages/Regist.tsx`
+- `client/src/pages/Login.tsx`
+- `client/src/components`
+- `README.md`
 - `progress/current.md`
 
 ## Recent commits
 
+- `d6900bd` `Replace mocked work-with contracts`
+- `30e3621` `Align M4 auth login contract`
 - `356a7f9` `Split regist route into real page`
-- `680b19b` `Split find route into real page`
-- `8bb9052` `Complete M2 home discovery polish`
 
 ## Known working assumptions
 
