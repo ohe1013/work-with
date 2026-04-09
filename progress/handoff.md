@@ -16,42 +16,42 @@ Last updated: 2026-04-09
 
 ## Current handoff snapshot
 
-- Active milestone: `M3`
-- Current phase: `M3 in progress`
+- Active milestone: `M4`
+- Current phase: `M4 ready to start`
 - Immediate next task:
-  Turn `/regist` into a real staged posting flow with clear sectioning, validation, and a pre-submit summary instead of reusing `Home`.
+  Start M4 by aligning the frontend and server auth flow around a stable login contract instead of the current incomplete state.
 
 ## Recent implementation focus
 
 - M1 is complete.
 - M2 is complete.
-- M3 has started by separating `/find` from `Home`.
+- M3 is complete.
 - The mobile bottom-sheet and desktop side-panel now present the same connected discovery surface.
 - Home discovery now carries shared loading/empty/error state across the map, panel, and result list.
-- The remaining placeholder-feeling exploration copy and detail summaries were replaced with productized home discovery surfaces.
 - `/find` now has its own condition-based discovery layout that reuses shared map search execution.
+- `/regist` now has its own staged posting flow with validation, pre-submit summary, and success-state UI.
 
 ## Files most likely relevant next
 
-- `client/src/routes.tsx`
-- `client/src/pages/Find.tsx`
-- `client/src/pages`
-- `client/src/layout/Header.tsx`
-- `client/src/components/common`
-- `client/src/components/side-tab`
-- `client/src/hooks/map/useMapDiscoverySearch.ts`
+- `client/src/pages/Login.tsx`
+- `client/src/hooks/auth`
+- `client/src/api/auth`
+- `client/src/service`
+- `server/src`
+- `docs`
 - `progress/current.md`
 
 ## Recent commits
 
+- `680b19b` `Split find route into real page`
 - `8bb9052` `Complete M2 home discovery polish`
 - `2dba558` `Expand M2 discovery state handling`
-- `af1f2c1` `Refine M2 discovery surfaces`
 
 ## Known working assumptions
 
-- `/regist` still points to `Home`.
 - Auth is still incomplete and out of scope unless the active milestone moves there.
+- Registration success is still local-only and not persisted yet.
+- Work-with detail data still comes from client-side test data.
 - `work-with-codex-setup.patch` is currently untracked in the repo root; ignore it unless the user explicitly asks about it.
 - Browserslist still warns that `caniuse-lite` is outdated, but that is non-blocking for current milestone work.
 

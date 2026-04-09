@@ -3,6 +3,7 @@ import Layout from "./layout/Layout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Find from "./pages/Find";
+import Regist from "./pages/Regist";
 import { PageEnum } from "./enum/page";
 
 const routes = [
@@ -18,7 +19,7 @@ const routes = [
       },
       {
         path: "/regist",
-        element: <Home />,
+        element: <Regist />,
         label: PageEnum.REGIST,
       },
       {

@@ -8,8 +8,8 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 
 ## Current status
 
-- Phase: M3 in progress
-- Active milestone: M3
+- Phase: M4 ready to start
+- Active milestone: M4
 - Working mode: milestone-by-milestone
 
 ## Completed
@@ -27,24 +27,30 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Expanded the M2 home discovery flow with shared loading/empty/error state, retry/refine actions, and map/panel status messaging in `client`
 - [x] Completed M2 by removing the remaining home discovery placeholders and replacing them with productized exploration copy, guides, and selection briefs in `client`
 - [x] Started M3 by turning `/find` into a real condition-based discovery page with its own filters, map/result comparison surface, and shared search execution flow in `client`
+- [x] Completed M3 by turning `/regist` into a real staged posting flow with sectioned inputs, validation, a pre-submit summary, and a local success state in `client`
 
 ## Next up
 
-1. [ ] Build `/regist` as a real staged posting flow with validation and a pre-submit summary
-2. [ ] Continue auth/API contract cleanup after the route split milestone
+1. [ ] Align the frontend and server auth flow around a stable login contract instead of the current incomplete state
+2. [ ] Replace mocked work-with registration/detail data paths with explicit API contracts
+3. [ ] Document the current search / auth / posting request-response shapes for the next milestone
 
 ## Immediate next task
 
-Turn `/regist` into a real staged posting flow with clear sectioning, validation, and a pre-submit summary instead of reusing `Home`.
+Start M4 by aligning the frontend and server auth flow around a stable login contract instead of the current incomplete state.
 
 ## Known constraints
 
-- `/regist` still points to `Home`
 - Server auth flow is still incomplete
+- Registration success is still a local UI flow and does not persist to the server yet
+- Work-with detail data is still backed by local test data on the client side
 - `docker-compose.dev.yaml` still does not start the Node server
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M3 `/regist` route split update
+- `2026-04-09`: `yarn --cwd client build` passed after the M3 `/regist` route split update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M3 `/regist` route split update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M3 `/find` route split update
 - `2026-04-09`: `yarn --cwd client build` passed after the M3 `/find` route split update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M3 `/find` route split update

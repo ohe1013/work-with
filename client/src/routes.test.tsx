@@ -68,6 +68,19 @@ describe("routes", () => {
     expect(screen.getByTestId("kakao-map")).toBeInTheDocument();
   });
 
+  test("renders the staged regist route", () => {
+    renderRouter("/regist");
+
+    expect(
+      screen.getByText("부담 없이 올리고, 제출 전 한 번 더 확인하세요")
+    ).toBeInTheDocument();
+    expect(screen.getByText("운동 종류를 정하세요")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "제출 전 요약 보기" })
+    ).toBeDisabled();
+    expect(screen.getByText("제출 전 요약")).toBeInTheDocument();
+  });
+
   test("enables login when email and password are filled", () => {
     renderRouter("/login");
 
