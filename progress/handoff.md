@@ -19,7 +19,7 @@ Last updated: 2026-04-09
 - Active milestone: `M5`
 - Current phase: `M5 in progress`
 - Immediate next task:
-  Refresh README / docs where the implementation or milestone state has drifted.
+  Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure.
 
 ## Recent implementation focus
 
@@ -28,6 +28,7 @@ Last updated: 2026-04-09
 - M3 is complete.
 - M4 is complete.
 - M5 has moved through trust/access polish into softer flow-finish recovery guidance across home, `/find`, and `/regist`.
+- `README.md`, `docs/user-flows.md`, and `docs/toss-inspired-ui-spec.md` now match the real `/find`, `/regist`, and demo-auth scope instead of older placeholder-era expectations.
 - `docs/api-contracts.md` now documents the current implemented search, auth, and work-with request-response shapes.
 - Client auth uses a shared typed session shape, one storage key, and user-visible login failure handling.
 - Work-with detail cards and the `/regist` flow use explicit API contracts instead of client-side mock JSON.
@@ -46,6 +47,7 @@ Last updated: 2026-04-09
 
 ## Recent commits
 
+- `d5bc566` `Continue M5 flow finish polish`
 - `4123585` `Start M5 trust and access polish`
 - `58e5c15` `Document M4 API contracts`
 - `d6900bd` `Replace mocked work-with contracts`

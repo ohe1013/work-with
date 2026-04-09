@@ -15,10 +15,11 @@ The current hosted deployment is client-only on `vercel`.
 
 ## Current status
 
-- `Home` is the current map-first entry page and renders `BaseMap`.
-- `/find` and `/regist` are routed, but they still reuse `Home`.
-- The backend already exposes a Kakao search proxy endpoint.
-- Auth-related backend work is still incomplete.
+- `Home` is the map-first entry page with linked map, list, and detail discovery states.
+- `/find` is a dedicated condition-based discovery page with its own filters and comparison flow.
+- `/regist` is a staged posting flow with required-field validation, a pre-submit summary, and a success state.
+- The backend exposes a Kakao suggest proxy plus app-owned `POST /api/login`, `GET /api/work-with/locations/:locationId`, and `POST /api/work-with` routes.
+- Auth currently uses fixed demo credentials, and work-with storage is still in-memory demo data.
 
 ## Tech stack
 

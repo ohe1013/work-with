@@ -33,16 +33,17 @@ Keep the workout-partner product thesis intact while moving the repo into a mile
 - [x] Completed M4 by documenting the current search / auth / posting request-response shapes in `docs/api-contracts.md`
 - [x] Started M5 by auditing the acceptance checklist and polishing the highest-signal trust/access copy gaps across the header, `/find`, and `/login`
 - [x] Continued M5 by softening home / find / regist flow-finish empty states and adding clearer recovery actions across shared search and posting flows
+- [x] Refreshed `README.md` and core product docs so the current `/find`, `/regist`, and demo-auth implementation state no longer drifts from the documented runbook
 
 ## Next up
 
-1. [ ] Refresh README / docs where the implementation or milestone state has drifted
-2. [ ] Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure
-3. [ ] Add any remaining focused tests needed to support the final M5 polish pass
+1. [ ] Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure
+2. [ ] Add any remaining focused tests needed to support the final M5 polish pass
+3. [ ] If the checklist closes cleanly, mark M5 complete and update the release-facing docs accordingly
 
 ## Immediate next task
 
-Refresh README / docs where the implementation or milestone state has drifted.
+Recheck `docs/acceptance-checklist.md` against the latest M5 polish state and confirm whether any UX gaps still block milestone closure.
 
 ## Known constraints
 
@@ -52,6 +53,9 @@ Refresh README / docs where the implementation or milestone state has drifted.
 
 ## Latest validation
 
+- `2026-04-09`: `yarn --cwd client lint` passed after the M5 README/docs alignment update
+- `2026-04-09`: `yarn --cwd client build` passed after the M5 README/docs alignment update; Browserslist still reports an outdated `caniuse-lite` database
+- `2026-04-09`: `yarn --cwd client test` passed after the M5 README/docs alignment update
 - `2026-04-09`: `yarn --cwd client lint` passed after the M5 flow-finish recovery-action polish update
 - `2026-04-09`: `yarn --cwd client build` passed after the M5 flow-finish recovery-action polish update; Browserslist still reports an outdated `caniuse-lite` database
 - `2026-04-09`: `yarn --cwd client test` passed after the M5 flow-finish recovery-action polish update
