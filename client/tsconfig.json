@@ -7,6 +7,10 @@
 
     /* Bundler mode */
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
@@ -24,7 +28,6 @@
   },
   "include": ["src", "jest-setup.ts", "vite.config.ts"],
   "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.paths.json" }
+    { "path": "./tsconfig.node.json" }
   ]
 }

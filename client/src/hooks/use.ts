@@ -1,4 +1,12 @@
-export function use(promise) {
+type PromiseStatus = "pending" | "fulfilled" | "rejected";
+
+type UsePromise<T> = Promise<T> & {
+  status?: PromiseStatus;
+  value?: T;
+  reason?: unknown;
+};
+
+export function use<T>(promise: UsePromise<T>) {
   if (promise.status === "fulfilled") {
     return promise.value;
   } else if (promise.status === "rejected") {
@@ -8,11 +16,11 @@ export function use(promise) {
   } else {
     promise.status = "pending";
     promise.then(
-      (result) => {
+      (result: T) => {
         promise.status = "fulfilled";
         promise.value = result;
       },
-      (reason) => {
+      (reason: unknown) => {
         promise.status = "rejected";
         promise.reason = reason;
       }

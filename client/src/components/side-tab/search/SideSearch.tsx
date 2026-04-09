@@ -1,1 +1,3 @@
-export default function SideSearch() {}
+export default function SideSearch() {
+  return null;
+}

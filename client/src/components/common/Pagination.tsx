@@ -12,67 +12,58 @@ const Pagination = React.memo(function Pagination({
   ) => void;
 }) {
   if (!pagination) {
-    return <div></div>;
+    return null;
   }
+
   const pageList = new Array(pagination.last || 1)
     .fill(0)
     .map((item, idx) => item + idx + 1);
 
   return (
-    <div className="flex items-center justify-center border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-      <div className="flex flex-1 justify-between sm:hidden">
-        <a
-          href="#"
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Previous
-        </a>
-        <a
-          href="#"
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Next
-        </a>
+    <div className="border-t border-[rgba(148,163,184,0.16)] px-4 py-4">
+      <div className="mb-3 flex items-center justify-between text-xs font-medium uppercase tracking-[0.16em] text-slate-400">
+        <span>Results</span>
+        <span>
+          Page {pagination.current} / {pagination.last || 1}
+        </span>
       </div>
-      <div className="hidden justify-center sm:flex sm:flex-1 sm:items-center sm:justify-center">
-        <div>
-          <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-            aria-label="Pagination"
-          >
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <button
+          disabled={!pagination.hasPrevPage}
+          onClick={() => pageClickHandler("prev")}
+          className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300"
+          aria-label="Previous page"
+        >
+          ←
+        </button>
+        {pageList.map((page: number) => {
+          return (
             <button
-              disabled={!pagination.hasPrevPage}
-              onClick={() => pageClickHandler("prev")}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              key={"pageList" + page}
+              onClick={() => pageClickHandler("current", page)}
+              className={[
+                "inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full px-3 text-sm font-semibold transition",
+                page === pagination.current
+                  ? "bg-[rgb(var(--color-accent))] text-white shadow-[0_12px_24px_rgba(14,116,144,0.22)]"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200",
+              ].join(" ")}
+              aria-current={page === pagination.current ? "page" : undefined}
             >
-              ←
+              {page}
             </button>
-            {pageList.map((page: number) => {
-              return (
-                <button
-                  key={"pageList" + page}
-                  onClick={() => pageClickHandler("current", page)}
-                  className={
-                    "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0" +
-                    (page === pagination.current ? " bg-yellow-300" : " ")
-                  }
-                >
-                  {page}
-                </button>
-              );
-            })}
-
-            <button
-              disabled={!pagination.hasNextPage}
-              onClick={() => pageClickHandler("next")}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              →
-            </button>
-          </nav>
-        </div>
+          );
+        })}
+        <button
+          disabled={!pagination.hasNextPage}
+          onClick={() => pageClickHandler("next")}
+          className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-300"
+          aria-label="Next page"
+        >
+          →
+        </button>
       </div>
     </div>
   );
 });
+
 export default Pagination;

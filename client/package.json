@@ -16,6 +16,7 @@
       "<rootDir>/jest-setup.ts"
     ],
     "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1",
       "\\.(css|less)$": "identity-obj-proxy",
       "\\.svg": "jest-svg-transformer"
     }

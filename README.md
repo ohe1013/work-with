@@ -1,40 +1,83 @@
-# 사이드 프로젝트
+# work-with
 
----
+Map-first product for finding and posting workout-partner opportunities.
 
+Demo: [Vite + React + TS](https://work-with-lemon.vercel.app/)
 
-https://github.com/ohe1013/work-with/assets/84114149/87bd9171-5bc2-4640-8f8c-4fb78609b7a1
+The current hosted deployment is client-only on `vercel`.
 
+## Product direction
 
-[Vite + React + TS](https://work-with-lemon.vercel.app/)
+- Keep the map as the primary discovery surface.
+- Help people find nearby workout partners without turning the product into a social feed.
+- Preserve lightweight, low-pressure interactions.
+- Improve trust, clarity, and responsiveness without changing the product thesis.
 
-`vercel`을 이용해서 `client`만 간단하게 배포
+## Current status
 
-## 개요
+- `Home` is the current map-first entry page and renders `BaseMap`.
+- `/find` and `/regist` are routed, but they still reuse `Home`.
+- The backend already exposes a Kakao search proxy endpoint.
+- Auth-related backend work is still incomplete.
 
-개인적으로 헬스를 오랜기간했는데, 같이 운동할 파트너가 없었습니다.
+## Tech stack
 
-파트너와 운동하면 정말 좋은 효율을 낼 수 있는데… 헬스장에서 만나는 사람과 운동할 기회는 있지만..연락하며 관계를 유지하는 것에 힘쓰기 싫었습니다.
+- Frontend: `Vite`, `React`, `TypeScript`, `Recoil`, `Tailwind CSS`, `axios`, `react-kakao-maps-sdk`
+- Backend: `Express`, `TypeScript`, `postgres`
+- Tooling: `ESLint`, `Jest`, `concurrently`
 
-그리고 저같은 사람이 꽤 있는 것으로 판단되어 만들기 시작하였습니다.
+## Local development
 
-## 진행중
+### Install
 
-### TODO LIST
+```bash
+yarn
+yarn --cwd client
+yarn --cwd server
+```
 
-- 펑 기능
-    - 만료시간이 되면 리스트에서 삭제
-- 같이 운동할 리스트 CRUD
-- 유저 CRUD
-- 로그인
-    - 현재도 가능하게 할 수는 있으나, 서버를 올려야 하기 때문에 나중으로 미뤘다.
+### Recommended workflow
 
-## 사용한 언어 및 라이브러리
+```bash
+yarn start
+```
 
-- 프로그래밍언어 : `typescript`
-- 번들링 툴 : `vite`
-- 라이브러리 : `React` `Recoil` `Tailwind CSS` `axios` `react-kakao-maps-sdk`
-- 배포 환경 : `vercel`
-- 기타 : `ESLint` `Prettier`
+- `yarn start` runs the client and server together from the repository root.
+- `yarn client` starts only the frontend dev server.
+- `yarn server` starts only the backend dev server.
 
+### Validation
 
+```bash
+yarn run check
+```
+
+Individual validation commands:
+
+- `yarn client:lint`
+- `yarn client:build`
+- `yarn client:test`
+- `yarn server:build`
+
+## Docker Compose note
+
+`docker-compose.dev.yaml` does not mirror the full root dev workflow.
+
+- It currently manages `postgres` and the `client` container.
+- It does not start the Node server.
+- If you use Docker Compose for local infrastructure, run the backend separately with `yarn --cwd server dev`.
+
+Example:
+
+```bash
+docker compose -f docker-compose.dev.yaml up --build postgres client
+```
+
+## Project references
+
+- [AGENTS.md](./AGENTS.md)
+- [docs/product-invariants.md](./docs/product-invariants.md)
+- [docs/toss-inspired-ui-spec.md](./docs/toss-inspired-ui-spec.md)
+- [docs/user-flows.md](./docs/user-flows.md)
+- [docs/milestones.md](./docs/milestones.md)
+- [progress/current.md](./progress/current.md)

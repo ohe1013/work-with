@@ -1,18 +1,3 @@
-import React from 'react'
-interface ItemProps {
-  name: string;
-  isPacked: boolean;
-}
-
-function Item({ name, isPacked }: ItemProps) {
-  let itemContent: React.ReactNode  = name;
-
-  if (isPacked) {
-    itemContent = <del>{name + " ✔"}</del>;
-  }
-
-  return <li className="item">{itemContent}</li>;
-}
 export default function CommunityTab() {
   return (
     <>

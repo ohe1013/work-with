@@ -1,14 +1,17 @@
 {
+  "name": "work-with",
+  "private": true,
   "scripts": {
-    "server": "cd server && yarn dev",
-    "client": "cd client && yarn dev",
-    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" ",
-    "dependencies": {
-      "concurrently": "^8.2.0"
-    }
+    "server": "yarn --cwd server dev",
+    "client": "yarn --cwd client dev",
+    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "client:build": "yarn --cwd client build",
+    "client:test": "yarn --cwd client test",
+    "client:lint": "yarn --cwd client lint",
+    "server:build": "yarn --cwd server build",
+    "check": "yarn client:lint && yarn client:build && yarn client:test && yarn server:build"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
-  },
-  "dependencies": {}
+  }
 }

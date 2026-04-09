@@ -1,41 +1,46 @@
-import { Roadview } from "react-kakao-maps-sdk";
-import { getWorkWithList } from "../../service/workWith/workWith";
-import WorkWith from "../../api/map/workWith/model";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Roadview } from "react-kakao-maps-sdk";
+import WorkWith from "../../api/map/workWith/model";
+import { getWorkWithList } from "../../service/workWith/workWith";
 
 function DetailCard({ option }: { option: WorkWith.LocItem["item"] }) {
   const [isShow, setIsShow] = useState(true);
+
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       setIsShow(false);
     }, option.dueTime);
-  }, []);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [option.dueTime]);
+
   const endTime = new Date().getTime() + option.dueTime;
+
+  if (!isShow) {
+    return null;
+  }
+
   return (
-    isShow && (
-      <div className="border-solid flex flex-col w-full border-2  my-2 rounded-xl p-1 ">
-        <button className="  ">
-          <p>
-            <span className="text-l ">{option.title}</span>
-          </p>
-          <p>
-            <span className="text-xs ">
-              수준: {option.level} | 인원 : {option.currentCount}/
-              {option.maxCount}
-            </span>
-          </p>
-          <p>
-            <span className="text-xs ">
-              지원마감: {new Date(endTime).toLocaleTimeString()}
-            </span>
-          </p>
-          <p>
-            <span className="text-xs ">운동시간: {option.workTime}</span>
-          </p>
-        </button>
+    <div className="rounded-[22px] bg-slate-50 px-4 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm font-semibold tracking-[-0.02em] text-slate-900">
+          {option.title}
+        </p>
+        <span className="rounded-full bg-[rgba(14,116,144,0.08)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--color-accent))]">
+          {option.level}
+        </span>
       </div>
-    )
+      <div className="mt-2 space-y-1 text-xs leading-5 text-slate-500">
+        <p>
+          인원 {option.currentCount}/{option.maxCount}
+        </p>
+        <p>운동 시간 {option.workTime}</p>
+        <p>마감 {new Date(endTime).toLocaleTimeString()}</p>
+      </div>
+    </div>
   );
 }
 
@@ -54,45 +59,44 @@ export default function Card({
     staleTime: 1000,
     gcTime: 5000,
   });
+
   return (
-    <div className="max-w-2xl  mx-auto">
-      <div className="bg-white  shadow-md border border-gray-200 rounded-lg max-w-sm dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[320px] rounded-[28px] border border-white/80 bg-white/95 p-3 shadow-[0_26px_60px_rgba(15,23,42,0.20)] backdrop-blur-xl">
+      <div className="overflow-hidden rounded-[22px]">
         <Roadview
-          style={{ width: "100%", height: "150px" }}
+          style={{ width: "100%", height: "148px" }}
           position={{ lat: position.lat, lng: position.lng, radius: 50 }}
         ></Roadview>
-        <div className="p-5 w-80">
-          <a href="#">
-            <h5 className="text-gray-900 font-bold text-xl tracking-tight mb-2 dark:text-white">
-              {title}
-            </h5>
-          </a>
+      </div>
+
+      <div className="space-y-3 p-2 pt-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            Match preview
+          </p>
+          <h3 className="mt-1 text-lg font-semibold tracking-[-0.03em] text-slate-900">
+            {title}
+          </h3>
+        </div>
+
+        <div className="space-y-2">
           {!isLoading ? (
             workWithList?.map((workWith) => (
               <DetailCard key={workWith.id} option={workWith}></DetailCard>
             ))
           ) : (
-            <h1>데이터를 빠르게 조회중...</h1>
+            <p className="text-sm text-slate-500">
+              운동 메이트 모집을 불러오는 중입니다.
+            </p>
           )}
-          <a
-            href="#"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            새로등록 하기
-            <svg
-              className="-mr-1 ml-2 h-4 w-4"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </a>
         </div>
+
+        <button
+          type="button"
+          className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-[rgb(var(--color-accent))] px-4 text-sm font-semibold text-white transition hover:bg-[rgb(var(--color-accent-strong))]"
+        >
+          같이 운동 요청하기
+        </button>
       </div>
     </div>
   );
